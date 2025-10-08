@@ -1,18 +1,75 @@
+// PrajaShakthi-VDP-Form-frontend/src/components/SubmissionList.jsx
+
 import React, { useState, useEffect } from 'react';
+import { getSubmissions } from '../api/auth'; 
+import { useAuth } from '../context/AuthContext';
+import provincialDataJson from '../data/provincial_data.json'; 
 
 const SubmissionList = () => {
+    const { isAuthenticated, isAdmin } = useAuth();
     const [submissions, setSubmissions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // NEW: State for filtering submissions
+    const [filterDistrict, setFilterDistrict] = useState('');
+    const [filterDsDivision, setFilterDsDivision] = useState('');
+    const [filterGnDivision, setFilterGnDivision] = useState('');
+
+    // NEW: State for filter dropdowns
+    const [districts, setDistricts] = useState([]);
+    const [dsDivisions, setDsDivisions] = useState([]);
+    const [gnDivisions, setGnDivisions] = useState([]);
+
+    // Load initial district data for filtering dropdowns
     useEffect(() => {
-        const fetchSubmissions = async () => {
+        const allDistricts = provincialDataJson[0]?.districts || [];
+        setDistricts(allDistricts);
+    }, []);
+
+    // Handle cascading dropdowns for filtering
+    useEffect(() => {
+        setDsDivisions([]);
+        setGnDivisions([]);
+        if (filterDistrict) {
+            const selectedDistrictData = districts.find((d) => d.district.trim() === filterDistrict);
+            if (selectedDistrictData) {
+                setDsDivisions(selectedDistrictData.ds_divisions);
+            }
+        }
+    }, [filterDistrict, districts]);
+
+    useEffect(() => {
+        setGnDivisions([]);
+        if (filterDsDivision) {
+            const selectedDsData = dsDivisions.find((ds) => ds.ds_division_name.trim() === filterDsDivision);
+            if (selectedDsData) {
+                setGnDivisions(selectedDsData.gn_divisions);
+            }
+        }
+    }, [filterDsDivision, dsDivisions]);
+
+    // Fetch submissions based on filters and authentication
+    useEffect(() => {
+        if (!isAuthenticated || !isAdmin) {
+             setLoading(false);
+             return; 
+        }
+
+        const fetchSubmissionsData = async () => {
+            setLoading(true);
+            setError(null);
             try {
-                const response = await fetch('http://localhost:5000/api/submissions');
-                if (!response.ok) {
-                    throw new Error('Data could not be fetched!');
-                }
-                const data = await response.json();
+                const filters = {
+                    district: filterDistrict,
+                    divisionalSec: filterDsDivision,
+                    gnDivision: filterGnDivision
+                };
+                const cleanedFilters = Object.fromEntries(
+                    Object.entries(filters).filter(([, v]) => v) // Remove empty filter strings
+                );
+
+                const data = await getSubmissions(cleanedFilters); // Protected API call
                 setSubmissions(data);
             } catch (error) {
                 setError(error.message);
@@ -21,10 +78,61 @@ const SubmissionList = () => {
             }
         };
 
-        fetchSubmissions();
-    }, []);
+        fetchSubmissionsData();
+    }, [isAuthenticated, isAdmin, filterDistrict, filterDsDivision, filterGnDivision]);
 
-    // Helper function to render the main data object
+    // NEW: Filter Panel Component for Admins
+    const FilterPanel = () => (
+        <div className="filter-panel form-container" style={{ marginBottom: '20px', padding: '20px' }}>
+            <h3 className="section-title">Filter Submissions</h3>
+            <div className="d-flex" style={{ gap: '20px' }}>
+                <div className="form-group" style={{ flex: 1 }}>
+                    <label className="form-label">District:</label>
+                    <select value={filterDistrict} onChange={(e) => {
+                        setFilterDistrict(e.target.value);
+                        setFilterDsDivision('');
+                        setFilterGnDivision('');
+                    }} className="form-control">
+                        <option value="">-- All Districts --</option>
+                        {districts.map((d) => (
+                            <option key={d.district.trim()} value={d.district.trim()}>
+                                {d.district.trim()}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="form-group" style={{ flex: 1 }}>
+                    <label className="form-label">DS Division:</label>
+                    <select value={filterDsDivision} onChange={(e) => {
+                        setFilterDsDivision(e.target.value);
+                        setFilterGnDivision('');
+                    }} className="form-control" disabled={!filterDistrict}>
+                        <option value="">-- All DS Divisions --</option>
+                        {dsDivisions.map((ds) => (
+                            <option key={ds.ds_division_name.trim()} value={ds.ds_division_name.trim()}>
+                                {ds.ds_division_name.trim()}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="form-group" style={{ flex: 1 }}>
+                    <label className="form-label">GN Division:</label>
+                    <select value={filterGnDivision} onChange={(e) => setFilterGnDivision(e.target.value)} className="form-control" disabled={!filterDsDivision}>
+                        <option value="">-- All GN Divisions --</option>
+                        {gnDivisions.map((gn, index) => (
+                            <option key={`${gn.gn_name.trim()}-${index}`} value={gn.gn_name.trim()}>
+                                {gn.gn_name.trim()}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+        </div>
+    );
+
+    // ... (renderSubmissionData and renderProposals remain the same)
     const renderSubmissionData = (data) => {
         if (!data) return null;
 
@@ -97,11 +205,10 @@ const SubmissionList = () => {
 
         return null;
     };
-
-    // --- NEW: Helper function to render the proposals table ---
+    
     const renderProposals = (proposals) => {
         if (!proposals || proposals.length === 0 || (proposals.length === 1 && !proposals[0].proposal)) {
-            return null; // Don't render if there are no proposals or if the first one is empty
+            return null; 
         }
 
         return (
@@ -130,30 +237,37 @@ const SubmissionList = () => {
     };
 
 
-    if (loading) return <div>Loading submissions...</div>;
-    if (error) return <div>Error: {error}</div>;
+    if (!isAuthenticated) return <div>Access Denied. Please log in.</div>;
+    if (!isAdmin) return <div>Access Denied. Admin role required to view submissions.</div>;
+    
+    if (loading) return <div className="form-container">Loading submissions...</div>;
+    if (error) return <div className="form-container" style={{color: 'red'}}>Error: {error}</div>;
 
     return (
         <div className="submission-list-container">
-            <h2>All Submissions</h2>
-            {submissions.map((submission) => (
-                <div key={submission._id} className="submission-card">
-                    <h3>{submission.selection.sector}</h3>
-                    {submission.selection.subCategory && <h4>{submission.selection.subCategory}</h4>}
-                    
-                    <div className="location-details">
-                        <p><strong>District:</strong> {submission.location.district}</p>
-                        <p><strong>DS Division:</strong> {submission.location.divisionalSec}</p>
-                        <p><strong>GN Division:</strong> {submission.location.gnDivision}</p>
-                        <p><strong>Submitted:</strong> {new Date(submission.createdAt).toLocaleDateString()}</p>
+            <FilterPanel />
+            <h2>Filtered Submissions ({submissions.length})</h2>
+            {submissions.length === 0 ? (
+                <div className="submission-card">No submissions found matching the criteria.</div>
+            ) : (
+                submissions.map((submission) => (
+                    <div key={submission._id} className="submission-card">
+                        <h3>{submission.selection.sector}</h3>
+                        {submission.selection.subCategory && <h4>{submission.selection.subCategory}</h4>}
+                        
+                        <div className="location-details">
+                            <p><strong>District:</strong> {submission.location.district}</p>
+                            <p><strong>DS Division:</strong> {submission.location.divisionalSec}</p>
+                            <p><strong>GN Division:</strong> {submission.location.gnDivision}</p>
+                            <p><strong>Submitted:</strong> {new Date(submission.createdAt).toLocaleDateString()}</p>
+                        </div>
+                        
+                        {renderSubmissionData(submission.data)}
+                        {renderProposals(submission.proposals)}
+    
                     </div>
-                    
-                    {/* Render the main data and proposals */}
-                    {renderSubmissionData(submission.data)}
-                    {renderProposals(submission.proposals)}
-
-                </div>
-            ))}
+                ))
+            )}
         </div>
     );
 };
