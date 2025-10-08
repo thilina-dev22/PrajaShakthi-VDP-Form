@@ -1,0 +1,317 @@
+/* General Body Styles */
+body {
+  font-family: "Noto Sans Sinhala", Arial, sans-serif;
+  background-color: #eef1f5;
+  color: #333;
+}
+
+/* Form Container */
+.form-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  direction: ltr;
+  text-align: left;
+}
+
+.form-title {
+  text-align: center;
+  color: #0056b3;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+
+/* Form Grouping & Labels */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #555;
+  font-size: 1rem;
+}
+
+/* Form Controls (Inputs, Selects) */
+.form-control {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box; /* Important for consistent sizing */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+  outline: none;
+}
+
+/* Special input group for text and number side-by-side */
+.d-flex {
+    display: flex;
+    gap: 10px;
+}
+
+/* Table Styles */
+.table-section,
+.proposals-section {
+  margin: 40px 0;
+}
+
+.section-title {
+  color: #333;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #eee;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  vertical-align: middle;
+}
+
+.data-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  text-align: inherit;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.table-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background-color: transparent;
+  transition: border-color 0.2s, background-color 0.2s;
+  font-size: 1em;
+  font-family: inherit;
+}
+
+.table-input:focus {
+  outline: none;
+  border-color: #007bff;
+  background-color: #fff;
+}
+
+/* Button Styles */
+.btn {
+  display: inline-block;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  color: #fff;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-block {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  margin-top: 20px;
+}
+
+.btn-success {
+  background-color: #28a745;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  padding: 6px 12px; /* Smaller padding for delete button */
+  font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .form-container {
+    margin: 20px;
+    padding: 20px;
+  }
+
+  .form-title {
+    font-size: 1.5rem;
+  }
+
+  .btn {
+    padding: 10px 15px;
+  }
+
+  .d-flex {
+    flex-direction: column;
+  }
+}
+
+
+/* ////// */
+
+/* Add these new styles for the submission list */
+.submission-list-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+.submission-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.submission-card h3 {
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.submission-card p {
+    margin: 0.5rem 0;
+}
+
+.submission-card pre {
+    background-color: #eee;
+    padding: 1rem;
+    border-radius: 4px;
+    white-space: pre-wrap; /* Allows long lines to wrap */
+    word-wrap: break-word;
+    font-size: 0.85em;
+}
+
+
+.submission-card h4 {
+    margin: -0.5rem 0 1rem 0;
+    font-weight: normal;
+    color: #555;
+}
+
+.submission-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.9em;
+}
+
+.submission-data-table th,
+.submission-data-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.submission-data-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.submission-data-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.problem-entries p {
+    background-color: #f0f0f0;
+    padding: 8px;
+    border-radius: 4px;
+    margin: 5px 0;
+}
+
+.submission-card h4 {
+    margin: -0.5rem 0 1rem 0;
+    font-weight: normal;
+    color: #555;
+    font-size: 1.1em;
+}
+
+.location-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 1rem;
+    background-color: #f0f8ff;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.submission-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.9em;
+}
+
+.submission-data-table th,
+.submission-data-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.submission-data-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.submission-data-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.submission-data-table td:first-child {
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.problem-entries p {
+    background-color: #f5f5f5;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin: 5px 0;
+    font-family: monospace;
+}
+
+.proposal-title {
+    margin-top: 2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #ddd;
+}
