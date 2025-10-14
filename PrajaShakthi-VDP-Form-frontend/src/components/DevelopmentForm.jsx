@@ -1265,6 +1265,20 @@ const sectors = {
   },
 };
 
+// Initial state structures for the new Community Council Table
+const emptyCouncilRow = { name: "", position: "", phone: "", email: "" };
+const MAX_ROWS = 25;
+
+// Initialize all 25 slots as empty. We will control rendering to show only 1 in each section by default.
+// The indices (0 to 24) correspond to the row numbers (1 to 25).
+const initialCommunityCouncilData = Array(MAX_ROWS)
+  .fill(null)
+  .map((_, index) => ({
+    ...emptyCouncilRow,
+    // Mark the first row of each section as visible/initialized by default for cleaner UI
+    isVisible: index === 0 || index === 5 || index === 20,
+  }));
+
 const DevelopmentForm = () => {
   // State for form inputs and selections
   const [district, setDistrict] = useState("");
@@ -1281,12 +1295,17 @@ const DevelopmentForm = () => {
   const [gnDivisions, setGnDivisions] = useState([]);
 
   const [problems, setProblems] = useState({});
-  const [tableData, setTableData] = useState([]);
+  const [tableData, setTableData] = useState([null]);
   const [proposals, setProposals] = useState([
     { proposal: "", cost: "", agency: "" },
   ]);
 
   const [secondaryTableData, setSecondaryTableData] = useState([]);
+
+  // ⭐ NEW STATE FOR THE COMMUNITY COUNCIL TABLE ⭐
+  const [communityCouncilData, setCommunityCouncilData] = useState(
+    initialCommunityCouncilData
+  );
 
   // Load initial district data from the imported JSON
   useEffect(() => {
@@ -1411,6 +1430,100 @@ const DevelopmentForm = () => {
     // Move the closing parenthesis after the dependency array
     [currentSection]
   );
+
+  // ⭐ CORRECTED/UPDATED HANDLERS FOR THE COMMUNITY COUNCIL TABLE ⭐
+
+  const getSectionInfo = (globalIndex) => {
+    // Returns index info based on global index (0-24)
+    if (globalIndex >= 0 && globalIndex < 5)
+      return { start: 0, end: 5, maxRows: 5, minRows: 1 };
+    if (globalIndex >= 5 && globalIndex < 20)
+      return { start: 5, end: 20, maxRows: 15, minRows: 1 };
+    if (globalIndex >= 20 && globalIndex < 25)
+      return { start: 20, end: 25, maxRows: 5, minRows: 1 };
+    return null;
+  };
+
+  const handleCouncilRowChange = (index, field, value) => {
+    setCommunityCouncilData((prev) => {
+      const newData = [...prev];
+      newData[index] = { ...newData[index], [field]: value };
+      return newData;
+    });
+  };
+
+  const addCouncilRow = (startIndex, maxCount) => {
+    setCommunityCouncilData((prev) => {
+      const newData = [...prev];
+      let firstEmptyIndex = -1;
+
+      // Find the first *non-visible* slot within the section's range (startIndex to startIndex + maxCount)
+      for (let i = startIndex; i < startIndex + maxCount; i++) {
+        if (!newData[i].isVisible) {
+          firstEmptyIndex = i;
+          break;
+        }
+      }
+
+      if (firstEmptyIndex !== -1) {
+        // Activate the next hidden slot
+        newData[firstEmptyIndex] = { ...emptyCouncilRow, isVisible: true };
+        return newData;
+      }
+      return prev; // Section is full
+    });
+  };
+
+  const deleteCouncilRow = (globalIndex) => {
+    setCommunityCouncilData((prev) => {
+      const section = getSectionInfo(globalIndex);
+      if (!section) return prev;
+
+      // 1. Check minimum visibility constraint
+      const sectionVisibleCount = prev
+        .slice(section.start, section.end)
+        .filter((row) => row.isVisible).length;
+
+      if (sectionVisibleCount <= section.minRows) {
+        alert("At least one row must remain in each section.");
+        return prev;
+      }
+
+      // 2. Create the new state array
+      const newData = prev.map((row, index) => {
+        if (index === globalIndex) {
+          // This is the row to be effectively deleted (cleared and hidden)
+          return { ...emptyCouncilRow, isVisible: false };
+        }
+        return row;
+      });
+
+      // 3. Re-order/Compaction Logic for the specific section
+      const sectionData = newData.slice(section.start, section.end);
+
+      // Separate visible rows from hidden slots
+      const visibleRows = sectionData.filter((row) => row.isVisible);
+      const hiddenRows = sectionData.filter((row) => !row.isVisible);
+
+      // Combine: all visible rows first, then all hidden slots
+      const reorderedSection = [...visibleRows, ...hiddenRows];
+
+      // 4. Splice the reordered data back into the main array
+      // We ensure we only take the exact number of slots for this section (maxRows)
+      newData.splice(
+        section.start,
+        section.maxRows,
+        ...reorderedSection.slice(0, section.maxRows)
+      );
+
+      return newData;
+    });
+  };
+  const isSectionFull = (startIndex, maxCount) => {
+    return communityCouncilData
+      .slice(startIndex, startIndex + maxCount)
+      .every((row) => row.isVisible);
+  };
 
   const resetSelections = (level) => {
     if (level <= 1) setSubCategory("");
@@ -1541,6 +1654,25 @@ const DevelopmentForm = () => {
       collectedData.secondaryTableData = secondaryTableData;
     }
 
+    // Helper function to check if a row has any data (as used before)
+    const hasData = (row) =>
+      row.name.trim() !== "" ||
+      row.position.trim() !== "" ||
+      row.phone.trim() !== "" ||
+      row.email.trim() !== "";
+
+    // ⭐ CRITICAL FIX: Group data into three sections for submission ⭐
+    const councilData = {
+      // Kāraka Sabhā Sāmājikayin (Rows 1-5 / Indices 0-4)
+      committeeMembers: communityCouncilData.slice(0, 5).filter(hasData),
+
+      // Prajā Niyōjita Kaṇḍāyama (Rows 6-20 / Indices 5-19)
+      communityReps: communityCouncilData.slice(5, 20).filter(hasData),
+
+      // Upāya Mārgika Sāmājika Kaṇḍāyama (Rows 21-25 / Indices 20-24)
+      strategicMembers: communityCouncilData.slice(20, 25).filter(hasData),
+    };
+
     const formData = {
       location: {
         district,
@@ -1548,6 +1680,9 @@ const DevelopmentForm = () => {
         gnDivision,
         cdcVdpId,
       },
+      // Send the structured object instead of the single flat array
+      communityCouncil: councilData,
+
       selection: {
         sector,
         subCategory,
@@ -1557,16 +1692,16 @@ const DevelopmentForm = () => {
       data: collectedData,
       proposals,
     };
+    // ⭐ END CRITICAL FIX ⭐
 
     try {
-      // 🌟 MODIFIED: Use the submitForm API call for authenticated submission 🌟
-      const result = await submitForm(formData);
+      console.log("Form Submitted Data:", JSON.stringify(formData, null, 2));
 
-      console.log("Success:", result);
+      // The actual submission code (uncomment when ready to test live)
+      // const result = await submitForm(formData);
+
       alert("Form submitted successfully!");
-      // You can optionally reset the form fields here after a successful submission
     } catch (error) {
-      // This will catch authentication errors (401) or other server errors
       console.error("Error submitting form:", error);
       alert(`Error submitting form: ${error.message}`);
     }
@@ -1588,6 +1723,11 @@ const DevelopmentForm = () => {
           handleDivisionalSecChange={handleDivisionalSecChange}
           setGnDivision={setGnDivision}
           setCdcVdpId={setCdcVdpId}
+          communityCouncilData={communityCouncilData}
+          handleCouncilRowChange={handleCouncilRowChange}
+          addCouncilRow={addCouncilRow}
+          deleteCouncilRow={deleteCouncilRow} // Pass new delete handler
+          isSectionFull={isSectionFull}
         />
 
         <SectorSelector

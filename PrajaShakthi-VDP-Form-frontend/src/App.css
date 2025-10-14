@@ -251,7 +251,7 @@ body {
 }
 
 .problem-entries p {
-    background-color: #f0f0f0;
+    background-color: #007bff;
     padding: 8px;
     border-radius: 4px;
     margin: 5px 0;
@@ -314,4 +314,47 @@ body {
     margin-top: 2rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid #ddd;
+}
+
+.community-council-table th {
+    background-color: #f1f1f1;
+    color: #333;
+    font-weight: bold;
+}
+
+.community-council-table .section-header-row {
+    background-color: #d9ebfe; 
+    color: #000000;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.1em;
+    padding: 10px;
+    border-top: 2px solid #fcfcfc;
+    border-bottom: 2px solid #ffffff;
+}
+
+/* Optional: Style to distinguish filled/empty rows for visual debugging */
+.community-council-table tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.community-council-table .table-input {
+    width: 95%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* Style for the add button */
+.btn-info {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.btn-info:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
 }

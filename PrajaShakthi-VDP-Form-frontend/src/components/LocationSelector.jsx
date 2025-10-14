@@ -1,4 +1,5 @@
 import React from "react";
+import CommunityCouncilTable from "./CommunityCouncilTable";
 
 const LocationSelector = ({
   district,
@@ -12,6 +13,11 @@ const LocationSelector = ({
   handleDivisionalSecChange,
   setGnDivision,
   setCdcVdpId,
+  communityCouncilData,
+  handleCouncilRowChange,
+  addCouncilRow,
+  deleteCouncilRow,
+  isSectionFull,
 }) => {
   return (
     <>
@@ -80,6 +86,13 @@ const LocationSelector = ({
           className="form-control"
         />{" "}
       </div>
+      <CommunityCouncilTable
+        data={communityCouncilData}
+        onChange={handleCouncilRowChange}
+        onAddRow={addCouncilRow}
+        deleteCouncilRow={deleteCouncilRow}
+        isSectionFull={isSectionFull}
+      />
     </>
   );
 };
