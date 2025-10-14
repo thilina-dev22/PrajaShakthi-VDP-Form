@@ -26,11 +26,14 @@ const createSubmission = async (req, res) => {
   }
 };
 
-// @desc   Get all submissions (with filtering for admin)
-// @route  GET /api/submissions
+
+
+// @desc   Get all submissions (with filtering for admin)
+// @route   GET /api/submissions
 // @access Private/Admin (handled by authMiddleware)
 const getSubmissions = async (req, res) => {
-  const { district, divisionalSec, gnDivision } = req.query;
+  // ⭐ ADD formType to destructuring ⭐
+  const { district, divisionalSec, gnDivision, formType } = req.query;
   const filter = {};
 
   // Build filter object based on query parameters
@@ -43,9 +46,12 @@ const getSubmissions = async (req, res) => {
   if (gnDivision) {
     filter["location.gnDivision"] = gnDivision;
   }
+  // ⭐ ADD this new filter condition ⭐
+  if (formType) {
+    filter.formType = formType;
+  }
 
   try {
-    // The query results will include the new 'communityCouncil' data due to the schema change
     const submissions = await Submission.find(filter).sort({ createdAt: -1 });
     res.status(200).json(submissions);
   } catch (error) {
@@ -55,7 +61,6 @@ const getSubmissions = async (req, res) => {
       .json({ message: "Error fetching submissions", error: error.message });
   }
 };
-
 module.exports = {
   createSubmission,
   getSubmissions,

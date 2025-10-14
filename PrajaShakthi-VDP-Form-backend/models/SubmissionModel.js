@@ -13,27 +13,31 @@ const CouncilMemberSchema = new mongoose.Schema(
 
 const SubmissionSchema = new mongoose.Schema(
   {
+    // ⭐ ADD THIS FIELD ⭐
+    formType: {
+      type: String,
+      enum: ['main_form', 'council_info'],
+      default: 'main_form', // Default to main form for older data
+    },
+    // ⭐ END OF ADDITION ⭐
+    
     location: {
       district: String,
       divisionalSec: String,
       gnDivision: String,
       cdcVdpId: String,
     },
-
-    // ⭐ CRITICAL FIX: New Structured Council Data Schema ⭐
     communityCouncil: {
       type: new mongoose.Schema(
         {
-          committeeMembers: [CouncilMemberSchema], // Rows 1-5
-          communityReps: [CouncilMemberSchema], // Rows 6-20
-          strategicMembers: [CouncilMemberSchema], // Rows 21-25
+          committeeMembers: [CouncilMemberSchema],
+          communityReps: [CouncilMemberSchema],
+          strategicMembers: [CouncilMemberSchema],
         },
         { _id: false }
       ),
-      required: false, // Allow submission if the council is empty
+      required: false,
     },
-    // ⭐ END CRITICAL FIX ⭐
-
     selection: {
       sector: String,
       subCategory: String,
