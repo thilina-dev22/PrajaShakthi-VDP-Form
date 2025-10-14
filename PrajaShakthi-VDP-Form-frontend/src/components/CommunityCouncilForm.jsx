@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from "react";
 import provincialDataJson from "../data/provincial_data.json";
-import LocationSelectorBase from "./LocationSelectorBase"; // New Base component
+import LocationSelectorBase from "./LocationSelectorBase";
 import CommunityCouncilTable from "./CommunityCouncilTable";
 // eslint-disable-next-line no-unused-vars
 import { submitForm } from "../api/auth";
 
 // Initial state structures for the Community Council Table
-const emptyCouncilRow = { name: "", position: "", phone: "", email: "" };
+// UPDATED: Added 'whatsapp' field
+const emptyCouncilRow = {
+  name: "",
+  position: "",
+  phone: "",
+  whatsapp: "",
+  email: "",
+};
 const MAX_ROWS = 25;
 
-// Initialize all 25 slots for three sections (5 + 15 + 5)
+// UPDATED: Initialize ALL 25 slots with isVisible: true
 const initialCommunityCouncilData = Array(MAX_ROWS)
   .fill(null)
-  .map((_, index) => ({
+  .map(() => ({
     ...emptyCouncilRow,
-    // Mark the first row of each section as visible/initialized by default
-    isVisible: index === 0 || index === 5 || index === 20,
+    isVisible: true,
   }));
 
 const CommunityCouncilForm = () => {
@@ -23,7 +29,7 @@ const CommunityCouncilForm = () => {
   const [district, setDistrict] = useState("");
   const [divisionalSec, setDivisionalSec] = useState("");
   const [gnDivision, setGnDivision] = useState("");
-  const [cdcVdpId, setCdcVdpId] = useState("");
+  // REMOVED: cdcVdpId state
 
   const [districts, setDistricts] = useState([]);
   const [dsDivisions, setDsDivisions] = useState([]);
@@ -39,7 +45,7 @@ const CommunityCouncilForm = () => {
     setDistricts(allDistricts);
   }, []);
 
-  // Event handlers for cascading dropdowns (Copied from DevelopmentForm)
+  // Event handlers for cascading dropdowns
   const handleDistrictChange = (e) => {
     const selectedDistrictName = e.target.value;
     setDistrict(selectedDistrictName);
@@ -73,19 +79,9 @@ const CommunityCouncilForm = () => {
       }
     }
   };
-  
-  // --- Community Council Table Handlers (Copied from DevelopmentForm) ---
-  const emptyCouncilRow = { name: "", position: "", phone: "", email: "" };
 
-  const getSectionInfo = (globalIndex) => {
-    if (globalIndex >= 0 && globalIndex < 5)
-      return { start: 0, end: 5, maxRows: 5, minRows: 1 };
-    if (globalIndex >= 5 && globalIndex < 20)
-      return { start: 5, end: 20, maxRows: 15, minRows: 1 };
-    if (globalIndex >= 20 && globalIndex < 25)
-      return { start: 20, end: 25, maxRows: 5, minRows: 1 };
-    return null;
-  };
+  // --- Community Council Table Handlers ---
+  // REMOVED: getSectionInfo, addCouncilRow, and deleteCouncilRow functions
 
   const handleCouncilRowChange = (index, field, value) => {
     setCommunityCouncilData((prev) => {
@@ -95,114 +91,77 @@ const CommunityCouncilForm = () => {
     });
   };
 
-  const addCouncilRow = (startIndex, maxCount) => {
-    setCommunityCouncilData((prev) => {
-      const newData = [...prev];
-      let firstEmptyIndex = -1;
-
-      for (let i = startIndex; i < startIndex + maxCount; i++) {
-        if (!newData[i].isVisible) {
-          firstEmptyIndex = i;
-          break;
-        }
-      }
-
-      if (firstEmptyIndex !== -1) {
-        newData[firstEmptyIndex] = { ...emptyCouncilRow, isVisible: true };
-        return newData;
-      }
-      return prev;
-    });
-  };
-
-  const deleteCouncilRow = (globalIndex) => {
-    setCommunityCouncilData((prev) => {
-      const section = getSectionInfo(globalIndex);
-      if (!section) return prev;
-
-      const sectionVisibleCount = prev
-        .slice(section.start, section.end)
-        .filter((row) => row.isVisible).length;
-
-      if (sectionVisibleCount <= section.minRows) {
-        alert("At least one row must remain in each section.");
-        return prev;
-      }
-
-      const newData = prev.map((row, index) => {
-        if (index === globalIndex) {
-          return { ...emptyCouncilRow, isVisible: false };
-        }
-        return row;
-      });
-
-      const sectionData = newData.slice(section.start, section.end);
-      const visibleRows = sectionData.filter((row) => row.isVisible);
-      const hiddenRows = sectionData.filter((row) => !row.isVisible);
-      const reorderedSection = [...visibleRows, ...hiddenRows];
-
-      newData.splice(
-        section.start,
-        section.maxRows,
-        ...reorderedSection.slice(0, section.maxRows)
-      );
-
-      return newData;
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const hasData = (row) =>
-      row.name.trim() !== "" ||
-      row.position.trim() !== "" ||
-      row.phone.trim() !== "" ||
-      row.email.trim() !== "";
+    // --- START of MODIFIED LOGIC ---
+
+    // Function to replace empty strings with null for a member row
+    const processMemberData = (row) => ({
+      name: row.name.trim() === "" ? null : row.name,
+      position: row.position.trim() === "" ? null : row.position,
+      phone: row.phone.trim() === "" ? null : row.phone,
+      whatsapp: row.whatsapp.trim() === "" ? null : row.whatsapp,
+      email: row.email.trim() === "" ? null : row.email,
+      // Keep isVisible for full row structure, although it's not strictly necessary for the final log
+      isVisible: row.isVisible,
+    });
+
+    // Process all 25 rows and categorize them
+    const allProcessedData = communityCouncilData.map(processMemberData);
 
     const councilData = {
-      committeeMembers: communityCouncilData.slice(0, 5).filter(hasData),
-      communityReps: communityCouncilData.slice(5, 20).filter(hasData),
-      strategicMembers: communityCouncilData.slice(20, 25).filter(hasData),
+      committeeMembers: allProcessedData.slice(0, 5), // Rows 1-5
+      communityReps: allProcessedData.slice(5, 20), // Rows 6-20
+      strategicMembers: allProcessedData.slice(20, 25), // Rows 21-25
     };
 
     // Prepare a submission object tailored for the Community Council data
     const formData = {
-        location: {
-            district,
-            divisionalSec,
-            gnDivision,
-            cdcVdpId,
-        },
-        communityCouncil: councilData,
-        // Empty selectors and data for this specific form type
-        selection: {
-            sector: "Community Council Only",
-            subCategory: "",
-            subSubCategory: "",
-            subSubSubCategory: "",
-        },
-        data: {}, 
-        proposals: [],
+      location: {
+        district,
+        divisionalSec,
+        gnDivision,
+        // REMOVED: cdcVdpId,
+      },
+      communityCouncil: councilData,
+      selection: {
+        sector: "Community Council Only",
+        subCategory: "",
+        subSubCategory: "",
+        subSubSubCategory: "",
+      },
+      data: {},
+      proposals: [],
     };
-    
+
     // Add validation (optional but recommended)
     if (!district || !divisionalSec || !gnDivision) {
-        alert("Please select the District, DS Division, and GN Division.");
-        return;
+      alert("Please select the District, DS Division, and GN Division.");
+      return;
     }
+    // Simple check to ensure at least one row was filled if needed (optional based on final app requirements)
+    /*
     if (councilData.committeeMembers.length === 0 && councilData.communityReps.length === 0 && councilData.strategicMembers.length === 0) {
         alert("Please enter at least one member's information in the table.");
         return;
     }
+    */
 
     try {
-        console.log("Community Council Form Submitted Data:", JSON.stringify(formData, null, 2));
-        // await submitForm(formData); // Uncomment when ready to submit to backend
-        alert("Community Council Form submitted successfully (see console for data)!");
+      // Log the data entered to Community Council Form
+      console.log(
+        "Community Council Form Submitted Data:",
+        JSON.stringify(formData, null, 2)
+      );
+
+      // await submitForm(formData);
+      alert(
+        "Community Council Form submitted successfully (Data logged to console)!"
+      );
     } catch (error) {
-        console.error("Error submitting form:", error);
-        alert(`Error submitting form: ${error.message}`);
+      console.error("Error submitting form:", error);
+      alert(`Error submitting form: ${error.message}`);
     }
   };
 
@@ -210,25 +169,24 @@ const CommunityCouncilForm = () => {
     <div className="form-container">
       <h2 className="form-title">ප්‍රජා සංවර්ධන සභා සාමාජික තොරතුරු</h2>
       <form onSubmit={handleSubmit}>
-        <LocationSelectorBase // Using a new minimal selector base
+        <LocationSelectorBase
           district={district}
           divisionalSec={divisionalSec}
           gnDivision={gnDivision}
-          cdcVdpId={cdcVdpId}
+          // REMOVED: cdcVdpId={cdcVdpId}
           districts={districts}
           dsDivisions={dsDivisions}
           gnDivisions={gnDivisions}
           handleDistrictChange={handleDistrictChange}
           handleDivisionalSecChange={handleDivisionalSecChange}
           setGnDivision={setGnDivision}
-          setCdcVdpId={setCdcVdpId}
+          // REMOVED: setCdcVdpId={setCdcVdpId}
         />
 
         <CommunityCouncilTable
-            data={communityCouncilData}
-            onChange={handleCouncilRowChange}
-            onAddRow={addCouncilRow}
-            deleteCouncilRow={deleteCouncilRow}
+          data={communityCouncilData}
+          onChange={handleCouncilRowChange}
+          // REMOVED: onAddRow and deleteCouncilRow props
         />
 
         <button type="submit" className="btn btn-primary btn-submit">
