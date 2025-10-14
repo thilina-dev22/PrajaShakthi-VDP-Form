@@ -1,7 +1,8 @@
+// src/components/LocationSelectorBase.jsx
 import React from "react";
-import CommunityCouncilTable from "./CommunityCouncilTable";
 
-const LocationSelector = ({
+// This component contains ONLY the location dropdowns and CDC/VDP ID input.
+const LocationSelectorBase = ({
   district,
   divisionalSec,
   gnDivision,
@@ -13,11 +14,6 @@ const LocationSelector = ({
   handleDivisionalSecChange,
   setGnDivision,
   setCdcVdpId,
-  communityCouncilData,
-  handleCouncilRowChange,
-  addCouncilRow,
-  deleteCouncilRow,
-  isSectionFull,
 }) => {
   return (
     <>
@@ -86,15 +82,8 @@ const LocationSelector = ({
           className="form-control"
         />{" "}
       </div>
-      <CommunityCouncilTable
-        data={communityCouncilData}
-        onChange={handleCouncilRowChange}
-        onAddRow={addCouncilRow}
-        deleteCouncilRow={deleteCouncilRow}
-        isSectionFull={isSectionFull}
-      />
     </>
   );
 };
 
-export default LocationSelector;
+export default LocationSelectorBase;

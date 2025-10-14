@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import provincialDataJson from "../data/provincial_data.json";
 
 // Import the new components
-import LocationSelector from "./LocationSelector";
-import SectorSelector from "./SectorSelector";
+import LocationSelector from "./DevelopmentFormLocation";
 import DynamicContent from "./DynamicContent";
 import Proposals from "./Proposals";
 // eslint-disable-next-line no-unused-vars
 import { submitForm } from "../api/auth"; // MODIFIED: Import submitForm
 
+
+import DevelopmentFormLocation from "./DevelopmentFormLocation"; // <-- ADD THIS 
+import SectorSelector from "./SectorSelector";
 // The complete data structure for the form.
 const sectors = {
   "සමාජ පරිසරය (Social Environment)": {
