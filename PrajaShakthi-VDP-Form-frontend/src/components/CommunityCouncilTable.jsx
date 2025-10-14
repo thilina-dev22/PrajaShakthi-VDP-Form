@@ -45,7 +45,8 @@ const CommunityCouncilTable = ({
 
       rowsToRender.push(
         <tr key={globalIndex}>
-          <td>{globalIndex + 1}</td>{" "}
+          {/* FIX: Removed trailing whitespace and ensured clean content in <td> */}
+          <td>{globalIndex + 1}</td> 
           <td>
             <input
               type="text"

@@ -1699,7 +1699,8 @@ const DevelopmentForm = () => {
       console.log("Form Submitted Data:", JSON.stringify(formData, null, 2));
 
       // The actual submission code (uncomment when ready to test live)
-      // const result = await submitForm(formData);
+      // eslint-disable-next-line no-unused-vars
+      const result = await submitForm(formData); // <--- THIS LINE IS UNCOMMENTED
 
       alert("Form submitted successfully!");
     } catch (error) {
