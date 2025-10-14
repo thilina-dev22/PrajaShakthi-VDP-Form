@@ -152,13 +152,21 @@ const SubmissionList = () => {
     );
   };
   
-  // A simple renderer for the main form data
+// A simple renderer for the main form data
   const renderMainFormData = (submission) => {
       return (
           <div>
-            <h4>{submission.selection.sector}</h4>
-            <p><strong>Sub-Category:</strong> {submission.selection.subCategory || 'N/A'}</p>
-            <pre>{JSON.stringify(submission.data, null, 2)}</pre>
+            {/* ⭐ MODIFIED: Added optional chaining (?.) for safety ⭐ */}
+            <h4>{submission.selection?.sector || 'No Sector Selected'}</h4>
+            <p><strong>Sub-Category:</strong> {submission.selection?.subCategory || 'N/A'}</p>
+
+            {/* Also check if data exists before trying to display it */}
+            {submission.data && Object.keys(submission.data).length > 0 ? (
+                <pre>{JSON.stringify(submission.data, null, 2)}</pre>
+            ) : (
+                <p>No additional data for this submission.</p>
+            )}
+
             {renderProposals(submission.proposals)}
           </div>
       );
