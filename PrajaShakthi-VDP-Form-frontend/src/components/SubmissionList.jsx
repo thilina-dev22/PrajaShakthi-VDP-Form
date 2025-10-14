@@ -162,7 +162,7 @@ const SubmissionList = () => {
     </div>
   );
 
-  // ⭐ NEW FUNCTION TO RENDER COMMUNITY COUNCIL DATA ⭐
+  // Function to render the structured Community Council data
   const renderCommunityCouncil = (councilData) => {
     // Check if the structured data exists and has any sub-arrays
     if (
@@ -245,7 +245,6 @@ const SubmissionList = () => {
     );
   };
 
-  // ... (renderSubmissionData remains the same)
   const renderSubmissionData = (data) => {
     if (!data) return null;
 
@@ -344,7 +343,6 @@ const SubmissionList = () => {
     return null;
   };
 
-  // ... (renderProposals remains the same)
   const renderProposals = (proposals) => {
     if (
       !proposals ||

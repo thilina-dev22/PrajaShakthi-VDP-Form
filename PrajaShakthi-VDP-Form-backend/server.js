@@ -3,16 +3,16 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const cookieParser = require('cookie-parser'); // NEW
+const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
 const submissionRoutes = require('./routes/submissionRoutes');
-const authRoutes = require('./routes/authRoutes'); // NEW
+const authRoutes = require('./routes/authRoutes');
 
 dotenv.config();
 
-// Ensure JWT_SECRET is set for security
+// MANDATORY FIX: Enforce JWT_SECRET for security
 if (!process.env.JWT_SECRET) {
-    console.error("FATAL ERROR: JWT_SECRET is not defined. Please create a .env file.");
+    console.error("FATAL ERROR: JWT_SECRET is not defined. Please create a .env file and set a secure secret.");
     process.exit(1);
 }
 
@@ -21,15 +21,30 @@ connectDB();
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:5173', // Must match the frontend's Vite port
-    credentials: true, // IMPORTANT: Allows cookies (HttpOnly JWT) to be sent
+    origin: 'http://localhost:5173', 
+    credentials: true,
 }));
 app.use(express.json());
-app.use(cookieParser()); // NEW: Parse cookies from incoming requests
+app.use(cookieParser()); 
+
+// ⭐ NEW: Custom Request Logging Middleware ⭐
+app.use((req, res, next) => {
+    console.log('--- Incoming Request ---');
+    console.log(`Method: ${req.method}`);
+    console.log(`Path: ${req.originalUrl}`);
+    // Log the entire parsed body for POST/PUT/PATCH requests
+    if (req.method !== 'GET' && req.method !== 'DELETE' && req.body) {
+        // Log the JSON body, formatted for readability
+        console.log('Body:', JSON.stringify(req.body, null, 2));
+    }
+    console.log('------------------------');
+    next();
+});
+// ⭐ END Logging Middleware ⭐
 
 // Mount the routers
 app.use('/api/submissions', submissionRoutes);
-app.use('/api/auth', authRoutes); // NEW: Auth routes
+app.use('/api/auth', authRoutes); 
 
 const PORT = process.env.PORT || 5000;
 

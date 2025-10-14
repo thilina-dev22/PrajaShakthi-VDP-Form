@@ -6,6 +6,7 @@ import LocationSelector from "./LocationSelector";
 import SectorSelector from "./SectorSelector";
 import DynamicContent from "./DynamicContent";
 import Proposals from "./Proposals";
+// eslint-disable-next-line no-unused-vars
 import { submitForm } from "../api/auth"; // MODIFIED: Import submitForm
 
 // The complete data structure for the form.
