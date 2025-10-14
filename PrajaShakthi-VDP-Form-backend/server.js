@@ -10,9 +10,10 @@ const authRoutes = require('./routes/authRoutes'); // NEW
 
 dotenv.config();
 
-// Default secret for demo (should be in .env)
+// Ensure JWT_SECRET is set for security
 if (!process.env.JWT_SECRET) {
-    process.env.JWT_SECRET = 'prajashakthi@2025@presidentOffice'; 
+    console.error("FATAL ERROR: JWT_SECRET is not defined. Please create a .env file.");
+    process.exit(1);
 }
 
 connectDB();
