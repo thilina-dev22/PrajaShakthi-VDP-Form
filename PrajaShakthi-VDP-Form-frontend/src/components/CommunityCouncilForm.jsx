@@ -96,78 +96,63 @@ const CommunityCouncilForm = () => {
 
     // --- START of MODIFIED LOGIC ---
 
-    // Function to replace empty strings with null for a member row
-    const processMemberData = (row) => ({
-      name: row.name.trim() === "" ? null : row.name,
-      position: row.position.trim() === "" ? null : row.position,
-      phone: row.phone.trim() === "" ? null : row.phone,
-      whatsapp: row.whatsapp.trim() === "" ? null : row.whatsapp,
-      email: row.email.trim() === "" ? null : row.email,
-      // Keep isVisible for full row structure, although it's not strictly necessary for the final log
-      isVisible: row.isVisible,
-    });
+    // Function to check if a row has any meaningful data
+    const hasData = (row) =>
+      (row.name && row.name.trim() !== "") ||
+      (row.position && row.position.trim() !== "") ||
+      (row.phone && row.phone.trim() !== "") ||
+      (row.whatsapp && row.whatsapp.trim() !== "") ||
+      (row.email && row.email.trim() !== "");
 
-    // Process all 25 rows and categorize them
-    const allProcessedData = communityCouncilData.map(processMemberData);
+    // Filter out rows that are completely empty before categorizing
+    const filledData = communityCouncilData.filter(hasData);
 
     const councilData = {
-      committeeMembers: allProcessedData.slice(0, 5), // Rows 1-5
-      communityReps: allProcessedData.slice(5, 20), // Rows 6-20
-      strategicMembers: allProcessedData.slice(20, 25), // Rows 21-25
+      committeeMembers: communityCouncilData.slice(0, 5).filter(hasData),
+      communityReps: communityCouncilData.slice(5, 20).filter(hasData),
+      strategicMembers: communityCouncilData.slice(20, 25).filter(hasData),
     };
 
     // Prepare a submission object tailored for the Community Council data
     const formData = {
+      // ⭐ ADD formType ⭐
+      formType: "council_info",
+
       location: {
         district,
         divisionalSec,
         gnDivision,
-        // REMOVED: cdcVdpId,
       },
       communityCouncil: councilData,
-      selection: {
-        sector: "Community Council Only",
-        subCategory: "",
-        subSubCategory: "",
-        subSubSubCategory: "",
-      },
+      // Add empty placeholders for other fields to match the model
+      selection: {},
       data: {},
       proposals: [],
     };
 
-    // Add validation (optional but recommended)
+    // Add validation
     if (!district || !divisionalSec || !gnDivision) {
       alert("Please select the District, DS Division, and GN Division.");
       return;
     }
-    // Simple check to ensure at least one row was filled if needed (optional based on final app requirements)
-    /*
-    if (councilData.committeeMembers.length === 0 && councilData.communityReps.length === 0 && councilData.strategicMembers.length === 0) {
-        alert("Please enter at least one member's information in the table.");
-        return;
-    }
-    */
 
     try {
-      // Log the data entered to Community Council Form
-      console.log(
-        "Community Council Form Submitted Data:",
-        JSON.stringify(formData, null, 2)
-      );
-
-      // await submitForm(formData);
-      alert(
-        "Community Council Form submitted successfully (Data logged to console)!"
-      );
+      // ⭐ THIS IS THE KEY CHANGE: Call the API ⭐
+      await submitForm(formData);
+      alert("Council Information Submitted Successfully!");
+      // Optionally reset the form here
     } catch (error) {
       console.error("Error submitting form:", error);
       alert(`Error submitting form: ${error.message}`);
     }
   };
-
   return (
     <div className="form-container">
-      <h2 className="form-title">ප්‍රජා සංවර්ධන සභා සාමාජික තොරතුරු</h2>
+      <h2 className="form-title">
+        ප්‍රජා සංවර්ධන සභා සාමාජික තොරතුරු <br /> சமூக மேம்பாட்டு மன்ற
+        உறுப்பினர் தகவல் <br /> Community Development Council Member Information{" "}
+        <br />
+      </h2>
       <form onSubmit={handleSubmit}>
         <LocationSelectorBase
           district={district}
@@ -190,7 +175,7 @@ const CommunityCouncilForm = () => {
         />
 
         <button type="submit" className="btn btn-primary btn-submit">
-          ඉදිරිපත් කරන්න
+          ඉදිරිපත් කරන්න / சமர்ப்பிக்கவும் / Submit
         </button>
       </form>
     </div>

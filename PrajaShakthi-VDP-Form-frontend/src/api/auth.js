@@ -34,9 +34,9 @@ const logout = async () => {
     }
 };
 
-// Modified: Adds filtering parameters
+// Modified: Adds filtering parameters including formType
 const getSubmissions = async (filters = {}) => {
-    // Build query string from filters { district: 'X', divisionalSec: 'Y' }
+    // Build query string from filters { district: 'X', divisionalSec: 'Y', formType: 'council_info' }
     const queryString = new URLSearchParams(filters).toString();
     const url = `${API_SUBMISSION_URL}?${queryString}`;
 
