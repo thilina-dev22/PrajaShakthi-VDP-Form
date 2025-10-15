@@ -16,7 +16,9 @@ const LocationSelectorBase = ({
   return (
     <>
       <div className="form-group">
-        <label className="form-label">දිස්ත්‍රික්කය:</label>
+        <label className="form-label">
+          දිස්ත්‍රික්කය / மாவட்டம் / District :
+        </label>
         <select
           value={district}
           onChange={handleDistrictChange}
@@ -32,7 +34,10 @@ const LocationSelectorBase = ({
       </div>
 
       <div className="form-group">
-        <label className="form-label">ප්‍රාදේශීය ලේකම් කොට්ඨාශය:</label>
+        <label className="form-label">
+          ප්‍රාදේශීය ලේකම් කොට්ඨාශය / பிரதேச செயலகப் பிரிவு / Divisional
+          Secretariat Division :
+        </label>
         <select
           value={divisionalSec}
           onChange={handleDivisionalSecChange}
@@ -52,7 +57,10 @@ const LocationSelectorBase = ({
       </div>
 
       <div className="form-group">
-        <label className="form-label">ග්‍රාම නිලධාරී කොට්ඨාශය:</label>
+        <label className="form-label">
+          ග්‍රාම නිලධාරී කොට්ඨාශය / கிராம அலுவலர் பிரிவு / Grama Niladhari
+          Division :
+        </label>
         <select
           value={gnDivision}
           onChange={(e) => setGnDivision(e.target.value)}

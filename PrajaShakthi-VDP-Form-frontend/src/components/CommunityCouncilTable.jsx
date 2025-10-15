@@ -4,19 +4,21 @@ import React from "react";
 const CommunityCouncilTable = ({ data, onChange }) => {
   const sections = [
     {
-      title: "කාරක සභා සාමාජිකයින්", // Committee Members
+      title: "කාරක සභා සාමාජිකයින් / குழு உறுப்பினர்கள் / Team members ", // Committee Members
       start: 0,
       end: 5,
       maxRows: 5,
     },
     {
-      title: "ප්‍රජා නියෝජිත කණ්ඩායම", // Community Representative Group
+      title:
+        "ප්‍රජා නියෝජිත කණ්ඩායම / சமூகப் பிரதிநிதி குழு / Community Representative Committee ", // Community Representative Group
       start: 5,
       end: 20,
       maxRows: 15,
     },
     {
-      title: "උපාය මාර්ගික සාමාජික කණ්ඩායම", // Strategic Member Group
+      title:
+        "උපාය මාර්ගික සාමාජික කණ්ඩායම / மூலோபாய உறுப்பினர் குழு / Strategic Membership Committee ", // Strategic Member Group
       start: 20,
       end: 25,
       maxRows: 5,
@@ -131,12 +133,18 @@ const CommunityCouncilTable = ({ data, onChange }) => {
         <table className="data-table community-council-table">
           <thead>
             <tr>
-              <th style={{ width: "5%" }}>අංකය</th>
-              <th style={{ width: "17%" }}>නම</th>
-              <th style={{ width: "17%" }}>තනතුර</th>
-              <th style={{ width: "17%" }}>දුරකතන අංකය</th>
-              <th style={{ width: "17%" }}>Whatsapp අංකය</th>
-              <th style={{ width: "25%" }}>විද්‍යුත් ලිපිනය</th>
+              <th style={{ width: "5%" }}>අංකය / இல்லை / No </th>
+              <th style={{ width: "17%" }}>නම / பெயர்/ Name </th>
+              <th style={{ width: "17%" }}>තනතුර / நிலை / Status</th>
+              <th style={{ width: "17%" }}>
+                දුරකතන අංකය / தொலைபேசி எண் / Telephone no
+              </th>
+              <th style={{ width: "17%" }}>
+                වට්ස් ඇප් අංකය / வாட்ஸ்அப் / Whatsapp no{" "}
+              </th>
+              <th style={{ width: "25%" }}>
+                විද්‍යුත් ලිපිනය / மின்னஞ்சல் முகவரி / Email{" "}
+              </th>
             </tr>
           </thead>
           <tbody>{sections.map(renderSection)}</tbody>

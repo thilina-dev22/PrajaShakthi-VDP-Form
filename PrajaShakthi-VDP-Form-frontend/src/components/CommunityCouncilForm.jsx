@@ -148,7 +148,11 @@ const CommunityCouncilForm = () => {
   };
   return (
     <div className="form-container">
-      <h2 className="form-title">ප්‍රජා සංවර්ධන සභා සාමාජික තොරතුරු</h2>
+      <h2 className="form-title">
+        ප්‍රජා සංවර්ධන සභා සාමාජික තොරතුරු <br /> சமூக மேம்பாட்டு மன்ற
+        உறுப்பினர் தகவல் <br /> Community Development Council Member Information{" "}
+        <br />
+      </h2>
       <form onSubmit={handleSubmit}>
         <LocationSelectorBase
           district={district}
@@ -171,7 +175,7 @@ const CommunityCouncilForm = () => {
         />
 
         <button type="submit" className="btn btn-primary btn-submit">
-          ඉදිරිපත් කරන්න
+          ඉදිරිපත් කරන්න / சமர்ப்பிக்கவும் / Submit
         </button>
       </form>
     </div>
