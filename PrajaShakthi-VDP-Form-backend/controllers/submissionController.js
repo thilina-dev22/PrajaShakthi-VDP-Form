@@ -12,12 +12,10 @@ const createSubmission = async (req, res) => {
     const savedSubmission = await newSubmission.save();
 
     console.log("Data saved successfully by user:", req.user._id);
-    res
-      .status(201)
-      .json({
-        message: "Submission saved successfully!",
-        data: savedSubmission,
-      });
+    res.status(201).json({
+      message: "Submission saved successfully!",
+      data: savedSubmission,
+    });
   } catch (error) {
     console.error("Error saving submission:", error);
     res
@@ -25,8 +23,6 @@ const createSubmission = async (req, res) => {
       .json({ message: "Error saving submission", error: error.message });
   }
 };
-
-
 
 // @desc   Get all submissions (with filtering for admin)
 // @route   GET /api/submissions
@@ -61,7 +57,26 @@ const getSubmissions = async (req, res) => {
       .json({ message: "Error fetching submissions", error: error.message });
   }
 };
+
+const deleteSubmission = async (req, res) => {
+  try {
+    const submission = await Submission.findById(req.params.id);
+
+    if (submission) {
+      await submission.deleteOne(); // or submission.remove() for older mongoose versions
+      // Send status 204 No Content, which is standard for a successful DELETE
+      res.sendStatus(204);
+    } else {
+      res.status(404).json({ message: "Submission not found" });
+    }
+  } catch (error) {
+    console.error("Error deleting submission:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
 module.exports = {
   createSubmission,
   getSubmissions,
+  deleteSubmission,
 };
