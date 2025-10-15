@@ -104,4 +104,27 @@ const deleteSubmission = async (id) => {
   return;
 };
 
-export { login, logout, getSubmissions, submitForm, deleteSubmission };
+//ADD THE NEW STATUS CHECK FUNCTION
+const checkAuthStatus = async () => {
+  const response = await fetch(`${API_URL}/status`, {
+    method: "GET",
+    credentials: "include", // Crucial for sending the HttpOnly cookie
+  });
+
+  if (!response.ok) {
+    // This is expected if the user is not logged in, so we don't throw an error,
+    // we just signal that the check failed by returning null.
+    return null;
+  }
+
+  return response.json(); // Returns { _id, username, role }
+};
+
+export {
+  login,
+  logout,
+  getSubmissions,
+  submitForm,
+  deleteSubmission,
+  checkAuthStatus,
+};
