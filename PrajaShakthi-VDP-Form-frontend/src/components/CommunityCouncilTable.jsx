@@ -24,6 +24,16 @@ const CommunityCouncilTable = ({ data, onChange }) => {
 
   // FIXED: Changed to use a distinct border and background for better visibility.
   const inputClasses = "w-full px-1 py-1 border border-gray-300 rounded bg-white focus:outline-none focus:border-blue-500";
+  
+  // ADDED: Phone regex pattern for client-side hint
+  // SL mobile number format: 07(0-8)xxxxxxx (10 digits total)
+  const phonePattern = "07[01245678][0-9]{7}"; 
+  const phoneTitle = "ශ්‍රී ලංකාවේ 10-අංක ජංගම දුරකථන අංක ආකෘතිය (උදා: 0712345678)";
+
+  // ADDED: Reusable indicator for conditionally required fields
+  const RequiredIndicator = () => (
+    <span className="text-red-500 font-bold text-lg leading-none align-text-top" title="අවශ්‍ය ක්ෂේත්‍රය (Required Field)">*</span>
+  );
 
   const renderTableRows = (section) => {
     const sectionData = data.slice(section.start, section.end);
@@ -31,10 +41,6 @@ const CommunityCouncilTable = ({ data, onChange }) => {
 
     sectionData.forEach((row, localIndex) => {
       const globalIndex = section.start + localIndex;
-      const requiresContact =
-        (row.name && row.name.trim() !== "") ||
-        (row.position && row.position.trim() !== "") ||
-        (row.email && row.email.trim() !== "");
 
       rowsToRender.push(
         <tr key={globalIndex} className="border-b hover:bg-gray-50">
@@ -57,15 +63,18 @@ const CommunityCouncilTable = ({ data, onChange }) => {
               className={inputClasses}
             />
           </td>
+          {/* UPDATED: Added pattern and title attributes */}
           <td className="p-2">
             <input
               type="text"
               value={row.phone}
               onChange={(e) => onChange(globalIndex, "phone", e.target.value)}
               className={inputClasses}
-              required={requiresContact}
+              pattern={phonePattern} 
+              title={phoneTitle}      
             />
           </td>
+          {/* UPDATED: Added pattern and title attributes */}
           <td className="p-2">
             <input
               type="text"
@@ -74,7 +83,8 @@ const CommunityCouncilTable = ({ data, onChange }) => {
                 onChange(globalIndex, "whatsapp", e.target.value)
               }
               className={inputClasses}
-              required={requiresContact}
+              pattern={phonePattern} 
+              title={phoneTitle}      
             />
           </td>
           <td className="p-2">
@@ -118,19 +128,19 @@ const CommunityCouncilTable = ({ data, onChange }) => {
                 අංකය
               </th>
               <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[17%]">
-                නම
+                නම <RequiredIndicator />
               </th>
               <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[17%]">
-                තනතුර
+                තනතුර <RequiredIndicator />
               </th>
               <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[17%]">
-                දුරකතන අංකය
+                දුරකතන අංකය <RequiredIndicator />
               </th>
               <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[17%]">
-                වට්ස් ඇප් අංකය
+                වට්ස් ඇප් අංකය <RequiredIndicator />
               </th>
               <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[27%]">
-                විද්‍යුත් ලිපිනය
+                විද්‍යුත් ලිපිනය <RequiredIndicator />
               </th>
             </tr>
           </thead>
@@ -138,6 +148,11 @@ const CommunityCouncilTable = ({ data, onChange }) => {
             {sections.map(renderSection)}
           </tbody>
         </table>
+        {/* ADDED: Indicator note for the conditional required fields */}
+        <div className="p-2 text-sm text-gray-600 bg-gray-50 border-t">
+          <RequiredIndicator /> **All fields are conditionally required (if data is entered in any row, all columns in that row must be filled). Rows must be filled sequentially.
+          <br/>සියලුම ක්ෂේත්‍ර කොන්දේසි සහිතව අවශ්‍ය වේ** (යම් පේළියක දත්ත ඇතුලත් කරන්නේ නම් එහි සියලුම තීරු පිරවිය යුතුය). පේළි පිළිවෙලින් පිරවිය යුතුය.
+        </div>
       </div>
     </div>
   );
