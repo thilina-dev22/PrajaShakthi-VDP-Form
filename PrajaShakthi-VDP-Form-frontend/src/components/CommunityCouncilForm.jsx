@@ -23,13 +23,25 @@ const initialCommunityCouncilData = Array(MAX_ROWS)
     ...emptyCouncilRow,
     isVisible: true,
   }));
+  
+// The total length is 10 digits (07 + 1 digit + 7 digits)
+const SRI_LANKA_PHONE_REGEX = /^07[0-9]{8}$/;
+
+// ADDED: Function to check if a row is completely empty
+const isRowEmpty = (row) =>
+  !(
+    (row.name && row.name.trim() !== "") ||
+    (row.position && row.position.trim() !== "") ||
+    (row.phone && row.phone.trim() !== "") ||
+    (row.whatsapp && row.whatsapp.trim() !== "") ||
+    (row.email && row.email.trim() !== "")
+  );
 
 const CommunityCouncilForm = () => {
   // State for form inputs and selections
   const [district, setDistrict] = useState("");
   const [divisionalSec, setDivisionalSec] = useState("");
   const [gnDivision, setGnDivision] = useState("");
-  // REMOVED: cdcVdpId state
 
   const [districts, setDistricts] = useState([]);
   const [dsDivisions, setDsDivisions] = useState([]);
@@ -45,7 +57,7 @@ const CommunityCouncilForm = () => {
     setDistricts(allDistricts);
   }, []);
 
-  // Event handlers for cascading dropdowns
+  // Event handlers for cascading dropdowns (unchanged)
   const handleDistrictChange = (e) => {
     const selectedDistrictName = e.target.value;
     setDistrict(selectedDistrictName);
@@ -81,8 +93,6 @@ const CommunityCouncilForm = () => {
   };
 
   // --- Community Council Table Handlers ---
-  // REMOVED: getSectionInfo, addCouncilRow, and deleteCouncilRow functions
-
   const handleCouncilRowChange = (index, field, value) => {
     setCommunityCouncilData((prev) => {
       const newData = [...prev];
@@ -94,29 +104,112 @@ const CommunityCouncilForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // --- START of MODIFIED LOGIC ---
+    // 1. Location Validation (Mandatory Block)
+    if (!district || !divisionalSec || !gnDivision) {
+      alert("Please select the District, DS Division, and GN Division.");
+      return;
+    }
 
-    // Function to check if a row has any meaningful data
-    const hasData = (row) =>
+    // 2. Data Validation Checks
+    let validationErrors = [];
+    let isSequentialOrderViolated = false;
+    let hasFilledRowBeforeEmpty = false;
+    let hasFilledRow = false; // To check for general empty warning
+
+    for (let i = 0; i < MAX_ROWS; i++) {
+      const row = communityCouncilData[i];
+      const rowNumber = i + 1;
+      const isCurrentRowEmpty = isRowEmpty(row);
+      const isCurrentRowTouched = !isCurrentRowEmpty;
+
+      if (isCurrentRowTouched) {
+        hasFilledRow = true;
+        
+        // 2a) Sequential Filling Check: A filled row cannot follow an empty one.
+        if (hasFilledRowBeforeEmpty) {
+            isSequentialOrderViolated = true;
+        }
+
+        // 2b) Conditional Required Fields Check (If touched, ALL fields are required)
+        const requiredFields = [
+          { field: 'name', label: 'නම' },
+          { field: 'position', label: 'තනතුර' },
+          { field: 'phone', label: 'දුරකතන අංකය' },
+          { field: 'whatsapp', label: 'වට්ස් ඇප් අංකය' },
+          { field: 'email', label: 'විද්‍යුත් ලිපිනය' },
+        ];
+        
+        requiredFields.forEach(({ field, label }) => {
+          if (!row[field] || row[field].toString().trim() === "") {
+            validationErrors.push(`Row ${rowNumber}: ${label} is required as the row is in use.`);
+          }
+        });
+        
+        // 2c) Phone/WhatsApp Format Validation
+        const phoneValue = row.phone ? row.phone.toString().trim() : '';
+        const whatsappValue = row.whatsapp ? row.whatsapp.toString().trim() : '';
+        
+        if (phoneValue && !SRI_LANKA_PHONE_REGEX.test(phoneValue)) {
+          validationErrors.push(`Row ${rowNumber}: Invalid 'දුරකතන අංකය' (must be 10 digits, start with 07, e.g., 0712345678).`);
+        }
+        
+        if (whatsappValue && !SRI_LANKA_PHONE_REGEX.test(whatsappValue)) {
+          validationErrors.push(`Row ${rowNumber}: Invalid 'වට්ස් ඇප් අංකය' (must be 10 digits, start with 07, e.g., 0712345678).`);
+        }
+        
+      } else {
+        // Mark that an empty row was found *before* the loop is complete
+        hasFilledRowBeforeEmpty = true;
+      }
+    }
+
+    // 3. Handle Critical Validation Errors (Blocking Submission)
+    if (validationErrors.length > 0) {
+      alert(
+        `Form Submission Blocked: Please correct the following errors:\n\n${validationErrors.join('\n')}`
+      );
+      return;
+    }
+
+    // 4. Handle Non-Critical Warnings (Non-Blocking, User Confirmation)
+    let warningMessage = "";
+
+    // Sequential Order Warning
+    if (isSequentialOrderViolated) {
+      warningMessage += "⚠️ Warning: Row filling order violation detected (empty rows found among filled rows). Please ensure continuity.\n\n";
+    }
+
+    // Empty Row Warning
+    if (!hasFilledRow) {
+      warningMessage += "⚠️ Warning: No community council members' information has been filled. The submission will contain an empty council data section.";
+    }
+    
+    // Display warning if present (user requested to "just indicate" but allow submit)
+    if (warningMessage) {
+      if (!window.confirm(`Submitting Form with Warnings:\n\n${warningMessage}\n\nDo you wish to proceed?`)) {
+        return; // User cancelled the submission
+      }
+    }
+
+
+    // --- Submission Logic ---
+
+    // Function to check if a row has any meaningful data (Used for filtering for submission)
+    const filterHasData = (row) =>
       (row.name && row.name.trim() !== "") ||
       (row.position && row.position.trim() !== "") ||
       (row.phone && row.phone.trim() !== "") ||
       (row.whatsapp && row.whatsapp.trim() !== "") ||
       (row.email && row.email.trim() !== "");
 
-    // Filter out rows that are completely empty before categorizing
-    // eslint-disable-next-line no-unused-vars
-    const filledData = communityCouncilData.filter(hasData);
-
     const councilData = {
-      committeeMembers: communityCouncilData.slice(0, 5).filter(hasData),
-      communityReps: communityCouncilData.slice(5, 20).filter(hasData),
-      strategicMembers: communityCouncilData.slice(20, 25).filter(hasData),
+      committeeMembers: communityCouncilData.slice(0, 5).filter(filterHasData),
+      communityReps: communityCouncilData.slice(5, 20).filter(filterHasData),
+      strategicMembers: communityCouncilData.slice(20, 25).filter(filterHasData),
     };
 
     // Prepare a submission object tailored for the Community Council data
     const formData = {
-      // ⭐ ADD formType ⭐
       formType: "council_info",
 
       location: {
@@ -125,20 +218,12 @@ const CommunityCouncilForm = () => {
         gnDivision,
       },
       communityCouncil: councilData,
-      // Add empty placeholders for other fields to match the model
       selection: {},
       data: {},
       proposals: [],
     };
 
-    // Add validation
-    if (!district || !divisionalSec || !gnDivision) {
-      alert("Please select the District, DS Division, and GN Division.");
-      return;
-    }
-
     try {
-      // ⭐ THIS IS THE KEY CHANGE: Call the API ⭐
       await submitForm(formData);
       alert("Council Information Submitted Successfully!");
       // Optionally reset the form here
@@ -159,20 +244,17 @@ const CommunityCouncilForm = () => {
           district={district}
           divisionalSec={divisionalSec}
           gnDivision={gnDivision}
-          // REMOVED: cdcVdpId={cdcVdpId}
           districts={districts}
           dsDivisions={dsDivisions}
           gnDivisions={gnDivisions}
           handleDistrictChange={handleDistrictChange}
           handleDivisionalSecChange={handleDivisionalSecChange}
           setGnDivision={setGnDivision}
-          // REMOVED: setCdcVdpId={setCdcVdpId}
         />
 
         <CommunityCouncilTable
           data={communityCouncilData}
           onChange={handleCouncilRowChange}
-          // REMOVED: onAddRow and deleteCouncilRow props
         />
 
         <button type="submit" className="btn btn-primary btn-submit">
