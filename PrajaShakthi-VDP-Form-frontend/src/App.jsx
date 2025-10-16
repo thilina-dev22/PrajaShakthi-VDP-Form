@@ -18,7 +18,7 @@ function App() {
 
 // This component now handles the routing logic and state
 function AppContent() {
-  const [currentRoute, setCurrentRoute] = useState('development');
+  const [currentRoute, setCurrentRoute] = useState('council');
   const { isAuthenticated, isAdmin } = useAuth();
 
   if (!isAuthenticated) {

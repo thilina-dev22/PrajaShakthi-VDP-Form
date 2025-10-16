@@ -327,12 +327,12 @@ const SubmissionList = () => {
         >
           Council Info Data (ප්‍රජා සභා තොරතුරු)
         </button>
-        <button
+        {/* <button
           className={activeTab === "main_form" ? "active" : ""}
           onClick={() => setActiveTab("main_form")}
         >
           Main Form Data (සංවර්ධන සැලැස්ම)
-        </button>
+        </button> */}
       </div>
 
       <h2>Filtered Submissions ({submissions.length})</h2>
