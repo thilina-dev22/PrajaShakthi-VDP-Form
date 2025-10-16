@@ -22,8 +22,8 @@ const CommunityCouncilTable = ({ data, onChange }) => {
     },
   ];
 
-  // A consistent style for all input fields within the table
-  const inputClasses = "w-full p-1 border border-transparent rounded bg-transparent focus:outline-none focus:border-blue-500 focus:bg-white";
+  // FIXED: Changed to use a distinct border and background for better visibility.
+  const inputClasses = "w-full px-1 py-1 border border-gray-300 rounded bg-white focus:outline-none focus:border-blue-500";
 
   const renderTableRows = (section) => {
     const sectionData = data.slice(section.start, section.end);
