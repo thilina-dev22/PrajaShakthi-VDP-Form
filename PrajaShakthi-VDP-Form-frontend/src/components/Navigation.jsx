@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 
 const Navigation = ({ setCurrentRoute }) => {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
-  const isDevelopmentFormDisabled = true;
+  const isDevelopmentFormDisabled = false;
 
   return (
     <header className="bg-blue-700 text-white p-4 flex flex-col sm:flex-row justify-between items-center shadow-md">

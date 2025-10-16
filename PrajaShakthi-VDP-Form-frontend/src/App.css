@@ -7,6 +7,11 @@ body {
   color: #333;
 }
 
+/* General Body Styles - Retained for the custom font, as it's not a standard Tailwind utility */
+body {
+  font-family: "Noto Sans Sinhala", Arial, sans-serif;
+}
+
 /* Form Container */
 .form-container {
   max-width: 900px;
