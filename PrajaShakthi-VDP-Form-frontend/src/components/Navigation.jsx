@@ -3,49 +3,24 @@ import { useAuth } from '../context/AuthContext';
 
 const Navigation = ({ setCurrentRoute }) => {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
-  const isDevelopmentFormDisabled = true;
+  const isDevelopmentFormDisabled = false;
 
   return (
-    <header
-      style={{
-        padding: '10px 40px',
-        background: '#0056b3',
-        color: 'white',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}
-    >
-      <h1 style={{ margin: 0, fontSize: '1.5rem' }}>PrajaShakthi VDP Form</h1>
+    <header className="bg-blue-700 text-white p-4 flex flex-col sm:flex-row justify-between items-center shadow-md">
+      <h1 className="text-xl font-bold mb-4 sm:mb-0">PrajaShakthi VDP Form</h1>
 
       {isAuthenticated && !isAdmin && (
-        <nav>
+        <nav className="flex flex-col sm:flex-row gap-2 mb-4 sm:mb-0">
           <button
             onClick={() => setCurrentRoute('development')}
-            style={{
-              background: 'none',
-              color: 'white',
-              border: '1px solid white',
-              padding: '8px 15px',
-              borderRadius: '4px',
-              cursor: isDevelopmentFormDisabled ? 'not-allowed' : 'pointer',
-              marginRight: '10px',
-              opacity: isDevelopmentFormDisabled ? 0.6 : 1,
-            }}
+            className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isDevelopmentFormDisabled}
           >
             සංවර්ධන සැලැස්ම (Main Form)
           </button>
           <button
             onClick={() => setCurrentRoute('council')}
-            style={{
-              background: 'none',
-              color: 'white',
-              border: '1px solid white',
-              padding: '8px 15px',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
+            className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-blue-800"
           >
             ප්‍රජා සභා තොරතුරු (Council Info)
           </button>
@@ -53,23 +28,16 @@ const Navigation = ({ setCurrentRoute }) => {
       )}
 
       {isAuthenticated ? (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+        <div className="flex items-center gap-4">
           <span>
             Logged in as:{' '}
-            <strong>
+            <strong className="font-semibold">
               {user ? `${user.username} (${user.role})` : ''}
             </strong>
           </span>
           <button
             onClick={logout}
-            style={{
-              background: '#dc3545',
-              color: 'white',
-              border: 'none',
-              padding: '8px 15px',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
+            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
           >
             Logout
           </button>

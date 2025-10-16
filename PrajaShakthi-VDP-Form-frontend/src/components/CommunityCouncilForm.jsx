@@ -105,6 +105,7 @@ const CommunityCouncilForm = () => {
       (row.email && row.email.trim() !== "");
 
     // Filter out rows that are completely empty before categorizing
+    // eslint-disable-next-line no-unused-vars
     const filledData = communityCouncilData.filter(hasData);
 
     const councilData = {

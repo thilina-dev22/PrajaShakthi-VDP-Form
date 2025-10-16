@@ -1,106 +1,88 @@
 import React from "react";
 
-// 1. REMOVED 'onAddRow' from props
 const CommunityCouncilTable = ({ data, onChange }) => {
   const sections = [
     {
-      title: "කාරක සභා සාමාජිකයින් / குழு உறுப்பினர்கள் / Team members ", // Committee Members
+      title: "කාරක සභා සාමාජිකයින් / குழு உறுப்பினர்கள் / Team members",
       start: 0,
       end: 5,
       maxRows: 5,
     },
     {
-      title:
-        "ප්‍රජා නියෝජිත කණ්ඩායම / சமூகப் பிரதிநிதி குழு / Community Representative Committee ", // Community Representative Group
+      title: "ප්‍රජා නියෝජිත කණ්ඩායම / சமூகப் பிரதிநிதி குழு / Community Representative Committee",
       start: 5,
       end: 20,
       maxRows: 15,
     },
     {
-      title:
-        "උපාය මාර්ගික සාමාජික කණ්ඩායම / மூலோபாய உறுப்பினர் குழு / Strategic Membership Committee ", // Strategic Member Group
+      title: "උපාය මාර්ගික සාමාජික කණ්ඩායම / மூலோபாய உறுப்பினர் குழு / Strategic Membership Committee",
       start: 20,
       end: 25,
       maxRows: 5,
     },
   ];
 
-  const renderTableRows = (section) => {
-    // We iterate over the *full* slice of data for the section to determine the global index
-    const sectionData = data.slice(section.start, section.end);
+  // A consistent style for all input fields within the table
+  const inputClasses = "w-full p-1 border border-transparent rounded bg-transparent focus:outline-none focus:border-blue-500 focus:bg-white";
 
+  const renderTableRows = (section) => {
+    const sectionData = data.slice(section.start, section.end);
     const rowsToRender = [];
 
     sectionData.forEach((row, localIndex) => {
-      // *** REMOVED: The visibility check 'if (!row.isVisible) return;' ***
-      // This ensures all 25 data slots are rendered, regardless of their isVisible flag.
-
       const globalIndex = section.start + localIndex;
-
-      // New Conditional Logic: Check if Name, Position, OR Email is filled for this row
       const requiresContact =
         (row.name && row.name.trim() !== "") ||
         (row.position && row.position.trim() !== "") ||
         (row.email && row.email.trim() !== "");
 
       rowsToRender.push(
-        <tr key={globalIndex}>
-          {/* අංකය */}
-          <td>{globalIndex + 1}</td>
-
-          {/* නම (Optional) */}
-          <td>
+        <tr key={globalIndex} className="border-b hover:bg-gray-50">
+          <td className="p-2 text-center align-top">{globalIndex + 1}</td>
+          <td className="p-2">
             <input
               type="text"
               value={row.name}
               onChange={(e) => onChange(globalIndex, "name", e.target.value)}
-              className="table-input"
+              className={inputClasses}
             />
           </td>
-
-          {/* තනතුර (ඇත්නම්) (Optional) */}
-          <td>
+          <td className="p-2">
             <input
               type="text"
               value={row.position}
               onChange={(e) =>
                 onChange(globalIndex, "position", e.target.value)
               }
-              className="table-input"
+              className={inputClasses}
             />
           </td>
-
-          {/* දුරකතන අංකය (REQUIRED only if requiresContact is true) */}
-          <td>
+          <td className="p-2">
             <input
               type="text"
               value={row.phone}
               onChange={(e) => onChange(globalIndex, "phone", e.target.value)}
-              className="table-input"
-              required={requiresContact} // <--- CONDITIONAL REQUIREMENT APPLIED
+              className={inputClasses}
+              required={requiresContact}
             />
           </td>
-
-          {/* Whatsapp අංකය (REQUIRED only if requiresContact is true) */}
-          <td>
+          <td className="p-2">
             <input
               type="text"
               value={row.whatsapp}
               onChange={(e) =>
                 onChange(globalIndex, "whatsapp", e.target.value)
               }
-              className="table-input"
-              required={requiresContact} // <--- CONDITIONAL REQUIREMENT APPLIED
+              className={inputClasses}
+              required={requiresContact}
             />
           </td>
-
-          {/* විද්‍යුත් ලිපිනය (Optional) */}
-          <td>
+          <td className="p-2">
             <input
               type="email"
               value={row.email}
               onChange={(e) => onChange(globalIndex, "email", e.target.value)}
-              className="table-input"
+              className={inputClasses}
             />
           </td>
         </tr>
@@ -114,40 +96,47 @@ const CommunityCouncilTable = ({ data, onChange }) => {
     return (
       <React.Fragment key={section.title}>
         <tr>
-          <td colSpan="6" className="section-header-row">
+          <td colSpan="6" className="bg-blue-100 text-blue-800 font-bold p-3 text-center">
             {section.title}
           </td>
         </tr>
         {renderTableRows(section)}
-        {/* Removed: Add Row Button section */}
       </React.Fragment>
     );
   };
 
   return (
-    <div className="table-section" style={{ marginTop: "30px" }}>
-      <h3 className="section-title">
+    <div className="my-8">
+      <h3 className="text-xl font-semibold mb-4 pb-2 border-b">
         ප්‍රජා සංවර්ධන සභාව (Community Development Council)
       </h3>
-      <div className="table-responsive">
-        <table className="data-table community-council-table">
-          <thead>
+      <div className="overflow-x-auto rounded-lg border">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-100">
             <tr>
-              <th style={{ width: "5%" }}>අංකය / இல்லை / No </th>
-              <th style={{ width: "17%" }}>නම / பெயர்/ Name </th>
-              <th style={{ width: "17%" }}>තනතුර / நிலை / Status</th>
-              <th style={{ width: "17%" }}>
-                දුරකතන අංකය / தொலைபேசி எண் / Telephone no
+              <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[5%]">
+                අංකය
               </th>
-              <th style={{ width: "17%" }}>
-                වට්ස් ඇප් අංකය / வாட்ஸ்அப் / Whatsapp no{" "}
+              <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[17%]">
+                නම
               </th>
-              <th style={{ width: "25%" }}>
-                විද්‍යුත් ලිපිනය / மின்னஞ்சல் முகவரி / Email{" "}
+              <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[17%]">
+                තනතුර
+              </th>
+              <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[17%]">
+                දුරකතන අංකය
+              </th>
+              <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[17%]">
+                වට්ස් ඇප් අංකය
+              </th>
+              <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[27%]">
+                විද්‍යුත් ලිපිනය
               </th>
             </tr>
           </thead>
-          <tbody>{sections.map(renderSection)}</tbody>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {sections.map(renderSection)}
+          </tbody>
         </table>
       </div>
     </div>

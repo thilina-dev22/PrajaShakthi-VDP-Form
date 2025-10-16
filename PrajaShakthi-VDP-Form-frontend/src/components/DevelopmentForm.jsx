@@ -1,32 +1,23 @@
 import React, { useState, useEffect } from "react";
 import provincialDataJson from "../data/provincial_data.json";
-// Import the new components
 import LocationSelector from "./DevelopmentFormLocation";
 import DynamicContent from "./DynamicContent";
 import Proposals from "./Proposals";
-// eslint-disable-next-line no-unused-vars
-import { submitForm } from "../api/auth"; // MODIFIED: Import submitForm
-import { sectors } from "../data/sectors_data.js"; // Import the sectors object
-
-import DevelopmentFormLocation from "./DevelopmentFormLocation"; // <-- ADD THIS
+import { submitForm } from "../api/auth";
+import { sectors } from "../data/sectors_data.js";
 import SectorSelector from "./SectorSelector";
 
-// Initial state structures for the new Community Council Table
 const emptyCouncilRow = { name: "", position: "", phone: "", email: "" };
 const MAX_ROWS = 25;
 
-// Initialize all 25 slots as empty. We will control rendering to show only 1 in each section by default.
-// The indices (0 to 24) correspond to the row numbers (1 to 25).
 const initialCommunityCouncilData = Array(MAX_ROWS)
   .fill(null)
   .map((_, index) => ({
     ...emptyCouncilRow,
-    // Mark the first row of each section as visible/initialized by default for cleaner UI
     isVisible: index === 0 || index === 5 || index === 20,
   }));
 
 const DevelopmentForm = () => {
-  // State for form inputs and selections
   const [district, setDistrict] = useState("");
   const [divisionalSec, setDivisionalSec] = useState("");
   const [gnDivision, setGnDivision] = useState("");
@@ -47,19 +38,15 @@ const DevelopmentForm = () => {
   ]);
 
   const [secondaryTableData, setSecondaryTableData] = useState([]);
-
-  // ⭐ NEW STATE FOR THE COMMUNITY COUNCIL TABLE ⭐
   const [communityCouncilData, setCommunityCouncilData] = useState(
     initialCommunityCouncilData
   );
 
-  // Load initial district data from the imported JSON
   useEffect(() => {
     const allDistricts = provincialDataJson[0]?.districts || [];
     setDistricts(allDistricts);
   }, []);
 
-  // Event handlers for cascading dropdowns
   const handleDistrictChange = (e) => {
     const selectedDistrictName = e.target.value;
     setDistrict(selectedDistrictName);
@@ -135,7 +122,6 @@ const DevelopmentForm = () => {
           setTableData([]);
         } else if (currentSection.isHybridTable) {
           const initialFixedData = {};
-          // Combine mainRows and finalRows for state initialization
           const allFixedRows = [
             ...(currentSection.mainRows || []),
             ...(currentSection.finalRows || []),
@@ -143,18 +129,17 @@ const DevelopmentForm = () => {
           allFixedRows.forEach((row) => {
             initialFixedData[row.id] = {};
             currentSection.tableColumns.forEach((col) => {
-              initialFixedData[row.id][col] = "";
+              initialFixedData[row.id][col.header] = "";
             });
           });
 
-          // Conditionally create the dynamic part
           const dynamicPart = currentSection.dynamicRow
             ? [
                 {
                   id: `${currentSection.dynamicRow.idPrefix}_${Date.now()}`,
                   description: "",
                   ...currentSection.tableColumns.reduce(
-                    (acc, col) => ({ ...acc, [col]: "" }),
+                    (acc, col) => ({ ...acc, [col.header]: "" }),
                     {}
                   ),
                 },
@@ -162,25 +147,18 @@ const DevelopmentForm = () => {
             : [];
           setTableData({ fixed: initialFixedData, dynamic: dynamicPart });
         }
-        // Handle secondary table initialization
         if (currentSection.secondaryTable) {
           setSecondaryTableData([]);
         }
       } else {
         setTableData(null);
-        setSecondaryTableData([]); // Also clear on deselect
+        setSecondaryTableData([]);
       }
     },
-    // End of useEffect function
-    // The dependency array should be inside useEffect
-    // Move the closing parenthesis after the dependency array
     [currentSection]
   );
 
-  // ⭐ CORRECTED/UPDATED HANDLERS FOR THE COMMUNITY COUNCIL TABLE ⭐
-
   const getSectionInfo = (globalIndex) => {
-    // Returns index info based on global index (0-24)
     if (globalIndex >= 0 && globalIndex < 5)
       return { start: 0, end: 5, maxRows: 5, minRows: 1 };
     if (globalIndex >= 5 && globalIndex < 20)
@@ -203,7 +181,6 @@ const DevelopmentForm = () => {
       const newData = [...prev];
       let firstEmptyIndex = -1;
 
-      // Find the first *non-visible* slot within the section's range (startIndex to startIndex + maxCount)
       for (let i = startIndex; i < startIndex + maxCount; i++) {
         if (!newData[i].isVisible) {
           firstEmptyIndex = i;
@@ -212,11 +189,10 @@ const DevelopmentForm = () => {
       }
 
       if (firstEmptyIndex !== -1) {
-        // Activate the next hidden slot
         newData[firstEmptyIndex] = { ...emptyCouncilRow, isVisible: true };
         return newData;
       }
-      return prev; // Section is full
+      return prev;
     });
   };
 
@@ -225,7 +201,6 @@ const DevelopmentForm = () => {
       const section = getSectionInfo(globalIndex);
       if (!section) return prev;
 
-      // 1. Check minimum visibility constraint
       const sectionVisibleCount = prev
         .slice(section.start, section.end)
         .filter((row) => row.isVisible).length;
@@ -235,27 +210,18 @@ const DevelopmentForm = () => {
         return prev;
       }
 
-      // 2. Create the new state array
       const newData = prev.map((row, index) => {
         if (index === globalIndex) {
-          // This is the row to be effectively deleted (cleared and hidden)
           return { ...emptyCouncilRow, isVisible: false };
         }
         return row;
       });
 
-      // 3. Re-order/Compaction Logic for the specific section
       const sectionData = newData.slice(section.start, section.end);
-
-      // Separate visible rows from hidden slots
       const visibleRows = sectionData.filter((row) => row.isVisible);
       const hiddenRows = sectionData.filter((row) => !row.isVisible);
-
-      // Combine: all visible rows first, then all hidden slots
       const reorderedSection = [...visibleRows, ...hiddenRows];
 
-      // 4. Splice the reordered data back into the main array
-      // We ensure we only take the exact number of slots for this section (maxRows)
       newData.splice(
         section.start,
         section.maxRows,
@@ -297,7 +263,7 @@ const DevelopmentForm = () => {
   const addSecondaryTableRow = () => {
     if (!currentSection?.secondaryTable) return;
     const newRow = currentSection.secondaryTable.tableColumns.reduce(
-      (acc, col) => ({ ...acc, [col]: "" }),
+      (acc, col) => ({ ...acc, [col.header]: "" }),
       {}
     );
     setSecondaryTableData((prev) => [...prev, newRow]);
@@ -314,7 +280,7 @@ const DevelopmentForm = () => {
   const addTableRow = () => {
     if (!currentSection || !currentSection.tableColumns) return;
     const newRow = currentSection.tableColumns.reduce(
-      (acc, col) => ({ ...acc, [col]: "" }),
+      (acc, col) => ({ ...acc, [col.header]: "" }),
       {}
     );
     setTableData((prev) => [...prev, newRow]);
@@ -354,7 +320,7 @@ const DevelopmentForm = () => {
       description: "",
     };
     currentSection.tableColumns.forEach((col) => {
-      newRow[col] = "";
+      newRow[col.header] = "";
     });
     setTableData((prev) => ({
       ...prev,
@@ -400,22 +366,15 @@ const DevelopmentForm = () => {
       collectedData.secondaryTableData = secondaryTableData;
     }
 
-    // Helper function to check if a row has any data (as used before)
     const hasData = (row) =>
       row.name.trim() !== "" ||
       row.position.trim() !== "" ||
       row.phone.trim() !== "" ||
       row.email.trim() !== "";
 
-    // ⭐ CRITICAL FIX: Group data into three sections for submission ⭐
     const councilData = {
-      // Kāraka Sabhā Sāmājikayin (Rows 1-5 / Indices 0-4)
       committeeMembers: communityCouncilData.slice(0, 5).filter(hasData),
-
-      // Prajā Niyōjita Kaṇḍāyama (Rows 6-20 / Indices 5-19)
       communityReps: communityCouncilData.slice(5, 20).filter(hasData),
-
-      // Upāya Mārgika Sāmājika Kaṇḍāyama (Rows 21-25 / Indices 20-24)
       strategicMembers: communityCouncilData.slice(20, 25).filter(hasData),
     };
 
@@ -426,9 +385,7 @@ const DevelopmentForm = () => {
         gnDivision,
         cdcVdpId,
       },
-      // Send the structured object instead of the single flat array
       communityCouncil: councilData,
-
       selection: {
         sector,
         subCategory,
@@ -438,15 +395,10 @@ const DevelopmentForm = () => {
       data: collectedData,
       proposals,
     };
-    // ⭐ END CRITICAL FIX ⭐
 
     try {
       console.log("Form Submitted Data:", JSON.stringify(formData, null, 2));
-
-      // The actual submission code (uncomment when ready to test live)
-      // eslint-disable-next-line no-unused-vars
-      const result = await submitForm(formData); // <--- THIS LINE IS UNCOMMENTED
-
+      await submitForm(formData);
       alert("Form submitted successfully!");
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -455,9 +407,11 @@ const DevelopmentForm = () => {
   };
 
   return (
-    <div className="form-container">
-      <h2 className="form-title">ඒකාබද්ධ ග්‍රාම සංවර්ධන සැලැස්ම</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="max-w-4xl mx-auto my-10 p-6 sm:p-8 bg-white rounded-lg shadow-lg">
+      <h2 className="text-2xl sm:text-3xl font-bold text-center text-blue-700 mb-8">
+        ඒකාබද්ධ ග්‍රාම සංවර්ධන සැලැස්ම
+      </h2>
+      <form onSubmit={handleSubmit} className="space-y-6">
         <LocationSelector
           district={district}
           divisionalSec={divisionalSec}
@@ -473,7 +427,7 @@ const DevelopmentForm = () => {
           communityCouncilData={communityCouncilData}
           handleCouncilRowChange={handleCouncilRowChange}
           addCouncilRow={addCouncilRow}
-          deleteCouncilRow={deleteCouncilRow} // Pass new delete handler
+          deleteCouncilRow={deleteCouncilRow}
           isSectionFull={isSectionFull}
         />
 
@@ -502,7 +456,6 @@ const DevelopmentForm = () => {
           deleteTableRow={deleteTableRow}
           addOtherRow={addOtherRow}
           deleteOtherRow={deleteOtherRow}
-          // Add new props for the secondary table
           secondaryTableData={secondaryTableData}
           addSecondaryTableRow={addSecondaryTableRow}
           handleSecondaryTableChange={handleSecondaryTableChange}
@@ -515,7 +468,10 @@ const DevelopmentForm = () => {
           deleteProposal={deleteProposal}
         />
 
-        <button type="submit" className="btn btn-primary btn-submit">
+        <button
+          type="submit"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+        >
           ඉදිරිපත් කරන්න
         </button>
       </form>
