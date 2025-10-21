@@ -20,6 +20,10 @@ dist-ssr
 *.suo
 *.ntvs*
 *.njsproj
+
+# Environment files (do not commit secrets)
+.env
+.env.*
 *.sln
 *.sw?
 node_modules

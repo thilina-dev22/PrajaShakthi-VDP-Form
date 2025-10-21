@@ -74,6 +74,8 @@ CORS_ORIGIN=https://your-frontend-domain.vercel.app
 
 **Important:** After adding environment variables, redeploy the backend!
 
+Local development shortcut: copy `PrajaShakthi-VDP-Form-backend/.env.example` to `.env` and fill in the values. Do not commit `.env`.
+
 #### 4. Note Your Backend URL
 After deployment, you'll get a URL like:
 ```
@@ -136,6 +138,8 @@ VITE_API_BASE_URL=https://prajashakthi-vdp-backend.vercel.app
 ```
 
 **Important:** After adding environment variables, redeploy the frontend!
+
+Local development shortcut: copy `PrajaShakthi-VDP-Form-frontend/.env.example` to `.env` (or `.env.local`) and set the backend URL. Do not commit `.env`.
 
 ### Part 3: Configure CORS (Backend)
 
