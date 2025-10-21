@@ -2,16 +2,14 @@ const Submission = require("../models/SubmissionModel");
 
 // @desc   Create a new form submission
 // @route  POST /api/submissions
-// @access Private/User (handled by authMiddleware)
+// @access Public (anonymous submissions allowed)
 const createSubmission = async (req, res) => {
   try {
     // Since 'req.body' now contains the 'communityCouncil' array
     // and the SubmissionModel schema has been updated to include it,
     // Mongoose automatically maps and saves the new field.
     const newSubmission = new Submission(req.body);
-    const savedSubmission = await newSubmission.save();
-
-    console.log("Data saved successfully by user:", req.user._id);
+  const savedSubmission = await newSubmission.save();
     res.status(201).json({
       message: "Submission saved successfully!",
       data: savedSubmission,

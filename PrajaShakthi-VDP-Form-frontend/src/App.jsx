@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import './App.css';
-import { AuthProvider } from './context/AuthContext';
 import Navigation from './components/Navigation';
 import Login from './components/Login';
 import DevelopmentForm from './components/DevelopmentForm';
@@ -9,27 +8,20 @@ import SubmissionList from './components/SubmissionList';
 import { useAuth } from './context/AuthContext';
 
 function App() {
-  return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
-  );
+  // Keep App focused on rendering the content; AuthProvider is applied in main.jsx
+  return <AppContent />;
 }
 
-// This component now handles the routing logic and state
+// AppContent handles simple client-side routing via local state
 function AppContent() {
-  const [currentRoute, setCurrentRoute] = useState('council');
-  const { isAuthenticated, isAdmin } = useAuth();
+  // Make the public landing page the main Development form by default
+  const [currentRoute, setCurrentRoute] = useState('development'); // 'development' | 'council' | 'login'
+  const { isAdmin } = useAuth();
 
-  if (!isAuthenticated) {
-    return <Login />;
-  }
-
-  // Admin View
+  // Admin-only view remains protected
   if (isAdmin) {
     return (
       <>
-        {/* Navigation for admin doesn't need routing controls */}
         <Navigation />
         <div className="p-4 sm:p-8">
           <SubmissionList />
@@ -38,14 +30,19 @@ function AppContent() {
     );
   }
 
-  // Regular User View
+  // Public view (no login required). Optionally show Login screen when user clicks "Log in as admin".
   return (
     <>
-      {/* Pass the setCurrentRoute function to Navigation */}
       <Navigation setCurrentRoute={setCurrentRoute} />
       <div className="p-4 sm:p-8">
-        {currentRoute === 'development' && <DevelopmentForm />}
-        {currentRoute === 'council' && <CommunityCouncilForm />}
+        {currentRoute === 'login' ? (
+          <Login />
+        ) : (
+          <>
+            {currentRoute === 'development' && <DevelopmentForm />}
+            {currentRoute === 'council' && <CommunityCouncilForm />}
+          </>
+        )}
       </div>
     </>
   );

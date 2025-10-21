@@ -6,20 +6,16 @@ import CommunityCouncilForm from './CommunityCouncilForm';
 import DevelopmentForm from './DevelopmentForm';
 
 const AppRoutes = () => {
-  const { isAuthenticated, isAdmin } = useAuth();
-  const [currentRoute, setCurrentRoute] = useState('council');
-
-  if (!isAuthenticated) {
-    return <Login />;
-  }
+  const { isAdmin } = useAuth();
+  const [currentRoute, setCurrentRoute] = useState('development'); // public landing
 
   if (isAdmin) {
     return <SubmissionList />;
   }
 
-  // Pass setCurrentRoute to the Navigation component
-  // This state is now local to the routing logic
   switch (currentRoute) {
+    case 'login':
+      return <Login />;
     case 'council':
       return <CommunityCouncilForm setCurrentRoute={setCurrentRoute} />;
     case 'development':

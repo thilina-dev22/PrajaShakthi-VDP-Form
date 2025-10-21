@@ -3,10 +3,10 @@
 const express = require('express');
 const router = express.Router();
 const { createSubmission, getSubmissions, deleteSubmission, } = require('../controllers/submissionController');
-const { protect, admin } = require('../middleware/authMiddleware'); // NEW
+const { protect, admin } = require('../middleware/authMiddleware'); // auth still used for admin-only
 
-// Route for creating a new submission (Requires login - user role for form submit)
-router.post('/', protect, createSubmission);
+// Public route for creating a new submission (no login required)
+router.post('/', createSubmission);
 
 // Route for getting and filtering submissions (Requires admin role)
 router.get('/', protect, admin, getSubmissions);
