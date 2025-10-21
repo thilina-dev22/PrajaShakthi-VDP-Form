@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db");
 const submissionRoutes = require("./routes/submissionRoutes");
 const authRoutes = require("./routes/authRoutes");
+const { Logger } = require('./middleware/loggingMiddleware')
 
 dotenv.config();
 
@@ -34,21 +35,8 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(Logger); // Custom Request Logging Middleware
 
-// ⭐ NEW: Custom Request Logging Middleware ⭐
-app.use((req, res, next) => {
-  console.log("--- Incoming Request ---");
-  console.log(`Method: ${req.method}`);
-  console.log(`Path: ${req.originalUrl}`);
-  // Log the entire parsed body for POST/PUT/PATCH requests
-  if (req.method !== "GET" && req.method !== "DELETE" && req.body) {
-    // Log the JSON body, formatted for readability
-    console.log("Body:", JSON.stringify(req.body, null, 2));
-  }
-  console.log("------------------------");
-  next();
-});
-// ⭐ END Logging Middleware ⭐
 
 // Mount the routers
 app.use("/api/submissions", submissionRoutes);
