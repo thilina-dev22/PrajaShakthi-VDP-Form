@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import provincialDataJson from "../data/provincial_data.json";
 import LocationSelectorBase from "./LocationSelectorBase";
 import CommunityCouncilTable from "./CommunityCouncilTable";
-// eslint-disable-next-line no-unused-vars
 import { submitForm } from "../api/auth";
 
 // Initial state structures for the Community Council Table
@@ -233,13 +232,12 @@ const CommunityCouncilForm = () => {
     }
   };
   return (
-    <div className="form-container">
-      <h2 className="form-title">
+    <div className="max-w-4xl mx-auto my-8 sm:my-10 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 bg-white rounded-xl shadow-lg">
+      <h2 className="text-center text-blue-700 mb-10 sm:mb-12 font-semibold text-xl sm:text-2xl leading-relaxed">
         ප්‍රජා සංවර්ධන සභා සාමාජික තොරතුරු <br /> சமூக மேம்பாட்டு மன்ற
-        உறுப்பினர் தகவல் <br /> Community Development Council Member Information{" "}
-        <br />
+        உறுப்பினர் தகவல் <br /> Community Development Council Member Information
       </h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="space-y-6">
         <LocationSelectorBase
           district={district}
           divisionalSec={divisionalSec}
@@ -257,7 +255,10 @@ const CommunityCouncilForm = () => {
           onChange={handleCouncilRowChange}
         />
 
-        <button type="submit" className="btn btn-primary btn-submit">
+        <button 
+          type="submit" 
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-5 rounded-md mt-5 transition-all duration-200 text-base sm:text-lg active:translate-y-0.5"
+        >
           ඉදිරිපත් කරන්න / சமர்ப்பிக்கவும் / Submit
         </button>
       </form>

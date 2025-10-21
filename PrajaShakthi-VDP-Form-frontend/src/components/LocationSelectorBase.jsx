@@ -1,7 +1,7 @@
 // src/components/LocationSelectorBase.jsx
 import React from "react";
 
-// This component contains ONLY the location dropdowns and CDC/VDP ID input.
+// This component contains ONLY the location dropdowns.
 const LocationSelectorBase = ({
   district,
   divisionalSec,
@@ -15,14 +15,14 @@ const LocationSelectorBase = ({
 }) => {
   return (
     <>
-      <div className="form-group">
-        <label className="form-label">
+      <div className="mb-5">
+        <label className="block mb-2 font-medium text-gray-700 text-base">
           දිස්ත්‍රික්කය / மாவட்டம் / District :
         </label>
         <select
           value={district}
           onChange={handleDistrictChange}
-          className="form-control"
+          className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
         >
           <option value="">-- දිස්ත්‍රික්කය තෝරන්න --</option>
           {districts.map((d) => (
@@ -33,15 +33,15 @@ const LocationSelectorBase = ({
         </select>
       </div>
 
-      <div className="form-group">
-        <label className="form-label">
+      <div className="mb-5">
+        <label className="block mb-2 font-medium text-gray-700 text-base">
           ප්‍රාදේශීය ලේකම් කොට්ඨාශය / பிரதேச செயலகப் பிரிவு / Divisional
           Secretariat Division :
         </label>
         <select
           value={divisionalSec}
           onChange={handleDivisionalSecChange}
-          className="form-control"
+          className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
           disabled={!district}
         >
           <option value="">-- ප්‍රා. ලේ. කොට්ඨාශය තෝරන්න --</option>
@@ -56,15 +56,15 @@ const LocationSelectorBase = ({
         </select>
       </div>
 
-      <div className="form-group">
-        <label className="form-label">
+      <div className="mb-5">
+        <label className="block mb-2 font-medium text-gray-700 text-base">
           ග්‍රාම නිලධාරී කොට්ඨාශය / கிராம அலுவலர் பிரிவு / Grama Niladhari
           Division :
         </label>
         <select
           value={gnDivision}
           onChange={(e) => setGnDivision(e.target.value)}
-          className="form-control"
+          className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
           disabled={!divisionalSec}
         >
           <option value="">-- ග්‍රා. නි. වසම තෝරන්න --</option>

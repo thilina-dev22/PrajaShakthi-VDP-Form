@@ -25,8 +25,8 @@ const SectorSelector = ({
 
   return (
     <>
-      <div className="form-group">
-        <label className="form-label">
+      <div className="mb-5">
+        <label className="block mb-2 font-medium text-gray-700 text-base">
           Select Focused Area / Development Sector / මූලික සංවර්ධන අංශය:
         </label>
         <select
@@ -35,7 +35,7 @@ const SectorSelector = ({
             setSector(e.target.value);
             resetSelections(1);
           }}
-          className="form-control"
+          className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
         >
           <option value="">තෝරන්න</option>
           {Object.keys(sectors).map((s) => (
@@ -46,15 +46,15 @@ const SectorSelector = ({
         </select>
       </div>
       {sector && getSubCategories().length > 0 && (
-        <div className="form-group">
-          <label className="form-label">Select Sub-Category / උප කාණ්ඩය:</label>
+        <div className="mb-5">
+          <label className="block mb-2 font-medium text-gray-700 text-base">Select Sub-Category / උප කාණ්ඩය:</label>
           <select
             value={subCategory}
             onChange={(e) => {
               setSubCategory(e.target.value);
               resetSelections(2);
             }}
-            className="form-control"
+            className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
           >
             <option value="">තෝරන්න</option>
             {getSubCategories().map((s) => (
@@ -73,8 +73,8 @@ const SectorSelector = ({
             sectors[sector][subCategory].isHybridTable ||
           sectors[sector][subCategory].problems
         ) && (
-          <div className="form-group">
-            <label className="form-label">
+          <div className="mb-5">
+            <label className="block mb-2 font-medium text-gray-700 text-base">
               Select Sub-Sub-Category / උප උප කාණ්ඩය:
             </label>
             <select
@@ -83,7 +83,7 @@ const SectorSelector = ({
                 setSubSubCategory(e.target.value);
                 resetSelections(3);
               }}
-              className="form-control"
+              className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
             >
               <option value="">තෝරන්න</option>
               {getSubSubCategories().map((s) => (
@@ -102,8 +102,8 @@ const SectorSelector = ({
             sectors[sector][subCategory][subSubCategory].isHybridTable ||
           sectors[sector][subCategory][subSubCategory].problems
         ) && (
-          <div className="form-group">
-            <label className="form-label">
+          <div className="mb-5">
+            <label className="block mb-2 font-medium text-gray-700 text-base">
               Select Sub-Sub-Sub-Category / උප උප උප කාණ්ඩය:
             </label>
             <select
@@ -112,7 +112,7 @@ const SectorSelector = ({
                 setSubSubSubCategory(e.target.value);
                 resetSelections(4);
               }}
-              className="form-control"
+              className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
             >
               <option value="">තෝරන්න</option>
               {getSubSubSubCategories().map((s) => (

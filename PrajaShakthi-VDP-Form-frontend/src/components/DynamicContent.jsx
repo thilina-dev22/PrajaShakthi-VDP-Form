@@ -103,7 +103,7 @@ const DynamicContent = ({
       return null;
     }
 
-    const tableInputClasses = "w-full p-1 border border-transparent rounded bg-transparent focus:outline-none focus:border-blue-500 focus:bg-white";
+    const tableInputClasses = "w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500";
 
     if (currentSection.isHybridTable) {
       return (
@@ -273,7 +273,7 @@ const DynamicContent = ({
       return null;
     }
     const secondaryTableConfig = currentSection.secondaryTable;
-    const tableInputClasses = "w-full p-1 border border-transparent rounded bg-transparent focus:outline-none focus:border-blue-500 focus:bg-white";
+    const tableInputClasses = "w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500";
 
     return (
       <div className="mt-8 pt-6 border-t">

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 
-const Navigation = ({ setCurrentRoute }) => {
+const Navigation = ({ setCurrentRoute = () => {} }) => {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
   const isDevelopmentFormDisabled = false;
 
@@ -13,14 +13,14 @@ const Navigation = ({ setCurrentRoute }) => {
       {!isAdmin && (
         <nav className="flex flex-col sm:flex-row gap-2 mb-4 sm:mb-0">
           <button
-            onClick={() => setCurrentRoute && setCurrentRoute('development')}
+            onClick={() => setCurrentRoute('development')}
             className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isDevelopmentFormDisabled}
           >
             සංවර්ධන සැලැස්ම (Main Form)
           </button>
           <button
-            onClick={() => setCurrentRoute && setCurrentRoute('council')}
+            onClick={() => setCurrentRoute('council')}
             className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-blue-800"
           >
             ප්‍රජා සභා තොරතුරු (Council Info)
@@ -29,7 +29,7 @@ const Navigation = ({ setCurrentRoute }) => {
           {/* Show login as admin for public users only */}
           {!isAuthenticated && (
             <button
-              onClick={() => setCurrentRoute && setCurrentRoute('login')}
+              onClick={() => setCurrentRoute('login')}
               className="bg-yellow-500 text-blue-900 font-semibold rounded px-4 py-2 hover:bg-yellow-400"
             >
               Log in as admin

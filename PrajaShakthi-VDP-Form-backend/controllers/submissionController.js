@@ -9,7 +9,7 @@ const createSubmission = async (req, res) => {
     // and the SubmissionModel schema has been updated to include it,
     // Mongoose automatically maps and saves the new field.
     const newSubmission = new Submission(req.body);
-  const savedSubmission = await newSubmission.save();
+    const savedSubmission = await newSubmission.save();
     res.status(201).json({
       message: "Submission saved successfully!",
       data: savedSubmission,

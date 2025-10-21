@@ -7,21 +7,10 @@ import { submitForm } from "../api/auth";
 import { sectors } from "../data/sectors_data.js";
 import SectorSelector from "./SectorSelector";
 
-const emptyCouncilRow = { name: "", position: "", phone: "", email: "" };
-const MAX_ROWS = 25;
-
-const initialCommunityCouncilData = Array(MAX_ROWS)
-  .fill(null)
-  .map((_, index) => ({
-    ...emptyCouncilRow,
-    isVisible: index === 0 || index === 5 || index === 20,
-  }));
-
 const DevelopmentForm = () => {
   const [district, setDistrict] = useState("");
   const [divisionalSec, setDivisionalSec] = useState("");
   const [gnDivision, setGnDivision] = useState("");
-  const [cdcVdpId, setCdcVdpId] = useState("");
   const [sector, setSector] = useState("");
   const [subCategory, setSubCategory] = useState("");
   const [subSubCategory, setSubSubCategory] = useState("");
@@ -38,9 +27,6 @@ const DevelopmentForm = () => {
   ]);
 
   const [secondaryTableData, setSecondaryTableData] = useState([]);
-  const [communityCouncilData, setCommunityCouncilData] = useState(
-    initialCommunityCouncilData
-  );
 
   useEffect(() => {
     const allDistricts = provincialDataJson[0]?.districts || [];
@@ -157,85 +143,6 @@ const DevelopmentForm = () => {
     },
     [currentSection]
   );
-
-  const getSectionInfo = (globalIndex) => {
-    if (globalIndex >= 0 && globalIndex < 5)
-      return { start: 0, end: 5, maxRows: 5, minRows: 1 };
-    if (globalIndex >= 5 && globalIndex < 20)
-      return { start: 5, end: 20, maxRows: 15, minRows: 1 };
-    if (globalIndex >= 20 && globalIndex < 25)
-      return { start: 20, end: 25, maxRows: 5, minRows: 1 };
-    return null;
-  };
-
-  const handleCouncilRowChange = (index, field, value) => {
-    setCommunityCouncilData((prev) => {
-      const newData = [...prev];
-      newData[index] = { ...newData[index], [field]: value };
-      return newData;
-    });
-  };
-
-  const addCouncilRow = (startIndex, maxCount) => {
-    setCommunityCouncilData((prev) => {
-      const newData = [...prev];
-      let firstEmptyIndex = -1;
-
-      for (let i = startIndex; i < startIndex + maxCount; i++) {
-        if (!newData[i].isVisible) {
-          firstEmptyIndex = i;
-          break;
-        }
-      }
-
-      if (firstEmptyIndex !== -1) {
-        newData[firstEmptyIndex] = { ...emptyCouncilRow, isVisible: true };
-        return newData;
-      }
-      return prev;
-    });
-  };
-
-  const deleteCouncilRow = (globalIndex) => {
-    setCommunityCouncilData((prev) => {
-      const section = getSectionInfo(globalIndex);
-      if (!section) return prev;
-
-      const sectionVisibleCount = prev
-        .slice(section.start, section.end)
-        .filter((row) => row.isVisible).length;
-
-      if (sectionVisibleCount <= section.minRows) {
-        alert("At least one row must remain in each section.");
-        return prev;
-      }
-
-      const newData = prev.map((row, index) => {
-        if (index === globalIndex) {
-          return { ...emptyCouncilRow, isVisible: false };
-        }
-        return row;
-      });
-
-      const sectionData = newData.slice(section.start, section.end);
-      const visibleRows = sectionData.filter((row) => row.isVisible);
-      const hiddenRows = sectionData.filter((row) => !row.isVisible);
-      const reorderedSection = [...visibleRows, ...hiddenRows];
-
-      newData.splice(
-        section.start,
-        section.maxRows,
-        ...reorderedSection.slice(0, section.maxRows)
-      );
-
-      return newData;
-    });
-  };
-  const isSectionFull = (startIndex, maxCount) => {
-    return communityCouncilData
-      .slice(startIndex, startIndex + maxCount)
-      .every((row) => row.isVisible);
-  };
 
   const resetSelections = (level) => {
     if (level <= 1) setSubCategory("");
@@ -366,26 +273,18 @@ const DevelopmentForm = () => {
       collectedData.secondaryTableData = secondaryTableData;
     }
 
-    const hasData = (row) =>
-      row.name.trim() !== "" ||
-      row.position.trim() !== "" ||
-      row.phone.trim() !== "" ||
-      row.email.trim() !== "";
-
-    const councilData = {
-      committeeMembers: communityCouncilData.slice(0, 5).filter(hasData),
-      communityReps: communityCouncilData.slice(5, 20).filter(hasData),
-      strategicMembers: communityCouncilData.slice(20, 25).filter(hasData),
-    };
-
     const formData = {
+      formType: "main_form",
       location: {
         district,
         divisionalSec,
         gnDivision,
-        cdcVdpId,
       },
-      communityCouncil: councilData,
+      communityCouncil: {
+        committeeMembers: [],
+        communityReps: [],
+        strategicMembers: [],
+      },
       selection: {
         sector,
         subCategory,
@@ -407,28 +306,23 @@ const DevelopmentForm = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto my-10 p-6 sm:p-8 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl sm:text-3xl font-bold text-center text-blue-700 mb-8">
-        ඒකාබද්ධ ග්‍රාම සංවර්ධන සැලැස්ම
+    <div className="max-w-4xl mx-auto my-8 sm:my-10 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 bg-white rounded-xl shadow-lg">
+      <h2 className="text-center text-blue-700 mb-10 sm:mb-12 font-semibold text-xl sm:text-2xl leading-relaxed">
+        ඒකාබද්ධ ග්‍රාම සංවර්ධන සැලැස්ම <br />
+        ஒருங்கிணைந்த கிராம வளர்ச்சி திட்டம் <br />
+        Integrated Village Development Plan
       </h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <LocationSelector
           district={district}
           divisionalSec={divisionalSec}
           gnDivision={gnDivision}
-          cdcVdpId={cdcVdpId}
           districts={districts}
           dsDivisions={dsDivisions}
           gnDivisions={gnDivisions}
           handleDistrictChange={handleDistrictChange}
           handleDivisionalSecChange={handleDivisionalSecChange}
           setGnDivision={setGnDivision}
-          setCdcVdpId={setCdcVdpId}
-          communityCouncilData={communityCouncilData}
-          handleCouncilRowChange={handleCouncilRowChange}
-          addCouncilRow={addCouncilRow}
-          deleteCouncilRow={deleteCouncilRow}
-          isSectionFull={isSectionFull}
         />
 
         <SectorSelector
@@ -470,7 +364,7 @@ const DevelopmentForm = () => {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-5 rounded-md mt-5 transition-all duration-200 text-base sm:text-lg active:translate-y-0.5"
         >
           ඉදිරිපත් කරන්න
         </button>
