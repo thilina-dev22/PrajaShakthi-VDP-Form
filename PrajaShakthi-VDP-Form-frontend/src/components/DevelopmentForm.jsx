@@ -309,8 +309,10 @@ const DevelopmentForm = () => {
 
   return (
     <div className="max-w-4xl mx-auto my-10 p-6 sm:p-8 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl sm:text-3xl font-bold text-center text-blue-700 mb-8">
-        ඒකාබද්ධ ග්‍රාම සංවර්ධන සැලැස්ම
+      <h2 className="form-title">
+        ඒකාබද්ධ ග්‍රාම සංවර්ධන සැලැස්ම <br />
+        ஒருங்கிணைந்த கிராம வளர்ச்சி திட்டம் <br />
+        Integrated Village Development Plan
       </h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <LocationSelector
