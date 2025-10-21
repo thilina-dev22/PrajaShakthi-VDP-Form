@@ -111,10 +111,10 @@ body {
 .table-input {
   width: 100%;
   padding: 8px;
-  border: 1px solid transparent;
+  border: 1px solid #d1d5db;
   border-radius: 4px;
-  background-color: transparent;
-  transition: border-color 0.2s, background-color 0.2s;
+  background-color: #fff;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
   font-size: 1em;
   font-family: inherit;
 }
@@ -123,6 +123,7 @@ body {
   outline: none;
   border-color: #007bff;
   background-color: #fff;
+  box-shadow: 0 0 0 1px #007bff;
 }
 
 /* Button Styles */
