@@ -9,10 +9,14 @@ const generateToken = (res, userId, role) => {
     expiresIn: "30d",
   });
 
+  // For cross-domain cookies (frontend and backend on different domains):
+  // - sameSite: "none" allows cross-site cookie sharing
+  // - secure: true required when sameSite is "none" (HTTPS only)
+  // In local dev with same origin, "lax" works fine
   res.cookie("jwt", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development", // Use HTTPS in production
-    sameSite: "strict", // CSRF defense
+    sameSite: process.env.NODE_ENV === "development" ? "lax" : "none", // "none" for cross-domain in production
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
   });
 };
@@ -42,6 +46,8 @@ const loginUser = async (req, res) => {
 const logoutUser = (req, res) => {
   res.cookie("jwt", "", {
     httpOnly: true,
+    secure: process.env.NODE_ENV !== "development",
+    sameSite: process.env.NODE_ENV === "development" ? "lax" : "none",
     expires: new Date(0), // Clear cookie
   });
   res.status(200).json({ message: "Logged out successfully" });

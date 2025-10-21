@@ -257,6 +257,27 @@ Verify:
 - Hitting https://<your-backend-domain>/api/health should return {"status":"ok"}.
 ```
 
+**Error: "401 Unauthorized" on /api/submissions or other authenticated endpoints**
+```
+Cause:
+- Authentication cookies are not being sent cross-domain. This happens when:
+  1. Backend cookie sameSite is "strict" (blocks cross-site cookies).
+  2. NODE_ENV is not set to "production" on Vercel (cookies won't be secure).
+  3. Frontend domain is not in backend CORS allowlist.
+
+Fix:
+1. Ensure backend authController sets sameSite: "none" and secure: true in production (implemented).
+2. Set NODE_ENV=production in backend Vercel environment variables.
+3. Confirm frontend domain (no trailing slash) is in backend CORS allowlist.
+4. Redeploy backend to apply cookie settings.
+
+Verify:
+- Login via frontend, then check browser Application/Storage → Cookies.
+- You should see "jwt" cookie with SameSite=None and Secure flag.
+- Subsequent API calls should include the cookie in request headers.
+- Network tab shows 200 responses for /api/submissions calls.
+```
+
 ```bash
 Solution:
 1. Ensure logo.png is in public folder
