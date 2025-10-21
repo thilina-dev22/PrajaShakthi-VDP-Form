@@ -7,7 +7,7 @@ import DevelopmentForm from './DevelopmentForm';
 
 const AppRoutes = () => {
   const { isAdmin } = useAuth();
-  const [currentRoute, setCurrentRoute] = useState('development'); // public landing
+  const [currentRoute, setCurrentRoute] = useState('council'); // public landing defaults to Council Info
 
   if (isAdmin) {
     return <SubmissionList />;
@@ -19,8 +19,10 @@ const AppRoutes = () => {
     case 'council':
       return <CommunityCouncilForm setCurrentRoute={setCurrentRoute} />;
     case 'development':
+      // Main Form is currently disabled; fall back to Council Info
+      return <CommunityCouncilForm setCurrentRoute={setCurrentRoute} />;
     default:
-      return <DevelopmentForm setCurrentRoute={setCurrentRoute} />;
+      return <CommunityCouncilForm setCurrentRoute={setCurrentRoute} />;
   }
 };
 
