@@ -237,6 +237,22 @@ Solution:
 ```
 
 **Error: "Logo not showing"**
+**Error: "405 Method Not Allowed" on POST /api/auth/login**
+```
+Cause:
+- The frontend is calling a relative path (/api/auth/login) which points to the frontend domain on Vercel. Since the backend is a separate deployment, the static frontend host returns 405.
+
+Fix:
+1. Set the frontend env var VITE_API_BASE_URL to your backend URL (e.g., https://prajashakthi-vdp-backend.vercel.app).
+2. Ensure the frontend uses this env var (implemented in src/api/auth.js).
+3. Add your frontend domain to backend CORS allowlist (server.js or CORS_ORIGIN env var).
+4. Redeploy backend, then redeploy frontend.
+
+Verify:
+- Open the browser Network tab and confirm requests go to https://<your-backend-domain>/api/...
+- Hitting https://<your-backend-domain>/api/health should return {"status":"ok"}.
+```
+
 ```bash
 Solution:
 1. Ensure logo.png is in public folder

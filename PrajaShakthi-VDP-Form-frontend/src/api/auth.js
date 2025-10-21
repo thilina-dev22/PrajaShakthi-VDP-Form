@@ -1,6 +1,10 @@
-// Use relative URLs to leverage the Vite proxy
-const API_URL = "/api/auth";
-const API_SUBMISSION_URL = "/api/submissions";
+// Base API URL: in production set VITE_API_BASE_URL to your backend URL; in dev falls back to relative paths (Vite proxy)
+const API_BASE = (import.meta.env && import.meta.env.VITE_API_BASE_URL
+  ? String(import.meta.env.VITE_API_BASE_URL)
+  : "").replace(/\/$/, "");
+
+const API_URL = `${API_BASE}/api/auth`;
+const API_SUBMISSION_URL = `${API_BASE}/api/submissions`;
 
 const login = async (username, password) => {
   const response = await fetch(`${API_URL}/login`, {
