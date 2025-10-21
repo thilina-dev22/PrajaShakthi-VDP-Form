@@ -3,4 +3,28 @@
 /* Custom font family - Not available in Tailwind by default */
 body {
   font-family: "Noto Sans Sinhala", Arial, sans-serif;
+  background: linear-gradient(135deg, #F5E6D3 0%, #FFF8E7 50%, #F5E6D3 100%);
+  min-height: 100vh;
+  background-attachment: fixed;
+}
+
+/* Optional: Add a subtle pattern overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(168, 35, 74, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(243, 112, 33, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure content stays above the background */
+#root {
+  position: relative;
+  z-index: 1;
 }

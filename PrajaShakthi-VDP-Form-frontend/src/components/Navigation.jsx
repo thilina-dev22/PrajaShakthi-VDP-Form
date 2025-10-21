@@ -6,22 +6,29 @@ const Navigation = ({ setCurrentRoute = () => {} }) => {
   const isDevelopmentFormDisabled = false;
 
   return (
-    <header className="bg-blue-700 text-white p-4 flex flex-col sm:flex-row justify-between items-center shadow-md w-full">
-      <h1 className="text-xl font-bold mb-4 sm:mb-0">PrajaShakthi VDP Form</h1>
+    <header className="bg-[#680921] text-white p-4 flex flex-col sm:flex-row justify-between items-center shadow-md w-full">
+      <div className="flex items-center gap-3 mb-4 sm:mb-0">
+        <img 
+          src="/logo.png" 
+          alt="PrajaShakthi Logo" 
+          className="h-12 sm:h-14 w-auto"
+        />
+        <h1 className="text-xl font-bold">PrajaShakthi VDP Form</h1>
+      </div>
 
       {/* Public and regular user navigation (hide for admin) */}
       {!isAdmin && (
         <nav className="flex flex-col sm:flex-row gap-2 mb-4 sm:mb-0">
           <button
             onClick={() => setCurrentRoute('development')}
-            className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-[#8B1C3D] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             disabled={isDevelopmentFormDisabled}
           >
             සංවර්ධන සැලැස්ම (Main Form)
           </button>
           <button
             onClick={() => setCurrentRoute('council')}
-            className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-blue-800"
+            className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-[#8B1C3D] transition-colors"
           >
             ප්‍රජා සභා තොරතුරු (Council Info)
           </button>
@@ -30,7 +37,7 @@ const Navigation = ({ setCurrentRoute = () => {} }) => {
           {!isAuthenticated && (
             <button
               onClick={() => setCurrentRoute('login')}
-              className="bg-yellow-500 text-blue-900 font-semibold rounded px-4 py-2 hover:bg-yellow-400"
+              className="bg-[#F37021] text-white font-semibold rounded px-4 py-2 hover:bg-[#D65F1A] transition-colors"
             >
               Log in as admin
             </button>

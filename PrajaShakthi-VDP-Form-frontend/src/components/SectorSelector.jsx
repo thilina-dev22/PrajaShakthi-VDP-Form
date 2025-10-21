@@ -35,7 +35,7 @@ const SectorSelector = ({
             setSector(e.target.value);
             resetSelections(1);
           }}
-          className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
+          className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-[#A8234A] focus:ring-2 focus:ring-[#F37021]/20 transition-all duration-200 outline-none"
         >
           <option value="">තෝරන්න</option>
           {Object.keys(sectors).map((s) => (
@@ -54,7 +54,7 @@ const SectorSelector = ({
               setSubCategory(e.target.value);
               resetSelections(2);
             }}
-            className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
+            className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-[#A8234A] focus:ring-2 focus:ring-[#F37021]/20 transition-all duration-200 outline-none"
           >
             <option value="">තෝරන්න</option>
             {getSubCategories().map((s) => (
@@ -83,7 +83,7 @@ const SectorSelector = ({
                 setSubSubCategory(e.target.value);
                 resetSelections(3);
               }}
-              className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
+              className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-[#A8234A] focus:ring-2 focus:ring-[#F37021]/20 transition-all duration-200 outline-none"
             >
               <option value="">තෝරන්න</option>
               {getSubSubCategories().map((s) => (
@@ -112,7 +112,7 @@ const SectorSelector = ({
                 setSubSubSubCategory(e.target.value);
                 resetSelections(4);
               }}
-              className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
+              className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-[#A8234A] focus:ring-2 focus:ring-[#F37021]/20 transition-all duration-200 outline-none"
             >
               <option value="">තෝරන්න</option>
               {getSubSubSubCategories().map((s) => (

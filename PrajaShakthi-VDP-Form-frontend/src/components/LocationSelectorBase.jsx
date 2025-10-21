@@ -22,7 +22,7 @@ const LocationSelectorBase = ({
         <select
           value={district}
           onChange={handleDistrictChange}
-          className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
+          className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-[#A8234A] focus:ring-2 focus:ring-[#F37021]/20 transition-all duration-200 outline-none"
         >
           <option value="">-- දිස්ත්‍රික්කය තෝරන්න --</option>
           {districts.map((d) => (
@@ -41,7 +41,7 @@ const LocationSelectorBase = ({
         <select
           value={divisionalSec}
           onChange={handleDivisionalSecChange}
-          className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+          className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-[#A8234A] focus:ring-2 focus:ring-[#F37021]/20 transition-all duration-200 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
           disabled={!district}
         >
           <option value="">-- ප්‍රා. ලේ. කොට්ඨාශය තෝරන්න --</option>
@@ -64,7 +64,7 @@ const LocationSelectorBase = ({
         <select
           value={gnDivision}
           onChange={(e) => setGnDivision(e.target.value)}
-          className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+          className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-[#A8234A] focus:ring-2 focus:ring-[#F37021]/20 transition-all duration-200 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
           disabled={!divisionalSec}
         >
           <option value="">-- ග්‍රා. නි. වසම තෝරන්න --</option>

@@ -244,10 +244,10 @@ const SubmissionList = () => {
             <tbody>
               {sections.map((section) => (
                 <React.Fragment key={section.key}>
-                  <tr className="bg-blue-100 border-y-2 border-white">
+                  <tr className="bg-[#F37021]/10 border-y-2 border-white">
                     <td
                       colSpan="6"
-                      className="p-3 text-center font-bold text-base text-blue-800"
+                      className="p-3 text-center font-bold text-base text-[#A8234A]"
                     >
                       {section.title}
                     </td>
@@ -538,7 +538,7 @@ const SubmissionList = () => {
       <div className="flex space-x-2 border-b border-gray-300 mb-6">
         <button
           className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors duration-150 ease-in-out ${activeTab === "council_info"
-              ? "bg-white border-x border-t border-gray-300 text-blue-600 -mb-px" // Active style
+              ? "bg-white border-x border-t border-gray-300 text-[#A8234A] -mb-px" // Active style
               : "bg-gray-100 text-gray-600 hover:bg-gray-200" // Inactive style
             }`}
           onClick={() => setActiveTab("council_info")}
@@ -547,7 +547,7 @@ const SubmissionList = () => {
         </button>
         <button
           className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors duration-150 ease-in-out ${activeTab === "main_form"
-              ? "bg-white border-x border-t border-gray-300 text-blue-600 -mb-px" // Active style
+              ? "bg-white border-x border-t border-gray-300 text-[#A8234A] -mb-px" // Active style
               : "bg-gray-100 text-gray-600 hover:bg-gray-200" // Inactive style
             }`}
           onClick={() => setActiveTab("main_form")}

@@ -33,7 +33,7 @@ const DynamicContent = ({
                     type="number"
                     value={problems[prob.id] || ""}
                     onChange={(e) => handleProblemChange(prob.id, e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#F37021]/30 focus:border-[#A8234A]"
                   />
                 </div>
               );
@@ -44,7 +44,7 @@ const DynamicContent = ({
                   <select
                     value={problems[prob.id] || ""}
                     onChange={(e) => handleProblemChange(prob.id, e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#F37021]/30 focus:border-[#A8234A]"
                   >
                     <option value="">තෝරන්න</option>
                     <option value="yes">ඔව්</option>
@@ -59,7 +59,7 @@ const DynamicContent = ({
                   <select
                     value={problems[prob.id] || ""}
                     onChange={(e) => handleProblemChange(prob.id, e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#F37021]/30 focus:border-[#A8234A]"
                   >
                     <option value="">තෝරන්න</option>
                     {prob.options.map((opt) => (
@@ -78,14 +78,14 @@ const DynamicContent = ({
                       placeholder="විස්තරය"
                       value={problems[prob.id]?.text || ""}
                       onChange={(e) => handleTextWithNumberChange(prob.id, "text", e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#F37021]/30 focus:border-[#A8234A]"
                     />
                     <input
                       type="number"
                       placeholder="සංඛ්‍යාව"
                       value={problems[prob.id]?.number || ""}
                       onChange={(e) => handleTextWithNumberChange(prob.id, "number", e.target.value)}
-                      className="w-full sm:w-1/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full sm:w-1/3 p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#F37021]/30 focus:border-[#A8234A]"
                     />
                   </div>
                 </div>
@@ -103,7 +103,7 @@ const DynamicContent = ({
       return null;
     }
 
-    const tableInputClasses = "w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500";
+    const tableInputClasses = "w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-[#A8234A] focus:ring-1 focus:ring-[#F37021]/30";
 
     if (currentSection.isHybridTable) {
       return (
@@ -260,7 +260,7 @@ const DynamicContent = ({
               type={field.type}
               value={problems[field.id] || ""}
               onChange={(e) => handleProblemChange(field.id, e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#F37021]/30 focus:border-[#A8234A]"
             />
           </div>
         ))}
@@ -273,7 +273,7 @@ const DynamicContent = ({
       return null;
     }
     const secondaryTableConfig = currentSection.secondaryTable;
-    const tableInputClasses = "w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500";
+    const tableInputClasses = "w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-[#A8234A] focus:ring-1 focus:ring-[#F37021]/30";
 
     return (
       <div className="mt-8 pt-6 border-t">

@@ -76,7 +76,7 @@ const Proposals = ({
       <button
         type="button"
         onClick={addProposal}
-        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 sm:py-2.5 sm:px-5 rounded mt-2 transition-all duration-200 w-full sm:w-auto"
+        className="bg-[#F37021] hover:bg-[#D65F1A] text-white font-bold py-2 px-4 sm:py-2.5 sm:px-5 rounded mt-2 transition-all duration-200 w-full sm:w-auto"
       >
         නව යෝජනාවක් එකතු කරන්න
       </button>
