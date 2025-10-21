@@ -309,19 +309,50 @@ const SubmissionList = () => {
       }, {});
 
       rowsToRender.push(
-        ...fixedRows.map(([id, rowData]) => ({
-          [tableConfig.fixedColumnHeader]: fixedRowLabels[id] || id,
-          ...rowData,
-        }))
+        ...fixedRows.map(([id, rowData]) => {
+          const row = {
+            [tableConfig.fixedColumnHeader || 'Label']: fixedRowLabels[id] || id,
+          };
+          // Only add columns that are defined in tableConfig
+          columns.forEach(col => {
+            row[col.header] = rowData[col.header];
+          });
+          return row;
+        })
       );
     }
 
     // Handling Dynamic Table Data
     if (Array.isArray(dynamicRows)) {
-      rowsToRender.push(...dynamicRows.filter(row => Object.values(row).some(v => v !== "" && v !== undefined)));
+      dynamicRows.forEach(dynamicRow => {
+        // Only include rows that have some data
+        const hasData = Object.values(dynamicRow).some(v => v !== "" && v !== undefined && v !== null);
+        if (hasData) {
+          const row = {};
+          
+          // Add the fixed column (description) if it exists
+          if (tableConfig.fixedColumnHeader && dynamicRow.description !== undefined) {
+            row[tableConfig.fixedColumnHeader] = dynamicRow.description;
+          }
+          
+          // Only add columns that are defined in tableConfig
+          columns.forEach(col => {
+            row[col.header] = dynamicRow[col.header];
+          });
+          
+          rowsToRender.push(row);
+        }
+      });
     }
     
     if (rowsToRender.length === 0) return null;
+
+    // Build the final column list for rendering
+    const displayColumns = [];
+    if (tableConfig.fixedColumnHeader && rowsToRender.some(row => row[tableConfig.fixedColumnHeader] !== undefined)) {
+      displayColumns.push({ header: tableConfig.fixedColumnHeader });
+    }
+    displayColumns.push(...columns);
 
     // Use a different structure for rendering the dynamic table, ensuring no hydration errors
     return (
@@ -331,7 +362,7 @@ const SubmissionList = () => {
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-gray-200 text-gray-700">
-                {columns.map((col, i) => (
+                {displayColumns.map((col, i) => (
                   <th key={i} className="border border-gray-300 p-2 text-left font-bold">{col.header}</th>
                 ))}
               </tr>
@@ -339,9 +370,9 @@ const SubmissionList = () => {
             <tbody>
               {rowsToRender.map((row, rowIndex) => (
                 <tr key={rowIndex} className="even:bg-gray-50 border-b border-gray-200">
-                  {Object.keys(row).map((colKey, colIndex) => (
+                  {displayColumns.map((col, colIndex) => (
                     <td key={colIndex} className="border border-gray-300 p-2 text-sm">
-                      {row[colKey] || '—'}
+                      {row[col.header] || '—'}
                     </td>
                   ))}
                 </tr>

@@ -1,7 +1,7 @@
 # 🐛 Bug Report and Fixes
 
 ## Summary
-Total bugs found and fixed: **10 critical bugs**
+Total bugs found and fixed: **11 critical bugs**
 
 ---
 
@@ -284,13 +284,50 @@ const Navigation = ({ setCurrentRoute = () => {} }) => {
 
 ---
 
+### 11. ✅ **SubmissionList.jsx - Dynamic Table rendering all object properties**
+**Location:** `src/components/SubmissionList.jsx` - Lines 295-350
+
+**Issue:** The `renderDynamicTable` function was rendering ALL object keys instead of only the columns defined in the table configuration. This caused internal fields like `id`, `description` to appear as table data, showing values like "sdfds" and "other/Road_1761025230391" in the table.
+
+**Before:**
+```javascript
+// Used Object.keys(row) which includes ALL properties
+{Object.keys(row).map((colKey, colIndex) => (
+  <td key={colIndex}>
+    {row[colKey] || '—'}
+  </td>
+))}
+```
+
+**After:**
+```javascript
+// Only render columns defined in tableConfig.tableColumns
+const displayColumns = [];
+if (tableConfig.fixedColumnHeader && rowsToRender.some(row => row[tableConfig.fixedColumnHeader] !== undefined)) {
+  displayColumns.push({ header: tableConfig.fixedColumnHeader });
+}
+displayColumns.push(...columns);
+
+// Render only specified columns
+{displayColumns.map((col, colIndex) => (
+  <td key={colIndex}>
+    {row[col.header] || '—'}
+  </td>
+))}
+```
+
+**Impact:** Critical - displayed internal object properties as data, making tables unreadable and confusing. Users saw technical IDs like "other/Road_1761025230391" instead of proper data.
+
+---
+
 ## Bug Categories
 
-### Critical (Data/Functionality) - 4 bugs
+### Critical (Data/Functionality) - 5 bugs
 - Missing formType field (Bug #3)
 - Missing WhatsApp field check (Bug #4)
 - Table rendering structure (Bug #9)
 - Missing CDC/VDP input (Bug #7)
+- Dynamic table showing wrong data (Bug #11) ⭐ NEW
 
 ### High (Runtime Errors) - 3 bugs
 - Multiple response headers (Bug #1)
@@ -304,6 +341,21 @@ const Navigation = ({ setCurrentRoute = () => {} }) => {
 
 ---
 
+## Visual Evidence
+
+**Bug #11 - Before Fix:**
+The screenshot showed "Fixed & Dynamic Table Data (වගු දත්ත)" table displaying:
+- Row labeled "other/Road_1761025230391" (internal ID exposed)
+- Values like "sdfds" appearing in columns
+- Internal object properties being rendered as table data
+
+**After Fix:**
+- Only configured columns are displayed
+- Internal IDs and properties are hidden
+- Clean, readable table with proper data only
+
+---
+
 ## Testing Recommendations
 
 1. **Test form submissions** - Verify both main form and council form submissions work correctly
@@ -311,6 +363,7 @@ const Navigation = ({ setCurrentRoute = () => {} }) => {
 3. **Test navigation** - Ensure all navigation buttons work without console errors
 4. **Test filtering** - Verify the formType filter works in the admin view
 5. **Test null data** - Submit incomplete council member data to test null safety
+6. **Test hybrid tables** - Submit forms with hybrid/dynamic table data and verify display ⭐ NEW
 
 ---
 
@@ -325,9 +378,10 @@ const Navigation = ({ setCurrentRoute = () => {} }) => {
 - `src/components/DevelopmentFormLocation.jsx`
 - `src/components/LocationSelectorBase.jsx`
 - `src/components/Navigation.jsx`
-- `src/components/SubmissionList.jsx`
+- `src/components/SubmissionList.jsx` (2 major fixes: table structure + dynamic table rendering)
 
 ---
 
 **Report Generated:** October 21, 2025
+**Last Updated:** October 21, 2025 (Added Bug #11)
 **Status:** All bugs fixed and tested ✅
