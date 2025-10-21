@@ -11,7 +11,6 @@ const DevelopmentForm = () => {
   const [district, setDistrict] = useState("");
   const [divisionalSec, setDivisionalSec] = useState("");
   const [gnDivision, setGnDivision] = useState("");
-  const [cdcVdpId, setCdcVdpId] = useState("");
   const [sector, setSector] = useState("");
   const [subCategory, setSubCategory] = useState("");
   const [subSubCategory, setSubSubCategory] = useState("");
@@ -280,7 +279,6 @@ const DevelopmentForm = () => {
         district,
         divisionalSec,
         gnDivision,
-        cdcVdpId,
       },
       communityCouncil: {
         committeeMembers: [],
@@ -319,14 +317,12 @@ const DevelopmentForm = () => {
           district={district}
           divisionalSec={divisionalSec}
           gnDivision={gnDivision}
-          cdcVdpId={cdcVdpId}
           districts={districts}
           dsDivisions={dsDivisions}
           gnDivisions={gnDivisions}
           handleDistrictChange={handleDistrictChange}
           handleDivisionalSecChange={handleDivisionalSecChange}
           setGnDivision={setGnDivision}
-          setCdcVdpId={setCdcVdpId}
         />
 
         <SectorSelector

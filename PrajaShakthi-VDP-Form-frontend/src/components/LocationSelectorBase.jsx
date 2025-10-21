@@ -1,19 +1,17 @@
 // src/components/LocationSelectorBase.jsx
 import React from "react";
 
-// This component contains ONLY the location dropdowns and CDC/VDP ID input.
+// This component contains ONLY the location dropdowns.
 const LocationSelectorBase = ({
   district,
   divisionalSec,
   gnDivision,
-  cdcVdpId,
   districts,
   dsDivisions,
   gnDivisions,
   handleDistrictChange,
   handleDivisionalSecChange,
   setGnDivision,
-  setCdcVdpId,
 }) => {
   return (
     <>
@@ -80,21 +78,6 @@ const LocationSelectorBase = ({
           ))}
         </select>
       </div>
-
-      {setCdcVdpId && (
-        <div className="form-group">
-          <label className="form-label">
-            CDC/VDP අංකය / CDC/VDP Number :
-          </label>
-          <input
-            type="text"
-            value={cdcVdpId || ''}
-            onChange={(e) => setCdcVdpId(e.target.value)}
-            className="form-control"
-            placeholder="CDC/VDP අංකය ඇතුළු කරන්න"
-          />
-        </div>
-      )}
     </>
   );
 };

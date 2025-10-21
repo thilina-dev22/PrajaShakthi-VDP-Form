@@ -8,14 +8,12 @@ const DevelopmentFormLocation = ({
   district,
   divisionalSec,
   gnDivision,
-  cdcVdpId,
   districts,
   dsDivisions,
   gnDivisions,
   handleDistrictChange,
   handleDivisionalSecChange,
   setGnDivision,
-  setCdcVdpId,
 }) => {
   return (
     <>
@@ -24,14 +22,12 @@ const DevelopmentFormLocation = ({
         district={district}
         divisionalSec={divisionalSec}
         gnDivision={gnDivision}
-        cdcVdpId={cdcVdpId}
         districts={districts}
         dsDivisions={dsDivisions}
         gnDivisions={gnDivisions}
         handleDistrictChange={handleDistrictChange}
         handleDivisionalSecChange={handleDivisionalSecChange}
         setGnDivision={setGnDivision}
-        setCdcVdpId={setCdcVdpId}
       />
     </>
   );
