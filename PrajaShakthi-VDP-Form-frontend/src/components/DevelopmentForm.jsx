@@ -306,8 +306,8 @@ const DevelopmentForm = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto my-10 p-6 sm:p-8 bg-white rounded-lg shadow-lg">
-      <h2 className="form-title">
+    <div className="max-w-4xl mx-auto my-8 sm:my-10 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 bg-white rounded-xl shadow-lg">
+      <h2 className="text-center text-blue-700 mb-10 sm:mb-12 font-semibold text-xl sm:text-2xl leading-relaxed">
         ඒකාබද්ධ ග්‍රාම සංවර්ධන සැලැස්ම <br />
         ஒருங்கிணைந்த கிராம வளர்ச்சி திட்டம் <br />
         Integrated Village Development Plan
@@ -364,7 +364,7 @@ const DevelopmentForm = () => {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-5 rounded-md mt-5 transition-all duration-200 text-base sm:text-lg active:translate-y-0.5"
         >
           ඉදිරිපත් කරන්න
         </button>
