@@ -6,6 +6,18 @@ const API_BASE = (import.meta.env && import.meta.env.VITE_API_BASE_URL
 const API_URL = `${API_BASE}/api/auth`;
 const API_SUBMISSION_URL = `${API_BASE}/api/submissions`;
 
+// LocalStorage key for Bearer token (used by Safari/iOS where cookies are blocked cross-domain)
+const TOKEN_KEY = "ps_token";
+
+const getAuthHeaders = () => {
+  try {
+    const token = localStorage.getItem(TOKEN_KEY);
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  } catch {
+    return {};
+  }
+};
+
 const login = async (username, password) => {
   const response = await fetch(`${API_URL}/login`, {
     method: "POST",
@@ -25,7 +37,16 @@ const login = async (username, password) => {
     throw new Error("Login failed due to a server error.");
   }
 
-  return response.json(); // Returns { _id, username, role }
+  const data = await response.json(); // { _id, username, role, token? }
+  // Store token for Safari/iOS or any cross-domain scenario
+  if (data && data.token) {
+    try {
+      localStorage.setItem(TOKEN_KEY, data.token);
+    } catch (e) {
+      void e; // ignore storage errors (e.g., private mode)
+    }
+  }
+  return data;
 };
 
 const logout = async () => {
@@ -37,6 +58,12 @@ const logout = async () => {
   if (!response.ok) {
     throw new Error("Logout failed.");
   }
+  // Clear stored token
+  try {
+    localStorage.removeItem(TOKEN_KEY);
+  } catch (e) {
+    void e; // ignore storage errors
+  }
 };
 
 // Modified: Adds filtering parameters including formType
@@ -47,6 +74,9 @@ const getSubmissions = async (filters = {}) => {
 
   const response = await fetch(url, {
     method: "GET",
+    headers: {
+      ...getAuthHeaders(),
+    },
     credentials: "include",
   });
 
@@ -93,7 +123,10 @@ const submitForm = async (formData) => {
 const deleteSubmission = async (id) => {
   const response = await fetch(`${API_SUBMISSION_URL}/${id}`, {
     method: "DELETE",
-    credentials: "include", // Important for sending cookies/auth
+    headers: {
+      ...getAuthHeaders(),
+    },
+    credentials: "include", // Send cookies if available as well
   });
   // If the response is NOT OK (e.g., 404, 500)
   if (!response.ok) {
@@ -112,7 +145,10 @@ const deleteSubmission = async (id) => {
 const checkAuthStatus = async () => {
   const response = await fetch(`${API_URL}/status`, {
     method: "GET",
-    credentials: "include", // Crucial for sending the HttpOnly cookie
+    headers: {
+      ...getAuthHeaders(),
+    },
+    credentials: "include", // Send cookie if present
   });
 
   if (!response.ok) {

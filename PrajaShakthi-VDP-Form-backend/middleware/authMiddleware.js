@@ -6,13 +6,19 @@ const User = require('../models/UserModel');
 const protect = async (req, res, next) => {
     let token;
 
-    // JWT is expected to be in the HttpOnly cookie
-    token = req.cookies.jwt;
+    // 1) Try HttpOnly cookie first
+    if (req.cookies && req.cookies.jwt) {
+        token = req.cookies.jwt;
+    }
+
+    // 2) Fallback to Authorization header: Bearer <token>
+    if (!token && req.headers && req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+        token = req.headers.authorization.substring(7);
+    }
 
     if (token) {
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            
             req.user = await User.findById(decoded.userId).select('-password');
             req.userRole = decoded.role; // Attach role to request
             next();

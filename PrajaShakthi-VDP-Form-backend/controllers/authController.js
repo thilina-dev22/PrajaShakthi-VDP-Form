@@ -29,12 +29,19 @@ const loginUser = async (req, res) => {
   const user = await User.findOne({ username });
 
   if (user && (await user.matchPassword(password))) {
+    // Issue JWT and set cookie for compatible browsers
     generateToken(res, user._id, user.role);
+
+    // Also return token in response body for clients that cannot use cookies (e.g., iOS Safari cross-domain)
+    const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, {
+      expiresIn: "30d",
+    });
 
     res.json({
       _id: user._id,
       username: user.username,
       role: user.role, // Send role to frontend for display/routing
+      token,
     });
   } else {
     res.status(401).json({ message: "Invalid username or password" });
