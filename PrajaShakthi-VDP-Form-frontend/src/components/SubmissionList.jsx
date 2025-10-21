@@ -1,4 +1,3 @@
-/* eslint-disable no-irregular-whitespace */
 import React, { useState, useEffect } from "react";
 import { getSubmissions, deleteSubmission } from "../api/auth";
 import { useAuth } from "../context/AuthContext";
@@ -494,18 +493,21 @@ const SubmissionList = () => {
           Proposals
         </h4>
         <div className="overflow-x-auto rounded-lg border border-gray-300 mt-4">
-          <table className="w-full border-collapse text-sm"><thead>
-            <tr className="bg-gray-200 text-gray-700">
-              <th className="border border-gray-300 p-2 text-left font-bold">
-                Proposal
-              </th>
-              <th className="border border-gray-300 p-2 text-left font-bold w-32">
-                Cost (Rs.)
-              </th>
-              <th className="border border-gray-300 p-2 text-left font-bold w-40">
-                Agency/Officer
-              </th>
-            </tr></thead><tbody>
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="bg-gray-200 text-gray-700">
+                <th className="border border-gray-300 p-2 text-left font-bold">
+                  Proposal
+                </th>
+                <th className="border border-gray-300 p-2 text-left font-bold w-32">
+                  Cost (Rs.)
+                </th>
+                <th className="border border-gray-300 p-2 text-left font-bold w-40">
+                  Agency/Officer
+                </th>
+              </tr>
+            </thead>
+            <tbody>
               {proposals.map((prop, index) => (
                 <tr key={prop._id || index} className="even:bg-gray-50">
                   <td className="border border-gray-300 p-2">
