@@ -260,15 +260,14 @@ const SubmissionList = () => {
                       </tr>
                     );
                   })}
-                </React.Fragment>
-              ))}
-            </tbody></table>
-        </div>
-      </div>
-    );
-  };
-  
- // Helper function to retrieve the deep section data
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }; // Helper function to retrieve the deep section data
   const getDeepSection = (selection) => {
     const { sector, subCategory, subSubCategory, subSubSubCategory } = selection;
     if (!sector || !subCategory || !sectors[sector]) return null;
@@ -329,19 +328,26 @@ const SubmissionList = () => {
       <div className="mt-8 pt-4 border-t border-gray-200">
         <h5 className="text-base font-semibold mb-3 text-gray-700">{title}</h5>
         <div className="overflow-x-auto rounded-lg border border-gray-300">
-          <table className="w-full border-collapse"><thead>
-            <tr className="bg-gray-200 text-gray-700">{columns.map((col, i) => (
-              <th key={i} className="border border-gray-300 p-2 text-left font-bold">{col.header}</th>
-            ))}</tr></thead><tbody>
-            {rowsToRender.map((row, rowIndex) => (
-              <tr key={rowIndex} className="even:bg-gray-50 border-b border-gray-200">
-                {Object.keys(row).map((colKey, colIndex) => (
-                  <td key={colIndex} className="border border-gray-300 p-2 text-sm">
-                    {row[colKey] || '—'}
-                  </td>
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-gray-200 text-gray-700">
+                {columns.map((col, i) => (
+                  <th key={i} className="border border-gray-300 p-2 text-left font-bold">{col.header}</th>
                 ))}
               </tr>
-            ))}</tbody></table>
+            </thead>
+            <tbody>
+              {rowsToRender.map((row, rowIndex) => (
+                <tr key={rowIndex} className="even:bg-gray-50 border-b border-gray-200">
+                  {Object.keys(row).map((colKey, colIndex) => (
+                    <td key={colIndex} className="border border-gray-300 p-2 text-sm">
+                      {row[colKey] || '—'}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     );
@@ -459,20 +465,19 @@ const SubmissionList = () => {
                   Agency/Officer
                 </th>
               </tr></thead><tbody>
-              {proposals.map((prop, index) => (
-                <tr key={prop._id || index} className="even:bg-gray-50">
-                  <td className="border border-gray-300 p-2">{prop.proposal}</td>
-                  <td className="border border-gray-300 p-2">{prop.cost}</td>
-                  <td className="border border-gray-300 p-2">{prop.agency}</td>
-                </tr>
-              ))}
-            </tbody></table>
-        </div>
-      </>
-    );
-  };
-
-  if (!isAuthenticated) return <div>Access Denied. Please log in.</div>;
+              {proposals.map((prop, index) => (
+                <tr key={prop._id || index} className="even:bg-gray-50">
+                  <td className="border border-gray-300 p-2">{prop.proposal}</td>
+                  <td className="border border-gray-300 p-2">{prop.cost}</td>
+                  <td className="border border-gray-300 p-2">{prop.agency}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </>
+    );
+  };  if (!isAuthenticated) return <div>Access Denied. Please log in.</div>;
   if (!isAdmin) return <div>Access Denied. Admin role required.</div>;
 
   return (

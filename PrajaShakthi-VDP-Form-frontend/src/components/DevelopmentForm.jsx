@@ -7,16 +7,6 @@ import { submitForm } from "../api/auth";
 import { sectors } from "../data/sectors_data.js";
 import SectorSelector from "./SectorSelector";
 
-const emptyCouncilRow = { name: "", position: "", phone: "", email: "" };
-const MAX_ROWS = 25;
-
-const initialCommunityCouncilData = Array(MAX_ROWS)
-  .fill(null)
-  .map((_, index) => ({
-    ...emptyCouncilRow,
-    isVisible: index === 0 || index === 5 || index === 20,
-  }));
-
 const DevelopmentForm = () => {
   const [district, setDistrict] = useState("");
   const [divisionalSec, setDivisionalSec] = useState("");
@@ -38,9 +28,6 @@ const DevelopmentForm = () => {
   ]);
 
   const [secondaryTableData, setSecondaryTableData] = useState([]);
-  const [communityCouncilData, setCommunityCouncilData] = useState(
-    initialCommunityCouncilData
-  );
 
   useEffect(() => {
     const allDistricts = provincialDataJson[0]?.districts || [];
@@ -157,85 +144,6 @@ const DevelopmentForm = () => {
     },
     [currentSection]
   );
-
-  const getSectionInfo = (globalIndex) => {
-    if (globalIndex >= 0 && globalIndex < 5)
-      return { start: 0, end: 5, maxRows: 5, minRows: 1 };
-    if (globalIndex >= 5 && globalIndex < 20)
-      return { start: 5, end: 20, maxRows: 15, minRows: 1 };
-    if (globalIndex >= 20 && globalIndex < 25)
-      return { start: 20, end: 25, maxRows: 5, minRows: 1 };
-    return null;
-  };
-
-  const handleCouncilRowChange = (index, field, value) => {
-    setCommunityCouncilData((prev) => {
-      const newData = [...prev];
-      newData[index] = { ...newData[index], [field]: value };
-      return newData;
-    });
-  };
-
-  const addCouncilRow = (startIndex, maxCount) => {
-    setCommunityCouncilData((prev) => {
-      const newData = [...prev];
-      let firstEmptyIndex = -1;
-
-      for (let i = startIndex; i < startIndex + maxCount; i++) {
-        if (!newData[i].isVisible) {
-          firstEmptyIndex = i;
-          break;
-        }
-      }
-
-      if (firstEmptyIndex !== -1) {
-        newData[firstEmptyIndex] = { ...emptyCouncilRow, isVisible: true };
-        return newData;
-      }
-      return prev;
-    });
-  };
-
-  const deleteCouncilRow = (globalIndex) => {
-    setCommunityCouncilData((prev) => {
-      const section = getSectionInfo(globalIndex);
-      if (!section) return prev;
-
-      const sectionVisibleCount = prev
-        .slice(section.start, section.end)
-        .filter((row) => row.isVisible).length;
-
-      if (sectionVisibleCount <= section.minRows) {
-        alert("At least one row must remain in each section.");
-        return prev;
-      }
-
-      const newData = prev.map((row, index) => {
-        if (index === globalIndex) {
-          return { ...emptyCouncilRow, isVisible: false };
-        }
-        return row;
-      });
-
-      const sectionData = newData.slice(section.start, section.end);
-      const visibleRows = sectionData.filter((row) => row.isVisible);
-      const hiddenRows = sectionData.filter((row) => !row.isVisible);
-      const reorderedSection = [...visibleRows, ...hiddenRows];
-
-      newData.splice(
-        section.start,
-        section.maxRows,
-        ...reorderedSection.slice(0, section.maxRows)
-      );
-
-      return newData;
-    });
-  };
-  const isSectionFull = (startIndex, maxCount) => {
-    return communityCouncilData
-      .slice(startIndex, startIndex + maxCount)
-      .every((row) => row.isVisible);
-  };
 
   const resetSelections = (level) => {
     if (level <= 1) setSubCategory("");
@@ -366,26 +274,19 @@ const DevelopmentForm = () => {
       collectedData.secondaryTableData = secondaryTableData;
     }
 
-    const hasData = (row) =>
-      row.name.trim() !== "" ||
-      row.position.trim() !== "" ||
-      row.phone.trim() !== "" ||
-      row.email.trim() !== "";
-
-    const councilData = {
-      committeeMembers: communityCouncilData.slice(0, 5).filter(hasData),
-      communityReps: communityCouncilData.slice(5, 20).filter(hasData),
-      strategicMembers: communityCouncilData.slice(20, 25).filter(hasData),
-    };
-
     const formData = {
+      formType: "main_form",
       location: {
         district,
         divisionalSec,
         gnDivision,
         cdcVdpId,
       },
-      communityCouncil: councilData,
+      communityCouncil: {
+        committeeMembers: [],
+        communityReps: [],
+        strategicMembers: [],
+      },
       selection: {
         sector,
         subCategory,
@@ -424,11 +325,6 @@ const DevelopmentForm = () => {
           handleDivisionalSecChange={handleDivisionalSecChange}
           setGnDivision={setGnDivision}
           setCdcVdpId={setCdcVdpId}
-          communityCouncilData={communityCouncilData}
-          handleCouncilRowChange={handleCouncilRowChange}
-          addCouncilRow={addCouncilRow}
-          deleteCouncilRow={deleteCouncilRow}
-          isSectionFull={isSectionFull}
         />
 
         <SectorSelector
