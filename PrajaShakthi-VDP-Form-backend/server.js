@@ -29,12 +29,16 @@ app.use(
     origin: [
       "http://localhost:5173",
       "http://localhost:5174",
+      "https://praja-shakthi-vdp-form-5aaz-git-main-thilinas-projects-98fabc7e.vercel.app/",
     ], // Allow common vite dev ports
     credentials: true,
+    optionsSuccessStatus: 200,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+
 
 app.use(express.json());
 app.use(cookieParser());
