@@ -22,7 +22,7 @@ const initialCommunityCouncilData = Array(MAX_ROWS)
     ...emptyCouncilRow,
     isVisible: true,
   }));
-  
+
 // The total length is 10 digits (07 + 1 digit + 7 digits)
 const SRI_LANKA_PHONE_REGEX = /^07[0-9]{8}$/;
 
@@ -123,54 +123,61 @@ const CommunityCouncilForm = () => {
 
       if (isCurrentRowTouched) {
         hasFilledRow = true;
-        
+
         // 2a) Sequential Filling Check: A filled row cannot follow an empty one.
         if (hasFilledRowBeforeEmpty) {
-            isSequentialOrderViolated = true;
+          isSequentialOrderViolated = true;
         }
 
         // 2b) Conditional Required Fields Check (If touched, ALL fields are required)
         // For rows 1-5: name, position, phone, whatsapp, email are required
         // For rows 6-25: name, phone, whatsapp, email are required (no position)
         let requiredFields = [];
-        
+
         if (i < 5) {
           // Rows 1-5: All fields including position
           requiredFields = [
-            { field: 'name', label: 'නම' },
-            { field: 'position', label: 'තනතුර' },
-            { field: 'phone', label: 'දුරකතන අංකය' },
-            { field: 'whatsapp', label: 'වට්ස් ඇප් අංකය' },
-            { field: 'email', label: 'විද්‍යුත් ලිපිනය' },
+            { field: "name", label: "නම" },
+            { field: "position", label: "තනතුර" },
+            { field: "phone", label: "දුරකතන අංකය" },
+            { field: "whatsapp", label: "වට්ස් ඇප් අංකය" },
+            { field: "email", label: "විද්‍යුත් ලිපිනය" },
           ];
         } else {
           // Rows 6-25: All fields except position
           requiredFields = [
-            { field: 'name', label: 'නම' },
-            { field: 'phone', label: 'දුරකතන අංකය' },
-            { field: 'whatsapp', label: 'වට්ස් ඇප් අංකය' },
-            { field: 'email', label: 'විද්‍යුත් ලිපිනය' },
+            { field: "name", label: "නම" },
+            { field: "phone", label: "දුරකතන අංකය" },
+            { field: "whatsapp", label: "වට්ස් ඇප් අංකය" },
+            { field: "email", label: "විද්‍යුත් ලිපිනය" },
           ];
         }
-        
+
         requiredFields.forEach(({ field, label }) => {
           if (!row[field] || row[field].toString().trim() === "") {
-            validationErrors.push(`Row ${rowNumber}: ${label} is required as the row is in use.`);
+            validationErrors.push(
+              `Row ${rowNumber}: ${label} is required as the row is in use.`
+            );
           }
         });
-        
+
         // 2c) Phone/WhatsApp Format Validation
-        const phoneValue = row.phone ? row.phone.toString().trim() : '';
-        const whatsappValue = row.whatsapp ? row.whatsapp.toString().trim() : '';
-        
+        const phoneValue = row.phone ? row.phone.toString().trim() : "";
+        const whatsappValue = row.whatsapp
+          ? row.whatsapp.toString().trim()
+          : "";
+
         if (phoneValue && !SRI_LANKA_PHONE_REGEX.test(phoneValue)) {
-          validationErrors.push(`Row ${rowNumber}: Invalid 'දුරකතන අංකය' (must be 10 digits, start with 07, e.g., 0712345678).`);
+          validationErrors.push(
+            `Row ${rowNumber}: Invalid 'දුරකතන අංකය' (must be 10 digits, start with 07, e.g., 0712345678).`
+          );
         }
-        
+
         if (whatsappValue && !SRI_LANKA_PHONE_REGEX.test(whatsappValue)) {
-          validationErrors.push(`Row ${rowNumber}: Invalid 'වට්ස් ඇප් අංකය' (must be 10 digits, start with 07, e.g., 0712345678).`);
+          validationErrors.push(
+            `Row ${rowNumber}: Invalid 'වට්ස් ඇප් අංකය' (must be 10 digits, start with 07, e.g., 0712345678).`
+          );
         }
-        
       } else {
         // Mark that an empty row was found *before* the loop is complete
         hasFilledRowBeforeEmpty = true;
@@ -180,7 +187,9 @@ const CommunityCouncilForm = () => {
     // 3. Handle Critical Validation Errors (Blocking Submission)
     if (validationErrors.length > 0) {
       alert(
-        `Form Submission Blocked: Please correct the following errors:\n\n${validationErrors.join('\n')}`
+        `Form Submission Blocked: Please correct the following errors:\n\n${validationErrors.join(
+          "\n"
+        )}`
       );
       return;
     }
@@ -190,21 +199,26 @@ const CommunityCouncilForm = () => {
 
     // Sequential Order Warning
     if (isSequentialOrderViolated) {
-      warningMessage += "⚠️ Warning: Row filling order violation detected (empty rows found among filled rows). Please ensure continuity.\n\n";
+      warningMessage +=
+        "⚠️ Warning: Row filling order violation detected (empty rows found among filled rows). Please ensure continuity.\n\n";
     }
 
     // Empty Row Warning
     if (!hasFilledRow) {
-      warningMessage += "⚠️ Warning: No community council members' information has been filled. The submission will contain an empty council data section.";
+      warningMessage +=
+        "⚠️ Warning: No community council members' information has been filled. The submission will contain an empty council data section.";
     }
-    
+
     // Display warning if present (user requested to "just indicate" but allow submit)
     if (warningMessage) {
-      if (!window.confirm(`Submitting Form with Warnings:\n\n${warningMessage}\n\nDo you wish to proceed?`)) {
+      if (
+        !window.confirm(
+          `Submitting Form with Warnings:\n\n${warningMessage}\n\nDo you wish to proceed?`
+        )
+      ) {
         return; // User cancelled the submission
       }
     }
-
 
     // --- Submission Logic ---
 
@@ -219,7 +233,9 @@ const CommunityCouncilForm = () => {
     const councilData = {
       committeeMembers: communityCouncilData.slice(0, 5).filter(filterHasData),
       communityReps: communityCouncilData.slice(5, 20).filter(filterHasData),
-      strategicMembers: communityCouncilData.slice(20, 25).filter(filterHasData),
+      strategicMembers: communityCouncilData
+        .slice(20, 25)
+        .filter(filterHasData),
     };
 
     // Prepare a submission object tailored for the Community Council data
@@ -270,11 +286,11 @@ const CommunityCouncilForm = () => {
           onChange={handleCouncilRowChange}
         />
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="w-full bg-[#F37021] hover:bg-[#D65F1A] text-white font-medium py-3 px-5 rounded-md mt-5 transition-all duration-200 text-base sm:text-lg active:translate-y-0.5"
         >
-          ඉදිරිපත් කරන්න / சமர்ப்பிக்கவும் / Submit
+          ඉදිරිපත් කරන්න / சமர்ப்பிக்கவும்
         </button>
       </form>
     </div>
