@@ -1057,7 +1057,7 @@ const SubmissionList = () => {
         >
           Council Info Data (ප්‍රජා සභා තොරතුරු)
         </button>
-        <button
+        {/* <button
           className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors duration-150 ease-in-out ${activeTab === "main_form"
               ? "bg-white border-x border-t border-gray-300 text-[#A8234A] -mb-px" // Active style
               : "bg-gray-100 text-gray-600 hover:bg-gray-200" // Inactive style
@@ -1065,7 +1065,7 @@ const SubmissionList = () => {
           onClick={() => setActiveTab("main_form")}
         >
           Main Form Data (සංවර්ධන සැලැස්ම)
-        </button>
+        </button> */}
       </div>
 
       <h2 className="text-2xl font-bold mb-4">
