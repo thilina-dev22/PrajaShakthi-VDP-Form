@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 
 const Navigation = ({ setCurrentRoute = () => {} }) => {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  // eslint-disable-next-line no-unused-vars
   const isDevelopmentFormDisabled = true;
 
   return (
