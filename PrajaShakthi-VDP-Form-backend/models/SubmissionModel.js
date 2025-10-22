@@ -6,6 +6,7 @@ const CouncilMemberSchema = new mongoose.Schema(
     name: { type: String, trim: true },
     position: { type: String, trim: true },
     phone: { type: String, trim: true },
+    whatsapp: { type: String, trim: true },
     email: { type: String, trim: true },
   },
   { _id: false }
