@@ -130,13 +130,28 @@ const CommunityCouncilForm = () => {
         }
 
         // 2b) Conditional Required Fields Check (If touched, ALL fields are required)
-        const requiredFields = [
-          { field: 'name', label: 'නම' },
-          { field: 'position', label: 'තනතුර' },
-          { field: 'phone', label: 'දුරකතන අංකය' },
-          { field: 'whatsapp', label: 'වට්ස් ඇප් අංකය' },
-          { field: 'email', label: 'විද්‍යුත් ලිපිනය' },
-        ];
+        // For rows 1-5: name, position, phone, whatsapp, email are required
+        // For rows 6-25: name, phone, whatsapp, email are required (no position)
+        let requiredFields = [];
+        
+        if (i < 5) {
+          // Rows 1-5: All fields including position
+          requiredFields = [
+            { field: 'name', label: 'නම' },
+            { field: 'position', label: 'තනතුර' },
+            { field: 'phone', label: 'දුරකතන අංකය' },
+            { field: 'whatsapp', label: 'වට්ස් ඇප් අංකය' },
+            { field: 'email', label: 'විද්‍යුත් ලිපිනය' },
+          ];
+        } else {
+          // Rows 6-25: All fields except position
+          requiredFields = [
+            { field: 'name', label: 'නම' },
+            { field: 'phone', label: 'දුරකතන අංකය' },
+            { field: 'whatsapp', label: 'වට්ස් ඇප් අංකය' },
+            { field: 'email', label: 'විද්‍යුත් ලිපිනය' },
+          ];
+        }
         
         requiredFields.forEach(({ field, label }) => {
           if (!row[field] || row[field].toString().trim() === "") {
