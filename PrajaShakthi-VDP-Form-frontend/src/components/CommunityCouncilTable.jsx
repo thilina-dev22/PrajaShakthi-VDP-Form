@@ -3,24 +3,40 @@ import React from "react";
 const CommunityCouncilTable = ({ data, onChange }) => {
   // Position dropdown options
   const positionOptions = [
-    { value: "", label: "තෝරන්න / Select" },
-    { value: "සභාපති", label: "සභාපති" },
-    { value: "ලේකම්", label: "ලේකම්" },
-    { value: "ග්‍රාම නිලධාරි", label: "ග්‍රාම නිලධාරි" },
-    { value: "සමෘද්ධි සංවර්ධන නිලධාරි", label: "සමෘද්ධි සංවර්ධන නිලධාරි" },
-    { value: "කෘෂිකර්ම පර්යේෂණ නිෂ්පාදන සහකාර", label: "කෘෂිකර්ම පර්යේෂණ නිෂ්පාදන සහකාර" },
-    { value: "ධීවර නිලධාරි", label: "ධීවර නිලධාරි" },
-    { value: "මිරිදිය ධීවර වගා ව්‍යාප්ත නිලධාරි", label: "මිරිදිය ධීවර වගා ව්‍යාප්ත නිලධාරි" },
-    { value: "වෙනත්", label: "වෙනත්" }
+    { value: "", label: "තෝරන්න / தேர்ந்தெடுக்கவும்" },
+    { value: "සභාපති", label: "සභාපති / தலைவர்" },
+    { value: "ලේකම්", label: "ලේකම් / செயலாளர்" },
+    {
+      value: "ග්‍රාම නිලධාරි",
+      label: "ග්‍රාම නිලධාරි / கிராம அலுவலர்",
+    },
+    {
+      value: "සමෘද්ධි සංවර්ධන නිලධාරි",
+      label: "සමෘද්ධි සංවර්ධන නිලධාරි / சமுர்த்தி அபிவிருத்தி அதிகாரி",
+    },
+    {
+      value: "කෘෂිකර්ම පර්යේෂණ නිෂ්පාදන සහකාර",
+      label:
+        "කෘෂිකර්ම පර්යේෂණ නිෂ්පාදන සහකාර / வேளாண் ஆராய்ச்சி உற்பத்தி உதவியாளர்",
+    },
+    {
+      value: "ධීවර නිලධාරි",
+      label: "ධීවර නිලධාරි / மீன்பிடி அதிகாரி",
+    },
+    {
+      value: "මිරිදිය ධීවර වගා ව්‍යාප්ත නිලධාරි",
+      label:
+        "මිරිදිය ධීවර වගා ව්‍යාප්ත නිලධාරි / மிரிதியா மீன் வளர்ப்பு வணிக அதிகாரி",
+    },
+    { value: "වෙනත්", label: "වෙනත් / மற்றவை" },
   ];
 
   const sectionsTable1 = [
     {
-      
       start: 0,
       end: 5,
       maxRows: 5,
-    }
+    },
   ];
 
   const sectionsTable2 = [
@@ -28,12 +44,11 @@ const CommunityCouncilTable = ({ data, onChange }) => {
       start: 5,
       end: 20,
       maxRows: 15,
-    }
+    },
   ];
 
   const sectionsTable3 = [
     {
-
       start: 20,
       end: 25,
       maxRows: 5,
@@ -41,21 +56,33 @@ const CommunityCouncilTable = ({ data, onChange }) => {
   ];
 
   // FIXED: Changed to use a distinct border and background for better visibility.
-  const inputClasses = "w-full px-1 py-1 border border-gray-300 rounded bg-white focus:outline-none focus:border-blue-500";
-  
+  const inputClasses =
+    "w-full px-1 py-1 border border-gray-300 rounded bg-white focus:outline-none focus:border-blue-500";
+
   // ADDED: Phone regex pattern for client-side hint
   // SL mobile number format: 07(0-8)xxxxxxx (10 digits total)
-  const phonePattern = "07[01245678][0-9]{7}"; 
-  const phoneTitle = "ශ්‍රී ලංකාවේ 10-අංක ජංගම දුරකථන අංක ආකෘතිය (උදා: 0712345678)";
+  const phonePattern = "07[01245678][0-9]{7}";
+  const phoneTitle =
+    "ශ්‍රී ලංකාවේ 10-අංක ජංගම දුරකථන අංක ආකෘතිය (උදා: 0712345678)";
 
   // ADDED: Reusable indicator for conditionally required fields
   const RequiredIndicator = () => (
-    <span className="text-red-500 font-bold text-lg leading-none align-text-top" title="අවශ්‍ය ක්ෂේත්‍රය (Required Field)">*</span>
+    <span
+      className="text-red-500 font-bold text-lg leading-none align-text-top"
+      title="අවශ්‍ය ක්ෂේත්‍රය (Required Field)"
+    >
+      *
+    </span>
   );
 
   // Check if "වෙනත්" is selected and position needs to be custom
   const isCustomPosition = (row) => {
-    return row.position && !positionOptions.some(opt => opt.value === row.position && opt.value !== "වෙනත්");
+    return (
+      row.position &&
+      !positionOptions.some(
+        (opt) => opt.value === row.position && opt.value !== "වෙනත්"
+      )
+    );
   };
 
   // Render rows for Table 1 (rows 1-5) with position dropdown
@@ -66,7 +93,10 @@ const CommunityCouncilTable = ({ data, onChange }) => {
     sectionData.forEach((row, localIndex) => {
       const globalIndex = section.start + localIndex;
       const showCustomInput = row.position === "වෙනත්" || isCustomPosition(row);
-      const dropdownValue = isCustomPosition(row) && row.position !== "වෙනත්" ? "වෙනත්" : row.position;
+      const dropdownValue =
+        isCustomPosition(row) && row.position !== "වෙනත්"
+          ? "වෙනත්"
+          : row.position;
 
       rowsToRender.push(
         <tr key={globalIndex} className="border-b hover:bg-gray-50">
@@ -100,7 +130,9 @@ const CommunityCouncilTable = ({ data, onChange }) => {
                 <input
                   type="text"
                   value={row.position === "වෙනත්" ? "" : row.position}
-                  onChange={(e) => onChange(globalIndex, "position", e.target.value)}
+                  onChange={(e) =>
+                    onChange(globalIndex, "position", e.target.value)
+                  }
                   placeholder="තනතුර ඇතුලත් කරන්න"
                   className={inputClasses}
                 />
@@ -127,8 +159,8 @@ const CommunityCouncilTable = ({ data, onChange }) => {
               value={row.phone}
               onChange={(e) => onChange(globalIndex, "phone", e.target.value)}
               className={inputClasses}
-              pattern={phonePattern} 
-              title={phoneTitle}      
+              pattern={phonePattern}
+              title={phoneTitle}
             />
           </td>
           <td className="p-2">
@@ -139,8 +171,8 @@ const CommunityCouncilTable = ({ data, onChange }) => {
                 onChange(globalIndex, "whatsapp", e.target.value)
               }
               className={inputClasses}
-              pattern={phonePattern} 
-              title={phoneTitle}      
+              pattern={phonePattern}
+              title={phoneTitle}
             />
           </td>
           <td className="p-2">
@@ -183,8 +215,8 @@ const CommunityCouncilTable = ({ data, onChange }) => {
               value={row.phone}
               onChange={(e) => onChange(globalIndex, "phone", e.target.value)}
               className={inputClasses}
-              pattern={phonePattern} 
-              title={phoneTitle}      
+              pattern={phonePattern}
+              title={phoneTitle}
             />
           </td>
           <td className="p-2">
@@ -195,8 +227,8 @@ const CommunityCouncilTable = ({ data, onChange }) => {
                 onChange(globalIndex, "whatsapp", e.target.value)
               }
               className={inputClasses}
-              pattern={phonePattern} 
-              title={phoneTitle}      
+              pattern={phonePattern}
+              title={phoneTitle}
             />
           </td>
           <td className="p-2">
@@ -218,7 +250,10 @@ const CommunityCouncilTable = ({ data, onChange }) => {
     return (
       <React.Fragment key={section.title}>
         <tr>
-          <td colSpan="6" className="bg-blue-100 text-blue-800 font-bold p-3 text-center">
+          <td
+            colSpan="6"
+            className="bg-blue-100 text-blue-800 font-bold p-3 text-center"
+          >
             {section.title}
           </td>
         </tr>
@@ -231,7 +266,10 @@ const CommunityCouncilTable = ({ data, onChange }) => {
     return (
       <React.Fragment key={section.title}>
         <tr>
-          <td colSpan="5" className="bg-blue-100 text-blue-800 font-bold p-3 text-center">
+          <td
+            colSpan="5"
+            className="bg-blue-100 text-blue-800 font-bold p-3 text-center"
+          >
             {section.title}
           </td>
         </tr>
@@ -245,29 +283,31 @@ const CommunityCouncilTable = ({ data, onChange }) => {
       {/* TABLE 1: Rows 1-5 with Position Column */}
       <div>
         <h3 className="text-xl font-semibold mb-4 pb-2 border-b">
-          කාරක සභා සාමාජිකයින් / குழு உறுப்பினர்கள் 
+          කාරක සභා සාමාජිකයින් / குழு உறுப்பினர்கள்
         </h3>
         <div className="overflow-x-auto rounded-lg border">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-100">
               <tr>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[5%]">
-                  අංකය
+                  අංකය <br /> இல்லை
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[17%]">
-                  නම <RequiredIndicator />
+                  නම <br /> பெயர் <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[17%]">
-                  තනතුර <RequiredIndicator />
+                  තනතුර <br /> நிலை <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
-                  දුරකතන අංකය <RequiredIndicator />
+                  දුරකතන අංකය <br /> தொலைபேசி எண் <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
-                  වට්ස් ඇප් අංකය <RequiredIndicator />
+                  වට්ස් ඇප් අංකය <br /> (WhatsApp) வாட்ஸ்அப்{" "}
+                  <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[31%]">
-                  විද්‍යුත් ලිපිනය <RequiredIndicator />
+                  විද්‍යුත් ලිපිනය <br /> மின்னஞ்சல் முகவரி{" "}
+                  <RequiredIndicator />
                 </th>
               </tr>
             </thead>
@@ -276,8 +316,14 @@ const CommunityCouncilTable = ({ data, onChange }) => {
             </tbody>
           </table>
           <div className="p-2 text-sm text-gray-600 bg-gray-50 border-t">
-            <RequiredIndicator /> **All fields are conditionally required (if data is entered in any row, all columns in that row must be filled). Rows must be filled sequentially.
-            <br/>සියලුම ක්ෂේත්‍ර කොන්දේසි සහිතව අවශ්‍ය වේ** (යම් පේළියක දත්ත ඇතුලත් කරන්නේ නම් එහි සියලුම තීරු පිරවිය යුතුය). පේළි පිළිවෙලින් පිරවිය යුතුය.
+            <RequiredIndicator /> සියලුම ක්ෂේත්‍ර කොන්දේසි සහිතව අවශ්‍ය වේ**
+            (යම් පේළියක දත්ත ඇතුලත් කරන්නේ නම් එහි සියලුම තීරු පිරවිය යුතුය).
+            පේළි පිළිවෙලින් පිරවිය යුතුය.
+            <br />
+            <RequiredIndicator /> அனைத்து புலங்களும் நிபந்தனையுடன் தேவை** (தரவு
+            ஒரு வரிசையில் உள்ளிடப்பட்டால், அந்த வரிசையில் உள்ள அனைத்து
+            நெடுவரிசைகளும் நிரப்பப்பட வேண்டும்). வரிசைகள் வரிசையில் நிரப்பப்பட
+            வேண்டும்.
           </div>
         </div>
       </div>
@@ -285,26 +331,28 @@ const CommunityCouncilTable = ({ data, onChange }) => {
       {/* TABLE 2: Rows 6-20 WITHOUT Position Column */}
       <div>
         <h3 className="text-xl font-semibold mb-4 pb-2 border-b">
-          ප්‍රජා නියෝජිත කණ්ඩායම / சமூகப் பிரதிநிதி குழு 
+          ප්‍රජා නියෝජිත කණ්ඩායම / சமூகப் பிரதிநிதி குழு
         </h3>
         <div className="overflow-x-auto rounded-lg border">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-100">
               <tr>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[5%]">
-                  අංකය
+                  අංකය <br /> இல்லை
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[25%]">
-                  නම <RequiredIndicator />
+                  නම <br /> பெயர் <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[20%]">
-                  දුරකතන අංකය <RequiredIndicator />
+                  දුරකතන අංකය <br /> தொலைபேசி எண் <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[20%]">
-                  වට්ස් ඇප් අංකය <RequiredIndicator />
+                  වට්ස් ඇප් අංකය <br /> (WhatsApp) வாட்ஸ்அப்{" "}
+                  <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[30%]">
-                  විද්‍යුත් ලිපිනය <RequiredIndicator />
+                  විද්‍යුත් ලිපිනය <br /> மின்னஞ்சல் முகவரி{" "}
+                  <RequiredIndicator />
                 </th>
               </tr>
             </thead>
@@ -313,8 +361,14 @@ const CommunityCouncilTable = ({ data, onChange }) => {
             </tbody>
           </table>
           <div className="p-2 text-sm text-gray-600 bg-gray-50 border-t">
-            <RequiredIndicator /> **All fields are conditionally required (if data is entered in any row, all columns in that row must be filled). Rows must be filled sequentially.
-            <br/>සියලුම ක්ෂේත්‍ර කොන්දේසි සහිතව අවශ්‍ය වේ** (යම් පේළියක දත්ත ඇතුලත් කරන්නේ නම් එහි සියලුම තීරු පිරවිය යුතුය). පේළි පිළිවෙලින් පිරවිය යුතුය.
+            <RequiredIndicator /> සියලුම ක්ෂේත්‍ර කොන්දේසි සහිතව අවශ්‍ය වේ**
+            (යම් පේළියක දත්ත ඇතුලත් කරන්නේ නම් එහි සියලුම තීරු පිරවිය යුතුය).
+            පේළි පිළිවෙලින් පිරවිය යුතුය.
+            <br />
+            <RequiredIndicator /> அனைத்து புலங்களும் நிபந்தனையுடன் தேவை** (தரவு
+            ஒரு வரிசையில் உள்ளிடப்பட்டால், அந்த வரிசையில் உள்ள அனைத்து
+            நெடுவரிசைகளும் நிரப்பப்பட வேண்டும்). வரிசைகள் வரிசையில் நிரப்பப்பட
+            வேண்டும்.
           </div>
         </div>
       </div>
@@ -322,25 +376,28 @@ const CommunityCouncilTable = ({ data, onChange }) => {
       {/* TABLE 3: Rows 21-25 WITHOUT Position Column */}
       <div>
         <h3 className="text-xl font-semibold mb-4 pb-2 border-b">
-          උපාය මාර්ගික සාමාජික කණ්ඩායම / மூலோபாய உறுப்பினர் குழு        </h3>
+          උපාය මාර්ගික සාමාජික කණ්ඩායම / மூலோபாய உறுப்பினர் குழு{" "}
+        </h3>
         <div className="overflow-x-auto rounded-lg border">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-100">
               <tr>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[5%]">
-                  අංකය
+                  අංකය <br /> இல்லை
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[25%]">
-                  නම <RequiredIndicator />
+                  නම <br /> பெயர் <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[20%]">
-                  දුරකතන අංකය <RequiredIndicator />
+                  දුරකතන අංකය <br /> தொலைபேசி எண் <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[20%]">
-                  වට්ස් ඇප් අංකය <RequiredIndicator />
+                  වට්ස් ඇප් අංකය <br /> (WhatsApp) வாட்ஸ்அப்{" "}
+                  <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[30%]">
-                  විද්‍යුත් ලිපිනය <RequiredIndicator />
+                  විද්‍යුත් ලිපිනය <br /> மின்னஞ்சல் முகவரி{" "}
+                  <RequiredIndicator />
                 </th>
               </tr>
             </thead>
@@ -349,8 +406,14 @@ const CommunityCouncilTable = ({ data, onChange }) => {
             </tbody>
           </table>
           <div className="p-2 text-sm text-gray-600 bg-gray-50 border-t">
-            <RequiredIndicator /> **All fields are conditionally required (if data is entered in any row, all columns in that row must be filled). Rows must be filled sequentially.
-            <br/>සියලුම ක්ෂේත්‍ර කොන්දේසි සහිතව අවශ්‍ය වේ** (යම් පේළියක දත්ත ඇතුලත් කරන්නේ නම් එහි සියලුම තීරු පිරවිය යුතුය). පේළි පිළිවෙලින් පිරවිය යුතුය.
+            <RequiredIndicator /> සියලුම ක්ෂේත්‍ර කොන්දේසි සහිතව අවශ්‍ය වේ**
+            (යම් පේළියක දත්ත ඇතුලත් කරන්නේ නම් එහි සියලුම තීරු පිරවිය යුතුය).
+            පේළි පිළිවෙලින් පිරවිය යුතුය.
+            <br />
+            <RequiredIndicator /> அனைத்து புலங்களும் நிபந்தனையுடன் தேவை** (தரவு
+            ஒரு வரிசையில் உள்ளிடப்பட்டால், அந்த வரிசையில் உள்ள அனைத்து
+            நெடுவரிசைகளும் நிரப்பப்பட வேண்டும்). வரிசைகள் வரிசையில் நிரப்பப்பட
+            வேண்டும்.
           </div>
         </div>
       </div>
