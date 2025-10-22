@@ -301,7 +301,7 @@ const CommunityCouncilTable = ({ data, onChange }) => {
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
                   දුරකතන අංකය <br /> தொலைபேசி எண் <RequiredIndicator />
                 </th>
-                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
+                <th className="p-3 text-left text-xs font-semibold text-gray-600  tracking-wider w-[15%]">
                   වට්ස් ඇප් අංකය <br /> (WhatsApp) வாட்ஸ்அப்{" "}
                   <RequiredIndicator />
                 </th>
@@ -346,7 +346,7 @@ const CommunityCouncilTable = ({ data, onChange }) => {
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[20%]">
                   දුරකතන අංකය <br /> தொலைபேசி எண் <RequiredIndicator />
                 </th>
-                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[20%]">
+                <th className="p-3 text-left text-xs font-semibold text-gray-600  tracking-wider w-[20%]">
                   වට්ස් ඇප් අංකය <br /> (WhatsApp) வாட்ஸ்அப்{" "}
                   <RequiredIndicator />
                 </th>
@@ -391,7 +391,7 @@ const CommunityCouncilTable = ({ data, onChange }) => {
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[20%]">
                   දුරකතන අංකය <br /> தொலைபேசி எண் <RequiredIndicator />
                 </th>
-                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[20%]">
+                <th className="p-3 text-left text-xs font-semibold text-gray-600  tracking-wider w-[20%]">
                   වට්ස් ඇප් අංකය <br /> (WhatsApp) வாட்ஸ்அப்{" "}
                   <RequiredIndicator />
                 </th>
