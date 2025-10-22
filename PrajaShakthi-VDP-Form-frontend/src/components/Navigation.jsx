@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 
 const Navigation = ({ setCurrentRoute = () => {} }) => {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  // eslint-disable-next-line no-unused-vars
   const isDevelopmentFormDisabled = true;
 
   return (
@@ -13,24 +14,24 @@ const Navigation = ({ setCurrentRoute = () => {} }) => {
           alt="PrajaShakthi Logo" 
           className="h-12 sm:h-14 w-auto"
         />
-        <h1 className="text-xl font-bold">PrajaShakthi VDP Form</h1>
+        {/* <h1 className="text-xl font-bold">PrajaShakthi VDP Form</h1> */}
       </div>
 
       {/* Public and regular user navigation (hide for admin) */}
       {!isAdmin && (
         <nav className="flex flex-col sm:flex-row gap-2 mb-4 sm:mb-0">
-          <button
+          {/* <button
             onClick={() => setCurrentRoute('development')}
             className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-[#8B1C3D] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             disabled={isDevelopmentFormDisabled}
           >
             සංවර්ධන සැලැස්ම (Main Form)
-          </button>
+          </button> */}
           <button
             onClick={() => setCurrentRoute('council')}
             className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-[#8B1C3D] transition-colors"
           >
-            ප්‍රජා සභා තොරතුරු (Council Info)
+            ප්‍රජා සංවර්ධන සභාව / சமூக மேம்பாட்டு கவுன்சில்
           </button>
 
           {/* Show login as admin for public users only */}

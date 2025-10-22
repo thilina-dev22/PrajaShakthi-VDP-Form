@@ -24,7 +24,9 @@ const LocationSelectorBase = ({
           onChange={handleDistrictChange}
           className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-[#A8234A] focus:ring-2 focus:ring-[#F37021]/20 transition-all duration-200 outline-none"
         >
-          <option value="">-- දිස්ත්‍රික්කය තෝරන්න --</option>
+          <option value="">
+            -- දිස්ත්‍රික්කය තෝරන්න / மாவட்டத்தைத் தேர்ந்தெடுக்கவும் --
+          </option>
           {districts.map((d) => (
             <option key={d.district.trim()} value={d.district.trim()}>
               {d.district.trim()}
@@ -36,7 +38,7 @@ const LocationSelectorBase = ({
       <div className="mb-5">
         <label className="block mb-2 font-medium text-gray-700 text-base">
           ප්‍රාදේශීය ලේකම් කොට්ඨාශය / பிரதேச செயலகப் பிரிவு / Divisional
-          Secretariat Division :
+          Secretariat :
         </label>
         <select
           value={divisionalSec}
@@ -44,7 +46,9 @@ const LocationSelectorBase = ({
           className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-[#A8234A] focus:ring-2 focus:ring-[#F37021]/20 transition-all duration-200 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
           disabled={!district}
         >
-          <option value="">-- ප්‍රා. ලේ. කොට්ඨාශය තෝරන්න --</option>
+          <option value="">
+            -- ප්‍රා. ලේ. කොට්ඨාශය තෝරන්න / பி. செ. பிரிவு தேர்ந்தெடுக்கவும் --
+          </option>
           {dsDivisions.map((ds) => (
             <option
               key={ds.ds_division_name.trim()}
@@ -67,7 +71,9 @@ const LocationSelectorBase = ({
           className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-[#A8234A] focus:ring-2 focus:ring-[#F37021]/20 transition-all duration-200 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
           disabled={!divisionalSec}
         >
-          <option value="">-- ග්‍රා. නි. වසම තෝරන්න --</option>
+          <option value="">
+            -- ග්‍රා. නි. වසම තෝරන්න / கி. அ. தேர்ந்தெடுக்கவும் --
+          </option>
           {gnDivisions.map((gn, index) => (
             <option
               key={`${gn.gn_name.trim()}-${index}`}
