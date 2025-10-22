@@ -205,16 +205,19 @@ const SubmissionList = () => {
         title: "කාරක සභා සාමාජිකයින් (1-5)",
         key: "committeeMembers",
         startRow: 1,
+        showPosition: true,
       },
       {
         title: "ප්‍රජා නියෝජිත කණ්ඩායම (6-20)",
         key: "communityReps",
         startRow: 6,
+        showPosition: false,
       },
       {
         title: "උපාය මාර්ගික සාමාජික කණ්ඩායම (21-25)",
         key: "strategicMembers",
         startRow: 21,
+        showPosition: false,
       },
     ];
     return (
@@ -222,58 +225,48 @@ const SubmissionList = () => {
         <h4 className="text-lg font-semibold mt-6 pb-2 border-b border-gray-300">
           Community Development Council
         </h4>
-        <div className="overflow-x-auto">
-          {/* ====================================================================
-            FIX APPLIED HERE:
-            - Added newline after <table> and before <thead>
-            - Added newline after </tr> and before </thead>
-            - Added newline after </thead> and before <tbody>
-            ====================================================================
-          */}
-          <table className="w-full border-collapse mt-4 text-sm">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border border-gray-300 p-2 text-left font-bold w-12">#</th>
-                <th className="border border-gray-300 p-2 text-left font-bold">Name</th>
-                <th className="border border-gray-300 p-2 text-left font-bold">Position</th>
-                <th className="border border-gray-300 p-2 text-left font-bold">Phone</th>
-                <th className="border border-gray-300 p-2 text-left font-bold">WhatsApp</th>
-                <th className="border border-gray-300 p-2 text-left font-bold">Email</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sections.map((section) => (
-                <React.Fragment key={section.key}>
-                  <tr className="bg-[#F37021]/10 border-y-2 border-white">
-                    <td
-                      colSpan="6"
-                      className="p-3 text-center font-bold text-base text-[#A8234A]"
-                    >
-                      {section.title}
-                    </td>
-                  </tr>
-                  {section.key &&
-                    councilData[section.key]?.map((member, index) => {
-                      const globalRowNumber = section.startRow + index;
-                      return (
-                        <tr
-                          key={`${section.key}-${globalRowNumber}`}
-                          className="even:bg-gray-50"
-                        >
-                          <td className="border border-gray-300 p-2 font-semibold">{globalRowNumber}</td>
-                          <td className="border border-gray-300 p-2">{member.name}</td>
+        {sections.map((section) => (
+          <div key={section.key} className="overflow-x-auto mt-6">
+            <h5 className="text-md font-semibold mb-2 text-[#A8234A]">
+              {section.title}
+            </h5>
+            <table className="w-full border-collapse text-sm">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border border-gray-300 p-2 text-left font-bold w-12">#</th>
+                  <th className="border border-gray-300 p-2 text-left font-bold">Name</th>
+                  {section.showPosition && (
+                    <th className="border border-gray-300 p-2 text-left font-bold">Position</th>
+                  )}
+                  <th className="border border-gray-300 p-2 text-left font-bold">Phone</th>
+                  <th className="border border-gray-300 p-2 text-left font-bold">WhatsApp</th>
+                  <th className="border border-gray-300 p-2 text-left font-bold">Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                {section.key &&
+                  councilData[section.key]?.map((member, index) => {
+                    const globalRowNumber = section.startRow + index;
+                    return (
+                      <tr
+                        key={`${section.key}-${globalRowNumber}`}
+                        className="even:bg-gray-50"
+                      >
+                        <td className="border border-gray-300 p-2 font-semibold">{globalRowNumber}</td>
+                        <td className="border border-gray-300 p-2">{member.name}</td>
+                        {section.showPosition && (
                           <td className="border border-gray-300 p-2">{member.position}</td>
-                          <td className="border border-gray-300 p-2">{member.phone}</td>
-                          <td className="border border-gray-300 p-2">{member.whatsapp}</td>
-                          <td className="border border-gray-300 p-2">{member.email}</td>
-                        </tr>
-                      );
-                    })}
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                        )}
+                        <td className="border border-gray-300 p-2">{member.phone}</td>
+                        <td className="border border-gray-300 p-2">{member.whatsapp}</td>
+                        <td className="border border-gray-300 p-2">{member.email}</td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
+        ))}
       </div>
     );
   }; // Helper function to retrieve the deep section data
@@ -545,7 +538,7 @@ const SubmissionList = () => {
         >
           Council Info Data (ප්‍රජා සභා තොරතුරු)
         </button>
-        <button
+        {/* <button
           className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors duration-150 ease-in-out ${activeTab === "main_form"
               ? "bg-white border-x border-t border-gray-300 text-[#A8234A] -mb-px" // Active style
               : "bg-gray-100 text-gray-600 hover:bg-gray-200" // Inactive style
@@ -553,7 +546,7 @@ const SubmissionList = () => {
           onClick={() => setActiveTab("main_form")}
         >
           Main Form Data (සංවර්ධන සැලැස්ම)
-        </button>
+        </button> */}
       </div>
 
       <h2 className="text-2xl font-bold mb-4">
