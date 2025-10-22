@@ -14,8 +14,8 @@ function App() {
 
 // AppContent handles simple client-side routing via local state
 function AppContent() {
-  // Make the public landing page the main Development form by default
-  const [currentRoute, setCurrentRoute] = useState('development'); // 'development' | 'council' | 'login'
+  // Make the public landing page the Council form by default (development form is disabled)
+  const [currentRoute, setCurrentRoute] = useState('council'); // 'development' | 'council' | 'login'
   const { isAdmin } = useAuth();
 
   // Admin-only view remains protected
