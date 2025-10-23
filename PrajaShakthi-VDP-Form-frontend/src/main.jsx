@@ -4,6 +4,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'; // NEW
+import './i18n/config'; // Initialize i18n
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

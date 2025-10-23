@@ -1,5 +1,6 @@
 // src/components/LocationSelectorBase.jsx
 import React from "react";
+import { useTranslation } from 'react-i18next';
 
 // This component contains ONLY the location dropdowns.
 const LocationSelectorBase = ({
@@ -13,18 +14,20 @@ const LocationSelectorBase = ({
   handleDivisionalSecChange,
   setGnDivision,
 }) => {
+  const { t } = useTranslation();
+  
   return (
     <>
       <div className="mb-5">
         <label className="block mb-2 font-medium text-gray-700 text-base">
-          දිස්ත්‍රික්කය / மாவட்டம் / District :
+          {t('form.district')} :
         </label>
         <select
           value={district}
           onChange={handleDistrictChange}
           className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-[#A8234A] focus:ring-2 focus:ring-[#F37021]/20 transition-all duration-200 outline-none"
         >
-          <option value="">-- දිස්ත්‍රික්කය තෝරන්න --</option>
+          <option value="">-- {t('form.selectDistrict')} --</option>
           {districts.map((d) => (
             <option key={d.district.trim()} value={d.district.trim()}>
               {d.district.trim()}
@@ -35,8 +38,7 @@ const LocationSelectorBase = ({
 
       <div className="mb-5">
         <label className="block mb-2 font-medium text-gray-700 text-base">
-          ප්‍රාදේශීය ලේකම් කොට්ඨාශය / பிரதேச செயலகப் பிரிவு / Divisional
-          Secretariat Division :
+          {t('form.dsDivision')} :
         </label>
         <select
           value={divisionalSec}
@@ -44,7 +46,7 @@ const LocationSelectorBase = ({
           className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-[#A8234A] focus:ring-2 focus:ring-[#F37021]/20 transition-all duration-200 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
           disabled={!district}
         >
-          <option value="">-- ප්‍රා. ලේ. කොට්ඨාශය තෝරන්න --</option>
+          <option value="">-- {t('form.selectDs')} --</option>
           {dsDivisions.map((ds) => (
             <option
               key={ds.ds_division_name.trim()}
@@ -58,8 +60,7 @@ const LocationSelectorBase = ({
 
       <div className="mb-5">
         <label className="block mb-2 font-medium text-gray-700 text-base">
-          ග්‍රාම නිලධාරී කොට්ඨාශය / கிராம அலுவலர் பிரிவு / Grama Niladhari
-          Division :
+          {t('form.gnDivision')} :
         </label>
         <select
           value={gnDivision}
@@ -67,7 +68,7 @@ const LocationSelectorBase = ({
           className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-[#A8234A] focus:ring-2 focus:ring-[#F37021]/20 transition-all duration-200 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
           disabled={!divisionalSec}
         >
-          <option value="">-- ග්‍රා. නි. වසම තෝරන්න --</option>
+          <option value="">-- {t('form.selectGn')} --</option>
           {gnDivisions.map((gn, index) => (
             <option
               key={`${gn.gn_name.trim()}-${index}`}

@@ -3,6 +3,7 @@ import provincialDataJson from "../data/provincial_data.json";
 import LocationSelectorBase from "./LocationSelectorBase";
 import CommunityCouncilTable from "./CommunityCouncilTable";
 import { submitForm } from "../api/auth";
+import { useTranslation } from 'react-i18next';
 
 // Initial state structures for the Community Council Table
 // UPDATED: Added 'whatsapp' field
@@ -37,6 +38,7 @@ const isRowEmpty = (row) =>
   );
 
 const CommunityCouncilForm = () => {
+  const { t } = useTranslation();
   // State for form inputs and selections
   const [district, setDistrict] = useState("");
   const [divisionalSec, setDivisionalSec] = useState("");
@@ -105,7 +107,7 @@ const CommunityCouncilForm = () => {
 
     // 1. Location Validation (Mandatory Block)
     if (!district || !divisionalSec || !gnDivision) {
-      alert("Please select the District, DS Division, and GN Division.");
+      alert(t('form.selectLocation'));
       return;
     }
 
@@ -137,25 +139,25 @@ const CommunityCouncilForm = () => {
         if (i < 5) {
           // Rows 1-5: All fields including position
           requiredFields = [
-            { field: 'name', label: 'නම' },
-            { field: 'position', label: 'තනතුර' },
-            { field: 'phone', label: 'දුරකතන අංකය' },
-            { field: 'whatsapp', label: 'වට්ස් ඇප් අංකය' },
-            { field: 'email', label: 'විද්‍යුත් ලිපිනය' },
+            { field: 'name', label: t('form.name') },
+            { field: 'position', label: t('form.position') },
+            { field: 'phone', label: t('form.phone') },
+            { field: 'whatsapp', label: t('form.whatsapp') },
+            { field: 'email', label: t('form.email') },
           ];
         } else {
           // Rows 6-25: All fields except position
           requiredFields = [
-            { field: 'name', label: 'නම' },
-            { field: 'phone', label: 'දුරකතන අංකය' },
-            { field: 'whatsapp', label: 'වට්ස් ඇප් අංකය' },
-            { field: 'email', label: 'විද්‍යුත් ලිපිනය' },
+            { field: 'name', label: t('form.name') },
+            { field: 'phone', label: t('form.phone') },
+            { field: 'whatsapp', label: t('form.whatsapp') },
+            { field: 'email', label: t('form.email') },
           ];
         }
         
         requiredFields.forEach(({ field, label }) => {
           if (!row[field] || row[field].toString().trim() === "") {
-            validationErrors.push(`Row ${rowNumber}: ${label} is required as the row is in use.`);
+            validationErrors.push(`Row ${rowNumber}: ${label} ${t('form.requiredField')}`);
           }
         });
         
@@ -164,11 +166,11 @@ const CommunityCouncilForm = () => {
         const whatsappValue = row.whatsapp ? row.whatsapp.toString().trim() : '';
         
         if (phoneValue && !SRI_LANKA_PHONE_REGEX.test(phoneValue)) {
-          validationErrors.push(`Row ${rowNumber}: Invalid 'දුරකතන අංකය' (must be 10 digits, start with 07, e.g., 0712345678).`);
+          validationErrors.push(`Row ${rowNumber}: ${t('form.invalidPhone')}`);
         }
         
         if (whatsappValue && !SRI_LANKA_PHONE_REGEX.test(whatsappValue)) {
-          validationErrors.push(`Row ${rowNumber}: Invalid 'වට්ස් ඇප් අංකය' (must be 10 digits, start with 07, e.g., 0712345678).`);
+          validationErrors.push(`Row ${rowNumber}: ${t('form.invalidPhone')}`);
         }
         
       } else {
@@ -180,7 +182,7 @@ const CommunityCouncilForm = () => {
     // 3. Handle Critical Validation Errors (Blocking Submission)
     if (validationErrors.length > 0) {
       alert(
-        `Form Submission Blocked: Please correct the following errors:\n\n${validationErrors.join('\n')}`
+        `${t('form.validationError')}\n\n${validationErrors.join('\n')}`
       );
       return;
     }
@@ -190,17 +192,17 @@ const CommunityCouncilForm = () => {
 
     // Sequential Order Warning
     if (isSequentialOrderViolated) {
-      warningMessage += "⚠️ Warning: Row filling order violation detected (empty rows found among filled rows). Please ensure continuity.\n\n";
+      warningMessage += `⚠️ ${t('form.sequentialError')}\n\n`;
     }
 
     // Empty Row Warning
     if (!hasFilledRow) {
-      warningMessage += "⚠️ Warning: No community council members' information has been filled. The submission will contain an empty council data section.";
+      warningMessage += "⚠️ Warning: No community council members' information has been filled.";
     }
     
     // Display warning if present (user requested to "just indicate" but allow submit)
     if (warningMessage) {
-      if (!window.confirm(`Submitting Form with Warnings:\n\n${warningMessage}\n\nDo you wish to proceed?`)) {
+      if (!window.confirm(`${warningMessage}\n\nDo you wish to proceed?`)) {
         return; // User cancelled the submission
       }
     }
@@ -239,18 +241,17 @@ const CommunityCouncilForm = () => {
 
     try {
       await submitForm(formData);
-      alert("Council Information Submitted Successfully!");
+      alert(t('form.successMessage'));
       // Optionally reset the form here
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert(`Error submitting form: ${error.message}`);
+      alert(`${t('form.errorTitle')}: ${error.message}`);
     }
   };
   return (
     <div className="max-w-4xl mx-auto my-8 sm:my-10 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 bg-white rounded-xl shadow-lg">
       <h2 className="text-center text-[#A8234A] mb-10 sm:mb-12 font-semibold text-xl sm:text-2xl leading-relaxed">
-        ප්‍රජා සංවර්ධන සභා සාමාජික තොරතුරු <br /> சமூக மேம்பாட்டு மன்ற
-        உறுப்பினர் தகவல் <br /> Community Development Council Member Information
+        {t('council.title')}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <LocationSelectorBase
@@ -274,7 +275,7 @@ const CommunityCouncilForm = () => {
           type="submit" 
           className="w-full bg-[#F37021] hover:bg-[#D65F1A] text-white font-medium py-3 px-5 rounded-md mt-5 transition-all duration-200 text-base sm:text-lg active:translate-y-0.5"
         >
-          ඉදිරිපත් කරන්න / சமர்ப்பிக்கவும் / Submit
+          {t('form.submit')}
         </button>
       </form>
     </div>
