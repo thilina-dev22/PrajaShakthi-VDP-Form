@@ -19,11 +19,10 @@ const CommunityCouncilTable = ({ data, onChange }) => {
 
   const sectionsTable1 = [
     {
-      
       start: 0,
       end: 5,
       maxRows: 5,
-    }
+    },
   ];
 
   const sectionsTable2 = [
@@ -31,12 +30,11 @@ const CommunityCouncilTable = ({ data, onChange }) => {
       start: 5,
       end: 20,
       maxRows: 15,
-    }
+    },
   ];
 
   const sectionsTable3 = [
     {
-
       start: 20,
       end: 25,
       maxRows: 5,
@@ -44,16 +42,23 @@ const CommunityCouncilTable = ({ data, onChange }) => {
   ];
 
   // FIXED: Changed to use a distinct border and background for better visibility.
-  const inputClasses = "w-full px-1 py-1 border border-gray-300 rounded bg-white focus:outline-none focus:border-blue-500";
-  
+  const inputClasses =
+    "w-full px-1 py-1 border border-gray-300 rounded bg-white focus:outline-none focus:border-blue-500";
+
   // ADDED: Phone regex pattern for client-side hint
   // SL mobile number format: 07(0-8)xxxxxxx (10 digits total)
-  const phonePattern = "07[01245678][0-9]{7}"; 
-  const phoneTitle = "ශ්‍රී ලංකාවේ 10-අංක ජංගම දුරකථන අංක ආකෘතිය (උදා: 0712345678)";
+  const phonePattern = "07[01245678][0-9]{7}";
+  const phoneTitle =
+    "ශ්‍රී ලංකාවේ 10-අංක ජංගම දුරකථන අංක ආකෘතිය (උදා: 0712345678)";
 
   // ADDED: Reusable indicator for conditionally required fields
   const RequiredIndicator = () => (
-    <span className="text-red-500 font-bold text-lg leading-none align-text-top" title="අවශ්‍ය ක්ෂේත්‍රය (Required Field)">*</span>
+    <span
+      className="text-red-500 font-bold text-lg leading-none align-text-top"
+      title="අවශ්‍ය ක්ෂේත්‍රය (Required Field)"
+    >
+      *
+    </span>
   );
 
   // Check if "Other" is selected and position needs to be custom
@@ -132,8 +137,8 @@ const CommunityCouncilTable = ({ data, onChange }) => {
               value={row.phone}
               onChange={(e) => onChange(globalIndex, "phone", e.target.value)}
               className={inputClasses}
-              pattern={phonePattern} 
-              title={phoneTitle}      
+              pattern={phonePattern}
+              title={phoneTitle}
             />
           </td>
           <td className="p-2">
@@ -144,8 +149,8 @@ const CommunityCouncilTable = ({ data, onChange }) => {
                 onChange(globalIndex, "whatsapp", e.target.value)
               }
               className={inputClasses}
-              pattern={phonePattern} 
-              title={phoneTitle}      
+              pattern={phonePattern}
+              title={phoneTitle}
             />
           </td>
           <td className="p-2">
@@ -188,8 +193,8 @@ const CommunityCouncilTable = ({ data, onChange }) => {
               value={row.phone}
               onChange={(e) => onChange(globalIndex, "phone", e.target.value)}
               className={inputClasses}
-              pattern={phonePattern} 
-              title={phoneTitle}      
+              pattern={phonePattern}
+              title={phoneTitle}
             />
           </td>
           <td className="p-2">
@@ -200,8 +205,8 @@ const CommunityCouncilTable = ({ data, onChange }) => {
                 onChange(globalIndex, "whatsapp", e.target.value)
               }
               className={inputClasses}
-              pattern={phonePattern} 
-              title={phoneTitle}      
+              pattern={phonePattern}
+              title={phoneTitle}
             />
           </td>
           <td className="p-2">
@@ -223,7 +228,10 @@ const CommunityCouncilTable = ({ data, onChange }) => {
     return (
       <React.Fragment key={section.title}>
         <tr>
-          <td colSpan="6" className="bg-blue-100 text-blue-800 font-bold p-3 text-center">
+          <td
+            colSpan="6"
+            className="bg-blue-100 text-blue-800 font-bold p-3 text-center"
+          >
             {section.title}
           </td>
         </tr>
@@ -236,7 +244,10 @@ const CommunityCouncilTable = ({ data, onChange }) => {
     return (
       <React.Fragment key={section.title}>
         <tr>
-          <td colSpan="5" className="bg-blue-100 text-blue-800 font-bold p-3 text-center">
+          <td
+            colSpan="5"
+            className="bg-blue-100 text-blue-800 font-bold p-3 text-center"
+          >
             {section.title}
           </td>
         </tr>
