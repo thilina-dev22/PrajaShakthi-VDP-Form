@@ -4,17 +4,29 @@ import { useTranslation } from 'react-i18next';
 const CommunityCouncilTable = ({ data, onChange }) => {
   const { t } = useTranslation();
 
-  // Position dropdown options
-  const positionOptions = [
-    { value: "", label: t('council.selectPosition') },
+  // Fixed positions for first 4 rows
+  const fixedPositions = [
     { value: t('council.positionPresident'), label: t('council.positionPresident') },
     { value: t('council.positionSecretary'), label: t('council.positionSecretary') },
     { value: t('council.positionGN'), label: t('council.positionGN') },
     { value: t('council.positionSamurdhi'), label: t('council.positionSamurdhi') },
+  ];
+
+  // Dropdown options for row 5 only
+  const row5PositionOptions = [
+    { value: "", label: t('council.selectPosition') },
     { value: t('council.positionAgri'), label: t('council.positionAgri') },
     { value: t('council.positionFisheries'), label: t('council.positionFisheries') },
     { value: t('council.positionAquaculture'), label: t('council.positionAquaculture') },
     { value: t('council.positionOther'), label: t('council.positionOther') }
+  ];
+
+  // Gender options
+  const genderOptions = [
+    { value: "", label: "Select Gender / ස්ත්‍රී පුරුෂ භාවය තෝරන්න" },
+    { value: "Male", label: "Male / පුරුෂ" },
+    { value: "Female", label: "Female / ස්ත්‍රී" },
+    { value: "Other", label: "Other / වෙනත්" }
   ];
 
   const sectionsTable1 = [
@@ -61,13 +73,13 @@ const CommunityCouncilTable = ({ data, onChange }) => {
     </span>
   );
 
-  // Check if "Other" is selected and position needs to be custom
-  const isCustomPosition = (row) => {
+  // Check if row 5 position value is custom (not in dropdown)
+  const isRow5CustomPosition = (row) => {
     const otherLabel = t('council.positionOther');
-    return row.position && !positionOptions.some(opt => opt.value === row.position && opt.value !== otherLabel);
+    return row.position && !row5PositionOptions.some(opt => opt.value === row.position && opt.value !== otherLabel);
   };
 
-  // Render rows for Table 1 (rows 1-5) with position dropdown
+  // Render rows for Table 1 (rows 1-5) with position column
   const renderTable1Rows = (section) => {
     const sectionData = data.slice(section.start, section.end);
     const rowsToRender = [];
@@ -75,8 +87,13 @@ const CommunityCouncilTable = ({ data, onChange }) => {
 
     sectionData.forEach((row, localIndex) => {
       const globalIndex = section.start + localIndex;
-      const showCustomInput = row.position === otherLabel || isCustomPosition(row);
-      const dropdownValue = isCustomPosition(row) && row.position !== otherLabel ? otherLabel : row.position;
+      
+      // Rows 1-4 (index 0-3) have fixed positions, Row 5 (index 4) has dropdown
+      const isFixedPosition = globalIndex < 4;
+      const isRow5 = globalIndex === 4;
+      
+      const showCustomInput = isRow5 && (row.position === otherLabel || isRow5CustomPosition(row));
+      const dropdownValue = isRow5 && isRow5CustomPosition(row) && row.position !== otherLabel ? otherLabel : row.position;
 
       rowsToRender.push(
         <tr key={globalIndex} className="border-b hover:bg-gray-50">
@@ -90,46 +107,54 @@ const CommunityCouncilTable = ({ data, onChange }) => {
             />
           </td>
           <td className="p-2">
-            {showCustomInput ? (
-              <div className="space-y-1">
+            {isFixedPosition ? (
+              // Rows 1-4: Display fixed position (read-only)
+              <div className="px-2 py-1 bg-gray-100 border rounded">
+                {fixedPositions[globalIndex].label}
+              </div>
+            ) : isRow5 ? (
+              // Row 5: Dropdown with remaining positions
+              showCustomInput ? (
+                <div className="space-y-1">
+                  <select
+                    value={otherLabel}
+                    onChange={(e) => {
+                      if (e.target.value !== otherLabel) {
+                        onChange(globalIndex, "position", e.target.value);
+                      }
+                    }}
+                    className={inputClasses}
+                  >
+                    {row5PositionOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="text"
+                    value={row.position === otherLabel ? "" : row.position}
+                    onChange={(e) => onChange(globalIndex, "position", e.target.value)}
+                    placeholder={t('council.enterPosition')}
+                    className={inputClasses}
+                  />
+                </div>
+              ) : (
                 <select
-                  value={otherLabel}
+                  value={dropdownValue}
                   onChange={(e) => {
-                    if (e.target.value !== otherLabel) {
-                      onChange(globalIndex, "position", e.target.value);
-                    }
+                    onChange(globalIndex, "position", e.target.value);
                   }}
                   className={inputClasses}
                 >
-                  {positionOptions.map((opt) => (
+                  {row5PositionOptions.map((opt) => (
                     <option key={opt.value} value={opt.value}>
                       {opt.label}
                     </option>
                   ))}
                 </select>
-                <input
-                  type="text"
-                  value={row.position === otherLabel ? "" : row.position}
-                  onChange={(e) => onChange(globalIndex, "position", e.target.value)}
-                  placeholder={t('council.enterPosition')}
-                  className={inputClasses}
-                />
-              </div>
-            ) : (
-              <select
-                value={dropdownValue}
-                onChange={(e) => {
-                  onChange(globalIndex, "position", e.target.value);
-                }}
-                className={inputClasses}
-              >
-                {positionOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            )}
+              )
+            ) : null}
           </td>
           <td className="p-2">
             <input
@@ -155,10 +180,33 @@ const CommunityCouncilTable = ({ data, onChange }) => {
           </td>
           <td className="p-2">
             <input
-              type="email"
-              value={row.email}
-              onChange={(e) => onChange(globalIndex, "email", e.target.value)}
+              type="text"
+              value={row.nic}
+              onChange={(e) => onChange(globalIndex, "nic", e.target.value)}
               className={inputClasses}
+              placeholder="NIC / ජාතික හැඳුනුම්පත"
+            />
+          </td>
+          <td className="p-2">
+            <select
+              value={row.gender}
+              onChange={(e) => onChange(globalIndex, "gender", e.target.value)}
+              className={inputClasses}
+            >
+              {genderOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </td>
+          <td className="p-2">
+            <textarea
+              value={row.permanentAddress}
+              onChange={(e) => onChange(globalIndex, "permanentAddress", e.target.value)}
+              className={inputClasses}
+              placeholder="Permanent Address / ස්ථිර ලිපිනය"
+              rows="2"
             />
           </td>
         </tr>
@@ -211,10 +259,33 @@ const CommunityCouncilTable = ({ data, onChange }) => {
           </td>
           <td className="p-2">
             <input
-              type="email"
-              value={row.email}
-              onChange={(e) => onChange(globalIndex, "email", e.target.value)}
+              type="text"
+              value={row.nic}
+              onChange={(e) => onChange(globalIndex, "nic", e.target.value)}
               className={inputClasses}
+              placeholder="NIC / ජාතික හැඳුනුම්පත"
+            />
+          </td>
+          <td className="p-2">
+            <select
+              value={row.gender}
+              onChange={(e) => onChange(globalIndex, "gender", e.target.value)}
+              className={inputClasses}
+            >
+              {genderOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </td>
+          <td className="p-2">
+            <textarea
+              value={row.permanentAddress}
+              onChange={(e) => onChange(globalIndex, "permanentAddress", e.target.value)}
+              className={inputClasses}
+              placeholder="Permanent Address / ස්ථිර ලිපිනය"
+              rows="2"
             />
           </td>
         </tr>
@@ -229,7 +300,7 @@ const CommunityCouncilTable = ({ data, onChange }) => {
       <React.Fragment key={section.title}>
         <tr>
           <td
-            colSpan="6"
+            colSpan="8"
             className="bg-blue-100 text-blue-800 font-bold p-3 text-center"
           >
             {section.title}
@@ -245,7 +316,7 @@ const CommunityCouncilTable = ({ data, onChange }) => {
       <React.Fragment key={section.title}>
         <tr>
           <td
-            colSpan="5"
+            colSpan="7"
             className="bg-blue-100 text-blue-800 font-bold p-3 text-center"
           >
             {section.title}
@@ -270,20 +341,26 @@ const CommunityCouncilTable = ({ data, onChange }) => {
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[5%]">
                   {t('council.rowNumber')}
                 </th>
-                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[17%]">
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
                   {t('form.name')} <RequiredIndicator />
                 </th>
-                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[17%]">
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
                   {t('form.position')} <RequiredIndicator />
                 </th>
-                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[12%]">
                   {t('form.phone')} <RequiredIndicator />
                 </th>
-                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[12%]">
                   {t('form.whatsapp')} <RequiredIndicator />
                 </th>
-                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[31%]">
-                  {t('form.email')} <RequiredIndicator />
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[13%]">
+                  NIC / හැඳුනුම්පත <RequiredIndicator />
+                </th>
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[10%]">
+                  Gender / ස්ත්‍රී පුරුෂ භාවය <RequiredIndicator />
+                </th>
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[18%]">
+                  Permanent Address / ස්ථිර ලිපිනය <RequiredIndicator />
                 </th>
               </tr>
             </thead>
@@ -309,17 +386,23 @@ const CommunityCouncilTable = ({ data, onChange }) => {
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[5%]">
                   {t('council.rowNumber')}
                 </th>
-                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[25%]">
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[20%]">
                   {t('form.name')} <RequiredIndicator />
                 </th>
-                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[20%]">
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
                   {t('form.phone')} <RequiredIndicator />
                 </th>
-                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[20%]">
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
                   {t('form.whatsapp')} <RequiredIndicator />
                 </th>
-                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[30%]">
-                  {t('form.email')} <RequiredIndicator />
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
+                  NIC / හැඳුනුම්පත <RequiredIndicator />
+                </th>
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[12%]">
+                  Gender / ස්ත්‍රී පුරුෂ භාවය <RequiredIndicator />
+                </th>
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[18%]">
+                  Permanent Address / ස්ථිර ලිපිනය <RequiredIndicator />
                 </th>
               </tr>
             </thead>
@@ -345,17 +428,23 @@ const CommunityCouncilTable = ({ data, onChange }) => {
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[5%]">
                   {t('council.rowNumber')}
                 </th>
-                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[25%]">
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[20%]">
                   {t('form.name')} <RequiredIndicator />
                 </th>
-                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[20%]">
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
                   {t('form.phone')} <RequiredIndicator />
                 </th>
-                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[20%]">
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
                   {t('form.whatsapp')} <RequiredIndicator />
                 </th>
-                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[30%]">
-                  {t('form.email')} <RequiredIndicator />
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
+                  NIC / හැඳුනුම්පත <RequiredIndicator />
+                </th>
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[12%]">
+                  Gender / ස්ත්‍රී පුරුෂ භාවය <RequiredIndicator />
+                </th>
+                <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[18%]">
+                  Permanent Address / ස්ථිර ලිපිනය <RequiredIndicator />
                 </th>
               </tr>
             </thead>
