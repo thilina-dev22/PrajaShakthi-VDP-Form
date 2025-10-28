@@ -1149,7 +1149,8 @@ const SubmissionList = () => {
               type="text"
               value={formData.location.gnDivision}
               onChange={(e) => handleLocationChange('gnDivision', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
+              disabled
             />
           </div>
         </div>
@@ -1176,15 +1177,34 @@ const SubmissionList = () => {
                         className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
                       />
                     </div>
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Position</label>
-                      <input
-                        type="text"
-                        value={member.position || ''}
-                        onChange={(e) => handleMemberChange(section, idx, 'position', e.target.value)}
-                        className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
-                      />
-                    </div>
+                    {/* Position field only for Committee Members */}
+                    {section === 'committeeMembers' && (
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Position</label>
+                        {idx < 4 ? (
+                          // Rows 1-4: Read-only position (fixed)
+                          <input
+                            type="text"
+                            value={member.position || ''}
+                            className="w-full px-2 py-1 border border-gray-300 rounded text-sm bg-gray-100"
+                            disabled
+                          />
+                        ) : (
+                          // Row 5: Dropdown with position options
+                          <select
+                            value={member.position || ''}
+                            onChange={(e) => handleMemberChange(section, idx, 'position', e.target.value)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                          >
+                            <option value="">Select Position</option>
+                            <option value="කෘෂිකර්ම නිලධාරි">කෘෂිකර්ම නිලධාරි (Agricultural Officer)</option>
+                            <option value="ධීවර සංවර්ධන නිලධාරි">ධීවර සංවර්ධන නිලධාරි (Fisheries Officer)</option>
+                            <option value="ජලජ සංවර්ධන නිලධාරි">ජලජ සංවර්ධන නිලධාරි (Aquaculture Officer)</option>
+                            <option value="වෙනත්">වෙනත් (Other)</option>
+                          </select>
+                        )}
+                      </div>
+                    )}
                     <div>
                       <label className="block text-xs text-gray-600 mb-1">Phone</label>
                       <input
