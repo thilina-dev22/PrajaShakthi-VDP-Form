@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
 import provincialDataJson from "../data/provincial_data.json";
 import LocationSelector from "./DevelopmentFormLocation";
 import DynamicContent from "./DynamicContent";
@@ -8,6 +9,7 @@ import { sectors } from "../data/sectors_data.js";
 import SectorSelector from "./SectorSelector";
 
 const DevelopmentForm = () => {
+  const { user } = useAuth();
   const [district, setDistrict] = useState("");
   const [divisionalSec, setDivisionalSec] = useState("");
   const [gnDivision, setGnDivision] = useState("");
@@ -32,6 +34,35 @@ const DevelopmentForm = () => {
     const allDistricts = provincialDataJson[0]?.districts || [];
     setDistricts(allDistricts);
   }, []);
+
+  // Auto-populate for DS users
+  useEffect(() => {
+    if (user && user.role === 'ds_user') {
+      // Set district
+      setDistrict(user.district);
+      
+      // Find DS divisions for the user's district
+      const selectedDistrictData = districts.find(
+        (d) => d.district.trim() === user.district
+      );
+      
+      if (selectedDistrictData) {
+        setDsDivisions(selectedDistrictData.ds_divisions);
+        
+        // Set divisional secretariat
+        setDivisionalSec(user.divisionalSecretariat);
+        
+        // Find GN divisions for the user's DS division
+        const selectedDsData = selectedDistrictData.ds_divisions.find(
+          (ds) => ds.ds_division_name.trim() === user.divisionalSecretariat
+        );
+        
+        if (selectedDsData) {
+          setGnDivisions(selectedDsData.gn_divisions);
+        }
+      }
+    }
+  }, [user, districts]);
 
   const handleDistrictChange = (e) => {
     const selectedDistrictName = e.target.value;
@@ -323,6 +354,8 @@ const DevelopmentForm = () => {
           handleDistrictChange={handleDistrictChange}
           handleDivisionalSecChange={handleDivisionalSecChange}
           setGnDivision={setGnDivision}
+          isDistrictDisabled={user && user.role === 'ds_user'}
+          isDSDisabled={user && user.role === 'ds_user'}
         />
 
         <SectorSelector

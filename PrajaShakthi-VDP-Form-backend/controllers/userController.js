@@ -1,0 +1,302 @@
+// PrajaShakthi-VDP-Form-backend/controllers/userController.js
+
+const User = require('../models/UserModel');
+const { logActivity } = require('../utils/activityLogger');
+
+// @desc    Create a new user (District Admin or DS User)
+// @route   POST /api/users
+// @access  Private (SuperAdmin creates District Admin, District Admin creates DS User)
+const createUser = async (req, res) => {
+    try {
+        const { username, password, role, district, divisionalSecretariat, fullName, email } = req.body;
+        const creator = req.user;
+
+        // Validation: SuperAdmin can only create District Admins
+        if (creator.role === 'superadmin' && role !== 'district_admin') {
+            return res.status(403).json({ 
+                message: 'Super Admin can only create District Admin accounts' 
+            });
+        }
+
+        // Validation: District Admin can only create DS Users in their district
+        if (creator.role === 'district_admin') {
+            if (role !== 'ds_user') {
+                return res.status(403).json({ 
+                    message: 'District Admin can only create DS User accounts' 
+                });
+            }
+            if (district !== creator.district) {
+                return res.status(403).json({ 
+                    message: 'You can only create users for your own district' 
+                });
+            }
+        }
+
+        // Check if username already exists
+        const existingUser = await User.findOne({ username });
+        if (existingUser) {
+            return res.status(400).json({ message: 'Username already exists' });
+        }
+
+        // Create new user
+        const newUser = await User.create({
+            username,
+            password,
+            role,
+            district,
+            divisionalSecretariat,
+            fullName,
+            email,
+            createdBy: creator._id
+        });
+
+        // Log activity
+        await logActivity({
+            userId: creator._id,
+            username: creator.username,
+            userRole: creator.role,
+            action: 'CREATE_USER',
+            targetType: 'User',
+            targetId: newUser._id,
+            details: {
+                createdUsername: username,
+                createdRole: role,
+                district,
+                divisionalSecretariat
+            },
+            ipAddress: req.ip,
+            userAgent: req.get('user-agent'),
+            district: creator.district,
+            divisionalSecretariat: creator.divisionalSecretariat
+        });
+
+        res.status(201).json({
+            _id: newUser._id,
+            username: newUser.username,
+            role: newUser.role,
+            district: newUser.district,
+            divisionalSecretariat: newUser.divisionalSecretariat,
+            fullName: newUser.fullName,
+            email: newUser.email,
+            isActive: newUser.isActive
+        });
+    } catch (error) {
+        console.error('Error creating user:', error);
+        res.status(500).json({ message: 'Error creating user', error: error.message });
+    }
+};
+
+// @desc    Get users based on role
+// @route   GET /api/users
+// @access  Private
+const getUsers = async (req, res) => {
+    try {
+        const currentUser = req.user;
+        let filter = {};
+
+        // SuperAdmin sees all District Admins
+        if (currentUser.role === 'superadmin') {
+            filter.role = 'district_admin';
+        }
+        // District Admin sees DS Users in their district
+        else if (currentUser.role === 'district_admin') {
+            filter.role = 'ds_user';
+            filter.district = currentUser.district;
+        }
+        // DS Users don't see other users
+        else {
+            return res.status(403).json({ message: 'Not authorized to view users' });
+        }
+
+        const users = await User.find(filter)
+            .select('-password')
+            .populate('createdBy', 'username')
+            .sort({ createdAt: -1 });
+
+        // Log activity
+        await logActivity({
+            userId: currentUser._id,
+            username: currentUser.username,
+            userRole: currentUser.role,
+            action: 'VIEW_USERS',
+            details: { count: users.length },
+            ipAddress: req.ip,
+            userAgent: req.get('user-agent'),
+            district: currentUser.district,
+            divisionalSecretariat: currentUser.divisionalSecretariat
+        });
+
+        res.json(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ message: 'Error fetching users', error: error.message });
+    }
+};
+
+// @desc    Update user
+// @route   PUT /api/users/:id
+// @access  Private
+const updateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { fullName, email, isActive, password } = req.body;
+        const currentUser = req.user;
+
+        const userToUpdate = await User.findById(id);
+        if (!userToUpdate) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Permission check
+        if (currentUser.role === 'district_admin' && 
+            userToUpdate.district !== currentUser.district) {
+            return res.status(403).json({ message: 'Not authorized to update this user' });
+        }
+
+        // Update fields
+        if (fullName !== undefined) userToUpdate.fullName = fullName;
+        if (email !== undefined) userToUpdate.email = email;
+        if (isActive !== undefined) userToUpdate.isActive = isActive;
+        if (password) userToUpdate.password = password; // Will be hashed by pre-save hook
+
+        await userToUpdate.save();
+
+        // Log activity
+        await logActivity({
+            userId: currentUser._id,
+            username: currentUser.username,
+            userRole: currentUser.role,
+            action: 'UPDATE_USER',
+            targetType: 'User',
+            targetId: userToUpdate._id,
+            details: {
+                updatedUsername: userToUpdate.username,
+                changes: { fullName, email, isActive: isActive !== undefined }
+            },
+            ipAddress: req.ip,
+            userAgent: req.get('user-agent'),
+            district: currentUser.district,
+            divisionalSecretariat: currentUser.divisionalSecretariat
+        });
+
+        res.json({
+            _id: userToUpdate._id,
+            username: userToUpdate.username,
+            role: userToUpdate.role,
+            district: userToUpdate.district,
+            divisionalSecretariat: userToUpdate.divisionalSecretariat,
+            fullName: userToUpdate.fullName,
+            email: userToUpdate.email,
+            isActive: userToUpdate.isActive
+        });
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).json({ message: 'Error updating user', error: error.message });
+    }
+};
+
+// @desc    Delete user
+// @route   DELETE /api/users/:id
+// @access  Private
+const deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const currentUser = req.user;
+
+        const userToDelete = await User.findById(id);
+        if (!userToDelete) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Permission check
+        if (currentUser.role === 'district_admin' && 
+            userToDelete.district !== currentUser.district) {
+            return res.status(403).json({ message: 'Not authorized to delete this user' });
+        }
+
+        await userToDelete.deleteOne();
+
+        // Log activity
+        await logActivity({
+            userId: currentUser._id,
+            username: currentUser.username,
+            userRole: currentUser.role,
+            action: 'DELETE_USER',
+            targetType: 'User',
+            targetId: id,
+            details: {
+                deletedUsername: userToDelete.username,
+                deletedRole: userToDelete.role
+            },
+            ipAddress: req.ip,
+            userAgent: req.get('user-agent'),
+            district: currentUser.district,
+            divisionalSecretariat: currentUser.divisionalSecretariat
+        });
+
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ message: 'Error deleting user', error: error.message });
+    }
+};
+
+// @desc    Get activity logs
+// @route   GET /api/users/logs
+// @access  Private (SuperAdmin sees all, District Admin sees their district)
+const getActivityLogs = async (req, res) => {
+    try {
+        const currentUser = req.user;
+        const { page = 1, limit = 50, action, startDate, endDate } = req.query;
+
+        let filter = {};
+
+        // SuperAdmin sees all logs
+        if (currentUser.role === 'superadmin') {
+            // No additional filter
+        }
+        // District Admin sees only their district's logs
+        else if (currentUser.role === 'district_admin') {
+            filter.district = currentUser.district;
+        }
+        // DS Users see only their own logs
+        else {
+            filter.user = currentUser._id;
+        }
+
+        // Additional filters
+        if (action) filter.action = action;
+        if (startDate || endDate) {
+            filter.createdAt = {};
+            if (startDate) filter.createdAt.$gte = new Date(startDate);
+            if (endDate) filter.createdAt.$lte = new Date(endDate);
+        }
+
+        const ActivityLog = require('../models/ActivityLogModel');
+        const logs = await ActivityLog.find(filter)
+            .populate('user', 'username role district divisionalSecretariat')
+            .sort({ createdAt: -1 })
+            .limit(limit * 1)
+            .skip((page - 1) * limit);
+
+        const count = await ActivityLog.countDocuments(filter);
+
+        res.json({
+            logs,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+            total: count
+        });
+    } catch (error) {
+        console.error('Error fetching activity logs:', error);
+        res.status(500).json({ message: 'Error fetching logs', error: error.message });
+    }
+};
+
+module.exports = {
+    createUser,
+    getUsers,
+    updateUser,
+    deleteUser,
+    getActivityLogs
+};

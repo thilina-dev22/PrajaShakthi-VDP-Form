@@ -4,15 +4,18 @@ import LocationSelectorBase from "./LocationSelectorBase";
 import CommunityCouncilTable from "./CommunityCouncilTable";
 import { submitForm } from "../api/auth";
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../context/AuthContext';
 
 // Initial state structures for the Community Council Table
-// UPDATED: Added 'whatsapp' field
+// UPDATED: Added 'whatsapp', 'nic', 'gender', 'permanentAddress' fields
 const emptyCouncilRow = {
   name: "",
   position: "",
   phone: "",
   whatsapp: "",
-  email: "",
+  nic: "",
+  gender: "",
+  permanentAddress: "",
 };
 const MAX_ROWS = 25;
 
@@ -34,11 +37,15 @@ const isRowEmpty = (row) =>
     (row.position && row.position.trim() !== "") ||
     (row.phone && row.phone.trim() !== "") ||
     (row.whatsapp && row.whatsapp.trim() !== "") ||
-    (row.email && row.email.trim() !== "")
+    (row.nic && row.nic.trim() !== "") ||
+    (row.gender && row.gender.trim() !== "") ||
+    (row.permanentAddress && row.permanentAddress.trim() !== "")
   );
 
 const CommunityCouncilForm = () => {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  
   // State for form inputs and selections
   const [district, setDistrict] = useState("");
   const [divisionalSec, setDivisionalSec] = useState("");
@@ -56,7 +63,47 @@ const CommunityCouncilForm = () => {
   useEffect(() => {
     const allDistricts = provincialDataJson[0]?.districts || [];
     setDistricts(allDistricts);
-  }, []);
+    
+    // Auto-populate for DS users
+    if (user && user.role === 'ds_user') {
+      if (user.district) {
+        setDistrict(user.district);
+        // Find and set DS divisions for the user's district
+        const selectedDistrictData = allDistricts.find(
+          (d) => d.district.trim() === user.district
+        );
+        if (selectedDistrictData) {
+          setDsDivisions(selectedDistrictData.ds_divisions);
+          
+          // Set divisional secretariat
+          if (user.divisionalSecretariat) {
+            setDivisionalSec(user.divisionalSecretariat);
+            
+            // Find and set GN divisions
+            const selectedDsData = selectedDistrictData.ds_divisions.find(
+              (ds) => ds.ds_division_name.trim() === user.divisionalSecretariat
+            );
+            if (selectedDsData) {
+              setGnDivisions(selectedDsData.gn_divisions);
+            }
+          }
+        }
+      }
+    }
+  }, [user]);
+
+  // Set fixed positions for rows 1-4
+  useEffect(() => {
+    setCommunityCouncilData((prev) => {
+      const newData = [...prev];
+      // Set fixed positions for first 4 rows
+      newData[0] = { ...newData[0], position: t('council.positionPresident') };
+      newData[1] = { ...newData[1], position: t('council.positionSecretary') };
+      newData[2] = { ...newData[2], position: t('council.positionGN') };
+      newData[3] = { ...newData[3], position: t('council.positionSamurdhi') };
+      return newData;
+    });
+  }, [t]);
 
   // Event handlers for cascading dropdowns (unchanged)
   const handleDistrictChange = (e) => {
@@ -132,21 +179,20 @@ const CommunityCouncilForm = () => {
         }
 
         // 2b) Conditional Required Fields Check (If touched, ALL fields are required)
-        // For rows 1-5: name, position, phone, whatsapp, email are required
-        // For rows 6-25: name, phone, whatsapp, email are required (no position)
+        // For rows 1-5: name, position, phone, whatsapp, nic, gender, permanentAddress are required
+        // For rows 6-25: name, phone, whatsapp, nic, gender, permanentAddress are required (no position)
         let requiredFields = [];
 
         if (i < 5) {
           // Rows 1-5: All fields including position
           requiredFields = [
-
             { field: 'name', label: t('form.name') },
             { field: 'position', label: t('form.position') },
             { field: 'phone', label: t('form.phone') },
             { field: 'whatsapp', label: t('form.whatsapp') },
-            { field: 'email', label: t('form.email') },
-
-
+            { field: 'nic', label: 'NIC' },
+            { field: 'gender', label: 'Gender' },
+            { field: 'permanentAddress', label: 'Permanent Address' },
           ];
         } else {
           // Rows 6-25: All fields except position
@@ -154,7 +200,9 @@ const CommunityCouncilForm = () => {
             { field: 'name', label: t('form.name') },
             { field: 'phone', label: t('form.phone') },
             { field: 'whatsapp', label: t('form.whatsapp') },
-            { field: 'email', label: t('form.email') },
+            { field: 'nic', label: 'NIC' },
+            { field: 'gender', label: 'Gender' },
+            { field: 'permanentAddress', label: 'Permanent Address' },
           ];
         }
 
@@ -219,7 +267,9 @@ const CommunityCouncilForm = () => {
       (row.position && row.position.trim() !== "") ||
       (row.phone && row.phone.trim() !== "") ||
       (row.whatsapp && row.whatsapp.trim() !== "") ||
-      (row.email && row.email.trim() !== "");
+      (row.nic && row.nic.trim() !== "") ||
+      (row.gender && row.gender.trim() !== "") ||
+      (row.permanentAddress && row.permanentAddress.trim() !== "");
 
     const councilData = {
       committeeMembers: communityCouncilData.slice(0, 5).filter(filterHasData),
@@ -269,6 +319,8 @@ const CommunityCouncilForm = () => {
           handleDistrictChange={handleDistrictChange}
           handleDivisionalSecChange={handleDivisionalSecChange}
           setGnDivision={setGnDivision}
+          isDistrictDisabled={user && user.role === 'ds_user'}
+          isDSDisabled={user && user.role === 'ds_user'}
         />
 
         <CommunityCouncilTable

@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db");
 const submissionRoutes = require("./routes/submissionRoutes");
 const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
 const { Logger } = require('./middleware/loggingMiddleware')
 
 dotenv.config();
@@ -57,6 +58,7 @@ app.use(Logger); // Custom Request Logging Middleware
 // Mount the routers
 app.use("/api/submissions", submissionRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 // Simple health check endpoint for uptime and deployment verification
 app.get("/api/health", (req, res) => {

@@ -7,7 +7,10 @@ const CouncilMemberSchema = new mongoose.Schema(
     position: { type: String, trim: true },
     phone: { type: String, trim: true },
     whatsapp: { type: String, trim: true },
-    email: { type: String, trim: true },
+    nic: { type: String, trim: true },
+    gender: { type: String, trim: true },
+    permanentAddress: { type: String, trim: true },
+    // email field removed - no longer used
   },
   { _id: false }
 );
@@ -53,6 +56,36 @@ const SubmissionSchema = new mongoose.Schema(
         agency: String,
       },
     ],
+    // New fields for user tracking
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: false // Optional for backward compatibility
+    },
+    lastModifiedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    // Track editing history
+    editHistory: [{
+      editedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      },
+      editedAt: {
+        type: Date,
+        default: Date.now
+      },
+      changes: {
+        type: String // Brief description of changes
+      }
+    }],
+    // Status tracking
+    status: {
+      type: String,
+      enum: ['draft', 'submitted', 'under_review', 'approved', 'rejected'],
+      default: 'submitted'
+    }
   },
   {
     timestamps: true,

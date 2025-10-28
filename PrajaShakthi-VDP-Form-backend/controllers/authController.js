@@ -2,6 +2,7 @@
 
 const User = require("../models/UserModel");
 const jwt = require("jsonwebtoken");
+const { logActivity } = require("../utils/activityLogger");
 
 // Helper to generate JWT and set as HttpOnly cookie (most secure session storage)
 const generateToken = (res, userId, role) => {
@@ -29,6 +30,11 @@ const loginUser = async (req, res) => {
   const user = await User.findOne({ username });
 
   if (user && (await user.matchPassword(password))) {
+    // Check if account is active
+    if (!user.isActive) {
+      return res.status(403).json({ message: "Account is deactivated" });
+    }
+
     // Issue JWT and set cookie for compatible browsers
     generateToken(res, user._id, user.role);
 
@@ -37,10 +43,26 @@ const loginUser = async (req, res) => {
       expiresIn: "30d",
     });
 
+    // Log login activity
+    await logActivity({
+      userId: user._id,
+      username: user.username,
+      userRole: user.role,
+      action: 'LOGIN',
+      targetType: 'System',
+      ipAddress: req.ip,
+      userAgent: req.get('user-agent'),
+      district: user.district,
+      divisionalSecretariat: user.divisionalSecretariat
+    });
+
     res.json({
       _id: user._id,
       username: user.username,
-      role: user.role, // Send role to frontend for display/routing
+      role: user.role,
+      district: user.district,
+      divisionalSecretariat: user.divisionalSecretariat,
+      fullName: user.fullName,
       token,
     });
   } else {
@@ -50,7 +72,22 @@ const loginUser = async (req, res) => {
 
 // @desc    Logout user / clear cookie
 // @route   POST /api/auth/logout
-const logoutUser = (req, res) => {
+const logoutUser = async (req, res) => {
+  // Log logout activity if user is authenticated
+  if (req.user) {
+    await logActivity({
+      userId: req.user._id,
+      username: req.user.username,
+      userRole: req.user.role,
+      action: 'LOGOUT',
+      targetType: 'System',
+      ipAddress: req.ip,
+      userAgent: req.get('user-agent'),
+      district: req.user.district,
+      divisionalSecretariat: req.user.divisionalSecretariat
+    });
+  }
+
   res.cookie("jwt", "", {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development",
@@ -97,8 +134,15 @@ const registerUser = async (req, res) => {
 const checkAuthStatus = (req, res) => {
   // The 'protect' middleware has already run and attached the user to the request.
   // If we reach this point, the user is authenticated.
-  const { _id, username, role } = req.user;
-  res.status(200).json({ _id, username, role });
+  const { _id, username, role, district, divisionalSecretariat, fullName } = req.user;
+  res.status(200).json({ 
+    _id, 
+    username, 
+    role, 
+    district, 
+    divisionalSecretariat, 
+    fullName 
+  });
 };
 
 module.exports = {

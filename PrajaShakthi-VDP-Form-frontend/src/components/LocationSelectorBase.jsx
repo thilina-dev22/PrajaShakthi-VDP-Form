@@ -13,6 +13,8 @@ const LocationSelectorBase = ({
   handleDistrictChange,
   handleDivisionalSecChange,
   setGnDivision,
+  isDistrictDisabled = false,
+  isDSDisabled = false,
 }) => {
   const { t } = useTranslation();
   
@@ -25,7 +27,8 @@ const LocationSelectorBase = ({
         <select
           value={district}
           onChange={handleDistrictChange}
-          className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-[#A8234A] focus:ring-2 focus:ring-[#F37021]/20 transition-all duration-200 outline-none"
+          disabled={isDistrictDisabled}
+          className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-[#A8234A] focus:ring-2 focus:ring-[#F37021]/20 transition-all duration-200 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
         >
           <option value="">-- {t('form.selectDistrict')} --</option>
           {districts.map((d) => (
@@ -44,7 +47,7 @@ const LocationSelectorBase = ({
           value={divisionalSec}
           onChange={handleDivisionalSecChange}
           className="w-full px-3 py-3 sm:px-4 sm:py-3 border border-gray-300 rounded-md text-base focus:border-[#A8234A] focus:ring-2 focus:ring-[#F37021]/20 transition-all duration-200 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
-          disabled={!district}
+          disabled={!district || isDSDisabled}
         >
           <option value="">-- {t('form.selectDs')} --</option>
           {dsDivisions.map((ds) => (

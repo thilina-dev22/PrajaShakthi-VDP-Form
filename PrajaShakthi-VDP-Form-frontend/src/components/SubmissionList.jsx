@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getSubmissions, deleteSubmission } from "../api/auth";
+import { getSubmissions, deleteSubmission, updateSubmission } from "../api/auth";
 import { useAuth } from "../context/AuthContext";
 import provincialDataJson from "../data/provincial_data.json";
 // Import sectors for label lookup
@@ -11,7 +11,7 @@ import autoTable from 'jspdf-autotable';
 // REMOVED: import "./AdminTabs.css"; since custom CSS was removed
 
 const SubmissionList = () => {
-  const { isAuthenticated, isAdmin } = useAuth();
+  const { isAuthenticated, isSuperAdmin } = useAuth();
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,6 +25,12 @@ const SubmissionList = () => {
   const [districts, setDistricts] = useState([]);
   const [dsDivisions, setDsDivisions] = useState([]);
   const [gnDivisions, setGnDivisions] = useState([]);
+
+  // Edit state
+  const [editingSubmission, setEditingSubmission] = useState(null);
+  
+  // Edit history state
+  const [viewingHistory, setViewingHistory] = useState(null);
 
   useEffect(() => {
     const allDistricts = provincialDataJson[0]?.districts || [];
@@ -54,7 +60,7 @@ const SubmissionList = () => {
   }, [filterDsDivision, dsDivisions]);
 
   useEffect(() => {
-    if (!isAuthenticated || !isAdmin) {
+    if (!isAuthenticated) {
       setLoading(false);
       return;
     }
@@ -85,7 +91,6 @@ const SubmissionList = () => {
     fetchSubmissionsData();
   }, [
     isAuthenticated,
-    isAdmin,
     filterDistrict,
     filterDsDivision,
     filterGnDivision,
@@ -209,6 +214,33 @@ const SubmissionList = () => {
     }
   };
 
+  const handleEdit = (submission) => {
+    setEditingSubmission(submission);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingSubmission(null);
+  };
+
+  const handleSaveEdit = async (updatedData) => {
+    try {
+      const updated = await updateSubmission(editingSubmission._id, updatedData);
+      
+      // Update the submission in the local state
+      setSubmissions((currentSubmissions) =>
+        currentSubmissions.map((sub) =>
+          sub._id === editingSubmission._id ? updated.data : sub
+        )
+      );
+      
+      setEditingSubmission(null);
+      alert("Submission updated successfully!");
+    } catch (err) {
+      setError(err.message);
+      alert(`Error updating submission: ${err.message}`);
+    }
+  };
+
   // Export to Excel function
   const exportToExcel = () => {
     if (submissions.length === 0) {
@@ -238,7 +270,9 @@ const SubmissionList = () => {
               'Position': member.position || '',
               'Phone': member.phone || '',
               'WhatsApp': member.whatsapp || '',
-              'Email': member.email || '',
+              'NIC': member.nic || '',
+              'Gender': member.gender || '',
+              'Permanent Address': member.permanentAddress || '',
               'Submitted': new Date(sub.createdAt).toLocaleDateString(),
             });
           });
@@ -256,7 +290,9 @@ const SubmissionList = () => {
               'Position': member.position || '',
               'Phone': member.phone || '',
               'WhatsApp': member.whatsapp || '',
-              'Email': member.email || '',
+              'NIC': member.nic || '',
+              'Gender': member.gender || '',
+              'Permanent Address': member.permanentAddress || '',
               'Submitted': new Date(sub.createdAt).toLocaleDateString(),
             });
           });
@@ -274,7 +310,9 @@ const SubmissionList = () => {
               'Position': member.position || '',
               'Phone': member.phone || '',
               'WhatsApp': member.whatsapp || '',
-              'Email': member.email || '',
+              'NIC': member.nic || '',
+              'Gender': member.gender || '',
+              'Permanent Address': member.permanentAddress || '',
               'Submitted': new Date(sub.createdAt).toLocaleDateString(),
             });
           });
@@ -444,12 +482,14 @@ const SubmissionList = () => {
           member.position || '',
           member.phone || '',
           member.whatsapp || '',
-          member.email || ''
+          member.nic || '',
+          member.gender || '',
+          member.permanentAddress || ''
         ]);
 
         autoTable(pdf, {
           startY: yPosition,
-          head: [['#', 'Name', 'Position', 'Phone', 'WhatsApp', 'Email']],
+          head: [['#', 'Name', 'Position', 'Phone', 'WhatsApp', 'NIC', 'Gender', 'Address']],
           body: committeeData,
           theme: 'grid',
           headStyles: {
@@ -533,12 +573,14 @@ const SubmissionList = () => {
           member.name || '',
           member.phone || '',
           member.whatsapp || '',
-          member.email || ''
+          member.nic || '',
+          member.gender || '',
+          member.permanentAddress || ''
         ]);
 
         autoTable(pdf, {
           startY: yPosition,
-          head: [['#', 'Name', 'Phone', 'WhatsApp', 'Email']],
+          head: [['#', 'Name', 'Phone', 'WhatsApp', 'NIC', 'Gender', 'Address']],
           body: repsData,
           theme: 'grid',
           headStyles: {
@@ -619,12 +661,14 @@ const SubmissionList = () => {
           member.name || '',
           member.phone || '',
           member.whatsapp || '',
-          member.email || ''
+          member.nic || '',
+          member.gender || '',
+          member.permanentAddress || ''
         ]);
 
         autoTable(pdf, {
           startY: yPosition,
-          head: [['#', 'Name', 'Phone', 'WhatsApp', 'Email']],
+          head: [['#', 'Name', 'Phone', 'WhatsApp', 'NIC', 'Gender', 'Address']],
           body: strategicData,
           theme: 'grid',
           headStyles: {
@@ -759,7 +803,9 @@ const SubmissionList = () => {
                   )}
                   <th className="border border-gray-300 p-2 text-left font-bold">Phone</th>
                   <th className="border border-gray-300 p-2 text-left font-bold">WhatsApp</th>
-                  <th className="border border-gray-300 p-2 text-left font-bold">Email</th>
+                  <th className="border border-gray-300 p-2 text-left font-bold">NIC</th>
+                  <th className="border border-gray-300 p-2 text-left font-bold">Gender</th>
+                  <th className="border border-gray-300 p-2 text-left font-bold">Permanent Address</th>
                 </tr>
               </thead>
               <tbody>
@@ -778,7 +824,9 @@ const SubmissionList = () => {
                         )}
                         <td className="border border-gray-300 p-2">{member.phone}</td>
                         <td className="border border-gray-300 p-2">{member.whatsapp}</td>
-                        <td className="border border-gray-300 p-2">{member.email}</td>
+                        <td className="border border-gray-300 p-2">{member.nic}</td>
+                        <td className="border border-gray-300 p-2">{member.gender}</td>
+                        <td className="border border-gray-300 p-2">{member.permanentAddress}</td>
                       </tr>
                     );
                   })}
@@ -1040,8 +1088,202 @@ const SubmissionList = () => {
     );
   };
 
+  // EditCouncilForm Component
+  const EditCouncilForm = ({ submission, onSave, onCancel }) => {
+    const [formData, setFormData] = useState({
+      location: { ...submission.location },
+      communityCouncil: JSON.parse(JSON.stringify(submission.communityCouncil))
+    });
+
+    const handleLocationChange = (field, value) => {
+      setFormData(prev => ({
+        ...prev,
+        location: { ...prev.location, [field]: value }
+      }));
+    };
+
+    const handleMemberChange = (section, index, field, value) => {
+      setFormData(prev => {
+        const newCouncil = { ...prev.communityCouncil };
+        newCouncil[section][index] = { ...newCouncil[section][index], [field]: value };
+        return { ...prev, communityCouncil: newCouncil };
+      });
+    };
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      onSave({
+        location: formData.location,
+        communityCouncil: formData.communityCouncil
+      });
+    };
+
+    return (
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Location Fields */}
+        <div className="space-y-4">
+          <h3 className="font-semibold text-lg">Location</h3>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">District</label>
+            <input
+              type="text"
+              value={formData.location.district}
+              onChange={(e) => handleLocationChange('district', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              disabled
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">DS Division</label>
+            <input
+              type="text"
+              value={formData.location.divisionalSec}
+              onChange={(e) => handleLocationChange('divisionalSec', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              disabled
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">GN Division</label>
+            <input
+              type="text"
+              value={formData.location.gnDivision}
+              onChange={(e) => handleLocationChange('gnDivision', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
+              disabled
+            />
+          </div>
+        </div>
+
+        {/* Committee Members */}
+        {['committeeMembers', 'communityReps', 'strategicMembers'].map((section) => {
+          const title = section === 'committeeMembers' ? 'Committee Members' : 
+                       section === 'communityReps' ? 'Community Representatives' : 
+                       'Strategic Members';
+          
+          return (
+            <div key={section} className="space-y-3">
+              <h3 className="font-semibold text-lg">{title}</h3>
+              {formData.communityCouncil[section]?.map((member, idx) => (
+                <div key={idx} className="border border-gray-200 rounded p-3 space-y-2">
+                  <p className="text-sm font-medium text-gray-600">Member {idx + 1}</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-xs text-gray-600 mb-1">Name</label>
+                      <input
+                        type="text"
+                        value={member.name || ''}
+                        onChange={(e) => handleMemberChange(section, idx, 'name', e.target.value)}
+                        className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                      />
+                    </div>
+                    {/* Position field only for Committee Members */}
+                    {section === 'committeeMembers' && (
+                      <div>
+                        <label className="block text-xs text-gray-600 mb-1">Position</label>
+                        {idx < 4 ? (
+                          // Rows 1-4: Read-only position (fixed)
+                          <input
+                            type="text"
+                            value={member.position || ''}
+                            className="w-full px-2 py-1 border border-gray-300 rounded text-sm bg-gray-100"
+                            disabled
+                          />
+                        ) : (
+                          // Row 5: Dropdown with position options
+                          <select
+                            value={member.position || ''}
+                            onChange={(e) => handleMemberChange(section, idx, 'position', e.target.value)}
+                            className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                          >
+                            <option value="">Select Position</option>
+                            <option value="කෘෂිකර්ම නිලධාරි">කෘෂිකර්ම නිලධාරි (Agricultural Officer)</option>
+                            <option value="ධීවර සංවර්ධන නිලධාරි">ධීවර සංවර්ධන නිලධාරි (Fisheries Officer)</option>
+                            <option value="ජලජ සංවර්ධන නිලධාරි">ජලජ සංවර්ධන නිලධාරි (Aquaculture Officer)</option>
+                            <option value="වෙනත්">වෙනත් (Other)</option>
+                          </select>
+                        )}
+                      </div>
+                    )}
+                    <div>
+                      <label className="block text-xs text-gray-600 mb-1">Phone</label>
+                      <input
+                        type="text"
+                        value={member.phone || ''}
+                        onChange={(e) => handleMemberChange(section, idx, 'phone', e.target.value)}
+                        className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-600 mb-1">WhatsApp</label>
+                      <input
+                        type="text"
+                        value={member.whatsapp || ''}
+                        onChange={(e) => handleMemberChange(section, idx, 'whatsapp', e.target.value)}
+                        className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-600 mb-1">NIC</label>
+                      <input
+                        type="text"
+                        value={member.nic || ''}
+                        onChange={(e) => handleMemberChange(section, idx, 'nic', e.target.value)}
+                        className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                        placeholder="National ID"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-600 mb-1">Gender</label>
+                      <select
+                        value={member.gender || ''}
+                        onChange={(e) => handleMemberChange(section, idx, 'gender', e.target.value)}
+                        className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                      >
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male / පුරුෂ</option>
+                        <option value="Female">Female / ස්ත්‍රී</option>
+                        <option value="Other">Other / වෙනත්</option>
+                      </select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-xs text-gray-600 mb-1">Permanent Address</label>
+                      <textarea
+                        value={member.permanentAddress || ''}
+                        onChange={(e) => handleMemberChange(section, idx, 'permanentAddress', e.target.value)}
+                        className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                        placeholder="Permanent Address"
+                        rows="2"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
+        })}
+
+        {/* Action Buttons */}
+        <div className="flex gap-3 justify-end pt-4 border-t">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-md px-4 py-2"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="bg-[#A8234A] hover:bg-[#8B1C3D] text-white font-medium rounded-md px-4 py-2"
+          >
+            Save Changes
+          </button>
+        </div>
+      </form>
+    );
+  };
+
   if (!isAuthenticated) return <div>Access Denied. Please log in.</div>;
-  if (!isAdmin) return <div>Access Denied. Admin role required.</div>;
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4 sm:p-6">
@@ -1129,6 +1371,23 @@ const SubmissionList = () => {
                   Export PDF
                 </button>
               )}
+              {isSuperAdmin && submission.editHistory && submission.editHistory.length > 0 && (
+                <button
+                  onClick={() => setViewingHistory(submission)}
+                  className="bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-md px-3 py-1 text-sm transition duration-150 ease-in-out flex items-center gap-1"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  History ({submission.editHistory.length})
+                </button>
+              )}
+              <button
+                onClick={() => handleEdit(submission)}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md px-3 py-1 text-sm transition duration-150 ease-in-out"
+              >
+                Edit
+              </button>
               <button
                 onClick={() => handleDelete(submission._id)}
                 className="bg-red-600 hover:bg-red-700 text-white font-medium rounded-md px-3 py-1 text-sm transition duration-150 ease-in-out"
@@ -1142,6 +1401,132 @@ const SubmissionList = () => {
             {activeTab === "main_form" && renderMainFormData(submission)}
           </div>
         ))}
+
+      {/* Edit Modal */}
+      {editingSubmission && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-2xl font-bold text-[#A8234A]">
+                  Edit Submission
+                </h2>
+                <button
+                  onClick={handleCancelEdit}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {editingSubmission.formType === 'council_info' ? (
+                <EditCouncilForm
+                  submission={editingSubmission}
+                  onSave={handleSaveEdit}
+                  onCancel={handleCancelEdit}
+                />
+              ) : (
+                <div className="text-center p-4">
+                  <p className="text-gray-600 mb-4">
+                    Editing main form submissions is not yet supported. 
+                    Please delete and create a new submission if changes are needed.
+                  </p>
+                  <button
+                    onClick={handleCancelEdit}
+                    className="bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-md px-4 py-2"
+                  >
+                    Close
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit History Modal */}
+      {viewingHistory && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-[#A8234A]">
+                  Edit History
+                </h2>
+                <button
+                  onClick={() => setViewingHistory(null)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Submission Info */}
+              <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                <h3 className="font-semibold text-lg mb-2">Submission Details</h3>
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div><span className="font-medium">District:</span> {viewingHistory.location.district}</div>
+                  <div><span className="font-medium">DS Division:</span> {viewingHistory.location.divisionalSec}</div>
+                  <div><span className="font-medium">GN Division:</span> {viewingHistory.location.gnDivision}</div>
+                  <div><span className="font-medium">Form Type:</span> {viewingHistory.formType === 'council_info' ? 'Council' : 'Development'}</div>
+                </div>
+              </div>
+
+              {/* Edit History Timeline */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-lg mb-3">Change History ({viewingHistory.editHistory?.length || 0} edits)</h3>
+                
+                {viewingHistory.editHistory && viewingHistory.editHistory.length > 0 ? (
+                  <div className="space-y-3">
+                    {[...viewingHistory.editHistory].reverse().map((edit, index) => (
+                      <div key={index} className="border-l-4 border-purple-500 pl-4 py-2 bg-gray-50 rounded">
+                        <div className="flex justify-between items-start mb-2">
+                          <div className="flex items-center gap-2">
+                            <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                            <span className="font-medium text-gray-700">
+                              Edit #{viewingHistory.editHistory.length - index}
+                            </span>
+                          </div>
+                          <span className="text-sm text-gray-500">
+                            {new Date(edit.editedAt).toLocaleString()}
+                          </span>
+                        </div>
+                        
+                        <div className="text-sm text-gray-600 mb-1">
+                          <span className="font-medium">Edited by:</span>{' '}
+                          {edit.editedBy?.username || edit.editedBy?.fullName || 'Unknown User'}
+                        </div>
+                        
+                        <div className="mt-2 p-3 bg-white rounded border border-gray-200">
+                          <p className="text-sm font-medium text-gray-700 mb-1">Changes:</p>
+                          <p className="text-sm text-gray-600 whitespace-pre-wrap">{edit.changes}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-center py-4">No edit history available</p>
+                )}
+              </div>
+
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={() => setViewingHistory(null)}
+                  className="bg-gray-500 hover:bg-gray-600 text-white font-medium rounded-md px-4 py-2"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
