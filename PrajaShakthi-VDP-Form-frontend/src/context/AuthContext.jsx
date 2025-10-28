@@ -64,12 +64,18 @@ export const AuthProvider = ({ children }) => {
 
     // Your existing derived state is perfect, no changes needed here
     const isAuthenticated = !!user;
-    const isAdmin = user && user.role === 'admin';
+    const isSuperAdmin = user && user.role === 'superadmin';
+    const isDistrictAdmin = user && user.role === 'district_admin';
+    const isDSUser = user && user.role === 'ds_user';
+    const isAdmin = isSuperAdmin || isDistrictAdmin;
 
     return (
         <AuthContext.Provider value={{
             user,
             isAuthenticated,
+            isSuperAdmin,
+            isDistrictAdmin,
+            isDSUser,
             isAdmin,
             loading,
             authError,

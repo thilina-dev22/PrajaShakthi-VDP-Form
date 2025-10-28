@@ -4,6 +4,7 @@ import LocationSelectorBase from "./LocationSelectorBase";
 import CommunityCouncilTable from "./CommunityCouncilTable";
 import { submitForm } from "../api/auth";
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../context/AuthContext';
 
 // Initial state structures for the Community Council Table
 // UPDATED: Added 'whatsapp' field
@@ -39,6 +40,8 @@ const isRowEmpty = (row) =>
 
 const CommunityCouncilForm = () => {
   const { t } = useTranslation();
+  const { user } = useAuth();
+  
   // State for form inputs and selections
   const [district, setDistrict] = useState("");
   const [divisionalSec, setDivisionalSec] = useState("");
@@ -56,7 +59,34 @@ const CommunityCouncilForm = () => {
   useEffect(() => {
     const allDistricts = provincialDataJson[0]?.districts || [];
     setDistricts(allDistricts);
-  }, []);
+    
+    // Auto-populate for DS users
+    if (user && user.role === 'ds_user') {
+      if (user.district) {
+        setDistrict(user.district);
+        // Find and set DS divisions for the user's district
+        const selectedDistrictData = allDistricts.find(
+          (d) => d.district.trim() === user.district
+        );
+        if (selectedDistrictData) {
+          setDsDivisions(selectedDistrictData.ds_divisions);
+          
+          // Set divisional secretariat
+          if (user.divisionalSecretariat) {
+            setDivisionalSec(user.divisionalSecretariat);
+            
+            // Find and set GN divisions
+            const selectedDsData = selectedDistrictData.ds_divisions.find(
+              (ds) => ds.ds_division_name.trim() === user.divisionalSecretariat
+            );
+            if (selectedDsData) {
+              setGnDivisions(selectedDsData.gn_divisions);
+            }
+          }
+        }
+      }
+    }
+  }, [user]);
 
   // Event handlers for cascading dropdowns (unchanged)
   const handleDistrictChange = (e) => {
@@ -269,6 +299,8 @@ const CommunityCouncilForm = () => {
           handleDistrictChange={handleDistrictChange}
           handleDivisionalSecChange={handleDivisionalSecChange}
           setGnDivision={setGnDivision}
+          isDistrictDisabled={user && user.role === 'ds_user'}
+          isDSDisabled={user && user.role === 'ds_user'}
         />
 
         <CommunityCouncilTable

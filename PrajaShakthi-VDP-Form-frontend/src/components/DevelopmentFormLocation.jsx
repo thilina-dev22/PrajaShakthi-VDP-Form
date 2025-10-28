@@ -14,6 +14,8 @@ const DevelopmentFormLocation = ({
   handleDistrictChange,
   handleDivisionalSecChange,
   setGnDivision,
+  isDistrictDisabled = false,
+  isDSDisabled = false,
 }) => {
   return (
     <>
@@ -28,6 +30,8 @@ const DevelopmentFormLocation = ({
         handleDistrictChange={handleDistrictChange}
         handleDivisionalSecChange={handleDivisionalSecChange}
         setGnDivision={setGnDivision}
+        isDistrictDisabled={isDistrictDisabled}
+        isDSDisabled={isDSDisabled}
       />
     </>
   );

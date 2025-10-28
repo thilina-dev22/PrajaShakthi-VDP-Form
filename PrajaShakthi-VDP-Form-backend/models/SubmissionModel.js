@@ -53,6 +53,36 @@ const SubmissionSchema = new mongoose.Schema(
         agency: String,
       },
     ],
+    // New fields for user tracking
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: false // Optional for backward compatibility
+    },
+    lastModifiedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    // Track editing history
+    editHistory: [{
+      editedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      },
+      editedAt: {
+        type: Date,
+        default: Date.now
+      },
+      changes: {
+        type: String // Brief description of changes
+      }
+    }],
+    // Status tracking
+    status: {
+      type: String,
+      enum: ['draft', 'submitted', 'under_review', 'approved', 'rejected'],
+      default: 'submitted'
+    }
   },
   {
     timestamps: true,

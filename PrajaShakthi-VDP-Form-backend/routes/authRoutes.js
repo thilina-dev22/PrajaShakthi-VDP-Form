@@ -7,7 +7,7 @@ const { protect } = require('../middleware/authMiddleware');
 
 router.post('/register', registerUser); 
 router.post('/login', loginUser);
-router.post('/logout', logoutUser);
+router.post('/logout', protect, logoutUser); // Now requires authentication to log activity
 router.get('/status', protect, checkAuthStatus);
 
 module.exports = router;

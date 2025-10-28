@@ -141,6 +141,36 @@ const deleteSubmission = async (id) => {
   return;
 };
 
+//UPDATE FUNCTION ⭐
+const updateSubmission = async (id, formData) => {
+  const response = await fetch(`${API_SUBMISSION_URL}/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      ...getAuthHeaders(),
+    },
+    body: JSON.stringify(formData),
+    credentials: "include",
+  });
+
+  if (response.status === 401) {
+    throw new Error("Not authenticated. Please log in.");
+  }
+
+  if (response.status === 403) {
+    throw new Error("Not authorized to update this submission.");
+  }
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => {
+      return { message: "An unknown error occurred during update." };
+    });
+    throw new Error(errorData.message);
+  }
+
+  return response.json();
+};
+
 //ADD THE NEW STATUS CHECK FUNCTION
 const checkAuthStatus = async () => {
   const response = await fetch(`${API_URL}/status`, {
@@ -166,5 +196,6 @@ export {
   getSubmissions,
   submitForm,
   deleteSubmission,
+  updateSubmission,
   checkAuthStatus,
 };
