@@ -270,7 +270,9 @@ const SubmissionList = () => {
               'Position': member.position || '',
               'Phone': member.phone || '',
               'WhatsApp': member.whatsapp || '',
-              'Email': member.email || '',
+              'NIC': member.nic || '',
+              'Gender': member.gender || '',
+              'Permanent Address': member.permanentAddress || '',
               'Submitted': new Date(sub.createdAt).toLocaleDateString(),
             });
           });
@@ -288,7 +290,9 @@ const SubmissionList = () => {
               'Position': member.position || '',
               'Phone': member.phone || '',
               'WhatsApp': member.whatsapp || '',
-              'Email': member.email || '',
+              'NIC': member.nic || '',
+              'Gender': member.gender || '',
+              'Permanent Address': member.permanentAddress || '',
               'Submitted': new Date(sub.createdAt).toLocaleDateString(),
             });
           });
@@ -306,7 +310,9 @@ const SubmissionList = () => {
               'Position': member.position || '',
               'Phone': member.phone || '',
               'WhatsApp': member.whatsapp || '',
-              'Email': member.email || '',
+              'NIC': member.nic || '',
+              'Gender': member.gender || '',
+              'Permanent Address': member.permanentAddress || '',
               'Submitted': new Date(sub.createdAt).toLocaleDateString(),
             });
           });
@@ -476,12 +482,14 @@ const SubmissionList = () => {
           member.position || '',
           member.phone || '',
           member.whatsapp || '',
-          member.email || ''
+          member.nic || '',
+          member.gender || '',
+          member.permanentAddress || ''
         ]);
 
         autoTable(pdf, {
           startY: yPosition,
-          head: [['#', 'Name', 'Position', 'Phone', 'WhatsApp', 'Email']],
+          head: [['#', 'Name', 'Position', 'Phone', 'WhatsApp', 'NIC', 'Gender', 'Address']],
           body: committeeData,
           theme: 'grid',
           headStyles: {
@@ -565,12 +573,14 @@ const SubmissionList = () => {
           member.name || '',
           member.phone || '',
           member.whatsapp || '',
-          member.email || ''
+          member.nic || '',
+          member.gender || '',
+          member.permanentAddress || ''
         ]);
 
         autoTable(pdf, {
           startY: yPosition,
-          head: [['#', 'Name', 'Phone', 'WhatsApp', 'Email']],
+          head: [['#', 'Name', 'Phone', 'WhatsApp', 'NIC', 'Gender', 'Address']],
           body: repsData,
           theme: 'grid',
           headStyles: {
@@ -651,12 +661,14 @@ const SubmissionList = () => {
           member.name || '',
           member.phone || '',
           member.whatsapp || '',
-          member.email || ''
+          member.nic || '',
+          member.gender || '',
+          member.permanentAddress || ''
         ]);
 
         autoTable(pdf, {
           startY: yPosition,
-          head: [['#', 'Name', 'Phone', 'WhatsApp', 'Email']],
+          head: [['#', 'Name', 'Phone', 'WhatsApp', 'NIC', 'Gender', 'Address']],
           body: strategicData,
           theme: 'grid',
           headStyles: {
@@ -791,7 +803,9 @@ const SubmissionList = () => {
                   )}
                   <th className="border border-gray-300 p-2 text-left font-bold">Phone</th>
                   <th className="border border-gray-300 p-2 text-left font-bold">WhatsApp</th>
-                  <th className="border border-gray-300 p-2 text-left font-bold">Email</th>
+                  <th className="border border-gray-300 p-2 text-left font-bold">NIC</th>
+                  <th className="border border-gray-300 p-2 text-left font-bold">Gender</th>
+                  <th className="border border-gray-300 p-2 text-left font-bold">Permanent Address</th>
                 </tr>
               </thead>
               <tbody>
@@ -810,7 +824,9 @@ const SubmissionList = () => {
                         )}
                         <td className="border border-gray-300 p-2">{member.phone}</td>
                         <td className="border border-gray-300 p-2">{member.whatsapp}</td>
-                        <td className="border border-gray-300 p-2">{member.email}</td>
+                        <td className="border border-gray-300 p-2">{member.nic}</td>
+                        <td className="border border-gray-300 p-2">{member.gender}</td>
+                        <td className="border border-gray-300 p-2">{member.permanentAddress}</td>
                       </tr>
                     );
                   })}
@@ -1187,13 +1203,37 @@ const SubmissionList = () => {
                         className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
                       />
                     </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-xs text-gray-600 mb-1">Email</label>
+                    <div>
+                      <label className="block text-xs text-gray-600 mb-1">NIC</label>
                       <input
-                        type="email"
-                        value={member.email || ''}
-                        onChange={(e) => handleMemberChange(section, idx, 'email', e.target.value)}
+                        type="text"
+                        value={member.nic || ''}
+                        onChange={(e) => handleMemberChange(section, idx, 'nic', e.target.value)}
                         className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                        placeholder="National ID"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-gray-600 mb-1">Gender</label>
+                      <select
+                        value={member.gender || ''}
+                        onChange={(e) => handleMemberChange(section, idx, 'gender', e.target.value)}
+                        className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                      >
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male / පුරුෂ</option>
+                        <option value="Female">Female / ස්ත්‍රී</option>
+                        <option value="Other">Other / වෙනත්</option>
+                      </select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-xs text-gray-600 mb-1">Permanent Address</label>
+                      <textarea
+                        value={member.permanentAddress || ''}
+                        onChange={(e) => handleMemberChange(section, idx, 'permanentAddress', e.target.value)}
+                        className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                        placeholder="Permanent Address"
+                        rows="2"
                       />
                     </div>
                   </div>
