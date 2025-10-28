@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
+import NotificationBell from './NotificationBell';
 
 const Navigation = ({ setCurrentRoute = () => {} }) => {
   const { user, isAuthenticated, isSuperAdmin, isDistrictAdmin, isDSUser, logout } = useAuth();
@@ -111,6 +112,9 @@ const Navigation = ({ setCurrentRoute = () => {} }) => {
       {/* Right side: user info & actions */}
       {isAuthenticated ? (
         <div className="flex items-center gap-4">
+          {/* Notification Bell for Super Admin */}
+          <NotificationBell setCurrentRoute={setCurrentRoute} />
+          
           <div className="text-right">
             <div className="text-sm">
               {user?.fullName || user?.username}

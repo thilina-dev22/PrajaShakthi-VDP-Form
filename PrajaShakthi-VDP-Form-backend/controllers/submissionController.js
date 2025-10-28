@@ -1,5 +1,6 @@
 const Submission = require("../models/SubmissionModel");
 const { logActivity } = require("../utils/activityLogger");
+const { notifySuperAdmins, generateNotificationMessage } = require("../utils/notificationHelper");
 
 // @desc   Create a new form submission
 // @route  POST /api/submissions
@@ -34,6 +35,26 @@ const createSubmission = async (req, res) => {
       district: user.district,
       divisionalSecretariat: user.divisionalSecretariat
     });
+
+    // Notify super admins only for council_info submissions
+    if (savedSubmission.formType === 'council_info') {
+      const notificationDetails = {
+        district: savedSubmission.location.district,
+        dsDivision: savedSubmission.location.divisionalSec,
+        gnDivision: savedSubmission.location.gnDivision,
+        formType: savedSubmission.formType
+      };
+
+      const message = generateNotificationMessage('CREATE_SUBMISSION', user, notificationDetails);
+
+      await notifySuperAdmins({
+        action: 'CREATE_SUBMISSION',
+        triggeredBy: user._id,
+        submissionId: savedSubmission._id,
+        message,
+        details: notificationDetails
+      });
+    }
 
     res.status(201).json({
       message: "Submission saved successfully!",
@@ -150,6 +171,26 @@ const deleteSubmission = async (req, res) => {
       divisionalSecretariat: user.divisionalSecretariat
     });
 
+    // Notify super admins only for council_info submissions
+    if (submission.formType === 'council_info') {
+      const notificationDetails = {
+        district: submission.location.district,
+        dsDivision: submission.location.divisionalSec,
+        gnDivision: submission.location.gnDivision,
+        formType: submission.formType
+      };
+
+      const message = generateNotificationMessage('DELETE_SUBMISSION', user, notificationDetails);
+
+      await notifySuperAdmins({
+        action: 'DELETE_SUBMISSION',
+        triggeredBy: user._id,
+        submissionId: submission._id,
+        message,
+        details: notificationDetails
+      });
+    }
+
     res.sendStatus(204);
   } catch (error) {
     console.error("Error deleting submission:", error);
@@ -247,6 +288,27 @@ const updateSubmission = async (req, res) => {
       district: user.district,
       divisionalSecretariat: user.divisionalSecretariat
     });
+
+    // Notify super admins only for council_info submissions
+    if (submission.formType === 'council_info') {
+      const notificationDetails = {
+        district: submission.location.district,
+        dsDivision: submission.location.divisionalSec,
+        gnDivision: submission.location.gnDivision,
+        formType: submission.formType,
+        changes: changeDescription.length > 100 ? changeDescription.substring(0, 100) + '...' : changeDescription
+      };
+
+      const message = generateNotificationMessage('UPDATE_SUBMISSION', user, notificationDetails);
+
+      await notifySuperAdmins({
+        action: 'UPDATE_SUBMISSION',
+        triggeredBy: user._id,
+        submissionId: submission._id,
+        message,
+        details: notificationDetails
+      });
+    }
 
     res.json({
       message: "Submission updated successfully!",

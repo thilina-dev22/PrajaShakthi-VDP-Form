@@ -6,6 +6,7 @@ import CommunityCouncilForm from './CommunityCouncilForm';
 import DevelopmentForm from './DevelopmentForm';
 import UserManagement from './UserManagement';
 import ActivityLogs from './ActivityLogs';
+import NotificationsPage from './NotificationsPage';
 import Navigation from './Navigation';
 
 const AppRoutes = () => {
@@ -62,6 +63,8 @@ const renderRoute = (route, isSuperAdmin, isDistrictAdmin, isDSUser, setCurrentR
         return <UserManagement />;
       case 'logs':
         return <ActivityLogs />;
+      case 'notifications':
+        return <NotificationsPage />;
       default:
         return <SubmissionList />;
     }

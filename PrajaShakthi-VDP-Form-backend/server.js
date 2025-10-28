@@ -8,6 +8,7 @@ const connectDB = require("./config/db");
 const submissionRoutes = require("./routes/submissionRoutes");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 const { Logger } = require('./middleware/loggingMiddleware')
 
 dotenv.config();
@@ -59,6 +60,7 @@ app.use(Logger); // Custom Request Logging Middleware
 app.use("/api/submissions", submissionRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // Simple health check endpoint for uptime and deployment verification
 app.get("/api/health", (req, res) => {
