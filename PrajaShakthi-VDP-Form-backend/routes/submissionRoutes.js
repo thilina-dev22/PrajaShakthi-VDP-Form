@@ -2,16 +2,18 @@
 
 const express = require('express');
 const router = express.Router();
-const { createSubmission, getSubmissions, deleteSubmission, } = require('../controllers/submissionController');
-const { protect, admin } = require('../middleware/authMiddleware'); // auth still used for admin-only
+const { 
+    createSubmission, 
+    getSubmissions, 
+    updateSubmission,
+    deleteSubmission 
+} = require('../controllers/submissionController');
+const { protect } = require('../middleware/authMiddleware');
 
-// Public route for creating a new submission (no login required)
-router.post('/', createSubmission);
-
-// Route for getting and filtering submissions (Requires admin role)
-router.get('/', protect, admin, getSubmissions);
-
-// Route for deleting a submission (Requires admin role)
-router.delete("/:id", protect, admin, deleteSubmission);
+// All submission routes now require authentication
+router.post('/', protect, createSubmission); // DS users create submissions
+router.get('/', protect, getSubmissions); // All authenticated users can view (filtered by role)
+router.put('/:id', protect, updateSubmission); // DS users can edit their submissions
+router.delete('/:id', protect, deleteSubmission); // Delete submission (role-based)
 
 module.exports = router;

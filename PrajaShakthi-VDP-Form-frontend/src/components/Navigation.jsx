@@ -3,10 +3,8 @@ import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 
 const Navigation = ({ setCurrentRoute = () => {} }) => {
-  const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const { user, isAuthenticated, isSuperAdmin, isDistrictAdmin, isDSUser, logout } = useAuth();
   const { t, i18n } = useTranslation();
-  // eslint-disable-next-line no-unused-vars
-  const isDevelopmentFormDisabled = true;
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -32,32 +30,62 @@ const Navigation = ({ setCurrentRoute = () => {} }) => {
         {/* <h1 className="text-xl font-bold">PrajaShakthi VDP Form</h1> */}
       </div>
 
-      {/* Public and regular user navigation (hide for admin) */}
-      {!isAdmin && (
+      {/* Navigation for different user roles */}
+      {isDSUser && (
         <nav className="flex flex-col sm:flex-row gap-2 mb-4 sm:mb-0">
-          {/* <button
-            onClick={() => setCurrentRoute('development')}
-            className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-[#8B1C3D] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            disabled={isDevelopmentFormDisabled}
-          >
-            සංවර්ධන සැලැස්ම (Main Form)
-          </button> */}
           <button
             onClick={() => setCurrentRoute("council")}
             className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-[#8B1C3D] transition-colors"
           >
             {t('nav.councilForm')}
           </button>
+          {/* <button
+            onClick={() => setCurrentRoute("development")}
+            className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-[#8B1C3D] transition-colors"
+          >
+            Development Form
+          </button> */}
+          <button
+            onClick={() => setCurrentRoute("submissions")}
+            className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-[#8B1C3D] transition-colors"
+          >
+            My Submissions
+          </button>
+        </nav>
+      )}
 
-          {/* Show login as admin for public users only */}
-          {!isAuthenticated && (
-            <button
-              onClick={() => setCurrentRoute("login")}
-              className="bg-[#F37021] text-white font-semibold rounded px-4 py-2 hover:bg-[#D65F1A] transition-colors"
-            >
-              {t('nav.loginAdmin')}
-            </button>
-          )}
+      {(isSuperAdmin || isDistrictAdmin) && (
+        <nav className="flex flex-col sm:flex-row gap-2 mb-4 sm:mb-0">
+          <button
+            onClick={() => setCurrentRoute("submissions")}
+            className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-[#8B1C3D] transition-colors"
+          >
+            View Submissions
+          </button>
+          <button
+            onClick={() => setCurrentRoute("users")}
+            className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-[#8B1C3D] transition-colors"
+          >
+            User Management
+          </button>
+          <button
+            onClick={() => setCurrentRoute("logs")}
+            className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-[#8B1C3D] transition-colors"
+          >
+            Activity Logs
+          </button>
+        </nav>
+      )}
+
+      {/* Public navigation */}
+      {!isAuthenticated && (
+        <nav className="flex flex-col sm:flex-row gap-2 mb-4 sm:mb-0">
+          <button
+            onClick={() => setCurrentRoute("login")}
+            className="bg-[#F37021] text-white font-semibold rounded px-4 py-2 hover:bg-[#D65F1A] transition-colors"
+          >
+            {t('nav.loginAdmin')}
+          </button>
         </nav>
       )}
 
@@ -83,12 +111,16 @@ const Navigation = ({ setCurrentRoute = () => {} }) => {
       {/* Right side: user info & actions */}
       {isAuthenticated ? (
         <div className="flex items-center gap-4">
-          <span>
-            {t('nav.loggedInAs')}{' '}
-            <strong className="font-semibold">
-              {user ? `${user.username} (${user.role})` : ""}
-            </strong>
-          </span>
+          <div className="text-right">
+            <div className="text-sm">
+              {user?.fullName || user?.username}
+            </div>
+            <div className="text-xs opacity-75">
+              {user?.role === 'superadmin' && 'Super Admin'}
+              {user?.role === 'district_admin' && `District Admin - ${user?.district}`}
+              {user?.role === 'ds_user' && `DS User - ${user?.divisionalSecretariat}`}
+            </div>
+          </div>
           <button
             onClick={logout}
             className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"

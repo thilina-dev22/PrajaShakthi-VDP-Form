@@ -16,8 +16,43 @@ const UserSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['user', 'admin'], // The two access levels
-        default: 'user'
+        enum: ['superadmin', 'district_admin', 'ds_user'], // Three-tier hierarchy
+        required: true
+    },
+    // For district_admin: the district they manage
+    // For ds_user: the district they belong to
+    district: {
+        type: String,
+        required: function() {
+            return this.role === 'district_admin' || this.role === 'ds_user';
+        }
+    },
+    // For ds_user: the divisional secretariat they manage
+    divisionalSecretariat: {
+        type: String,
+        required: function() {
+            return this.role === 'ds_user';
+        }
+    },
+    // Reference to the user who created this account
+    createdBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    // Full name or display name
+    fullName: {
+        type: String,
+        trim: true
+    },
+    // Email for communication
+    email: {
+        type: String,
+        trim: true
+    },
+    // Account status
+    isActive: {
+        type: Boolean,
+        default: true
     }
 }, {
     timestamps: true
