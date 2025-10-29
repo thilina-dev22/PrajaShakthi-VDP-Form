@@ -97,8 +97,9 @@ const generateNotificationMessage = (action, data, triggeredBy) => {
             return `New ${details.formType === 'council_info' ? 'CDC Form' : 'Development Plan'} submitted by ${userName} in ${details.district}`;
         
         case 'UPDATE_SUBMISSION':
-            const changes = details.changes ? ` - ${details.changes}` : '';
-            return `${details.formType === 'council_info' ? 'CDC Form' : 'Development Plan'} updated by ${userName} in ${details.district}${changes}`;
+            const changeCount = details.changeCount || 0;
+            const changeText = changeCount > 0 ? ` (${changeCount} field${changeCount !== 1 ? 's' : ''} changed)` : '';
+            return `${details.formType === 'council_info' ? 'CDC Form' : 'Development Plan'} updated by ${userName} in ${details.gnDivision || details.district}${changeText}`;
         
         case 'DELETE_SUBMISSION':
             return `${details.formType === 'council_info' ? 'CDC Form' : 'Development Plan'} deleted by ${userName} from ${details.district}`;

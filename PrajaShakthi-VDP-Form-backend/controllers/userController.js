@@ -197,23 +197,6 @@ const updateUser = async (req, res) => {
             divisionalSecretariat: currentUser.divisionalSecretariat
         });
 
-        // Notify super admins when user is updated (Phase 1)
-        await notifySuperAdmins(
-            'UPDATE_USER',
-            {
-                relatedUserId: userToUpdate._id,
-                details: {
-                    username: userToUpdate.username,
-                    role: userToUpdate.role,
-                    district: userToUpdate.district,
-                    changes: `Updated: ${Object.keys({ fullName, email, isActive }).join(', ')}`
-                }
-            },
-            currentUser,
-            'low',
-            'user'
-        );
-
         // Notify about activation/deactivation specifically (Phase 1)
         if (isActive !== undefined) {
             await notifySuperAdmins(
@@ -228,6 +211,27 @@ const updateUser = async (req, res) => {
                 },
                 currentUser,
                 'medium',
+                'user'
+            );
+        }
+
+        // Notify super admins when user details are updated (Phase 1)
+        // Only send UPDATE_USER if fields other than isActive were changed
+        const hasOtherChanges = fullName !== undefined || email !== undefined || password;
+        if (hasOtherChanges) {
+            await notifySuperAdmins(
+                'UPDATE_USER',
+                {
+                    relatedUserId: userToUpdate._id,
+                    details: {
+                        username: userToUpdate.username,
+                        role: userToUpdate.role,
+                        district: userToUpdate.district,
+                        changes: `Updated: ${Object.keys({ fullName, email }).filter(k => eval(k) !== undefined).join(', ')}`
+                    }
+                },
+                currentUser,
+                'low',
                 'user'
             );
         }

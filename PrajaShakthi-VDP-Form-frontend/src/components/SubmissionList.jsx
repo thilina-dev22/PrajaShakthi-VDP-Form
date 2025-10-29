@@ -749,7 +749,53 @@ const SubmissionList = () => {
     }
   };
 
-  const renderCommunityCouncil = (councilData) => {
+  // Helper function to check if a field was recently updated
+  const getUpdatedFields = (submission) => {
+    const updatedFields = new Set();
+    
+    // Get the most recent edit from history
+    if (submission.editHistory && submission.editHistory.length > 0) {
+      const latestEdit = submission.editHistory[submission.editHistory.length - 1];
+      const editTime = new Date(latestEdit.editedAt);
+      const now = new Date();
+      const hoursSinceEdit = (now - editTime) / (1000 * 60 * 60);
+      
+      // Only highlight if edit was within last 24 hours
+      if (hoursSinceEdit < 24) {
+        // Parse changes description to extract field names
+        // Format: "Updated: field1, field2, field3"
+        if (latestEdit.changes) {
+          const changes = latestEdit.changes.toLowerCase();
+          
+          // Location fields
+          if (changes.includes('district') || changes.includes('location')) updatedFields.add('location.district');
+          if (changes.includes('divisional') || changes.includes('ds')) updatedFields.add('location.divisionalSec');
+          if (changes.includes('gn') || changes.includes('gndivision')) updatedFields.add('location.gnDivision');
+          
+          // Member fields - check for member changes
+          if (changes.includes('name')) updatedFields.add('member.name');
+          if (changes.includes('position')) updatedFields.add('member.position');
+          if (changes.includes('phone')) updatedFields.add('member.phone');
+          if (changes.includes('whatsapp')) updatedFields.add('member.whatsapp');
+          if (changes.includes('nic')) updatedFields.add('member.nic');
+          if (changes.includes('gender')) updatedFields.add('member.gender');
+          if (changes.includes('address') || changes.includes('permanent')) updatedFields.add('member.permanentAddress');
+        }
+      }
+    }
+    
+    return updatedFields;
+  };
+
+  // Helper function to get CSS classes for updated fields
+  const getFieldHighlightClass = (fieldPath, updatedFields) => {
+    if (updatedFields.has(fieldPath)) {
+      return 'bg-yellow-100 border-l-4 border-l-yellow-500 font-semibold';
+    }
+    return '';
+  };
+
+  const renderCommunityCouncil = (councilData, updatedFields = new Set()) => {
     if (
       !councilData ||
       typeof councilData !== "object" ||
@@ -818,15 +864,29 @@ const SubmissionList = () => {
                         className="even:bg-gray-50"
                       >
                         <td className="border border-gray-300 p-2 font-semibold">{globalRowNumber}</td>
-                        <td className="border border-gray-300 p-2">{member.name}</td>
+                        <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('member.name', updatedFields)}`}>
+                          {member.name}
+                        </td>
                         {section.showPosition && (
-                          <td className="border border-gray-300 p-2">{member.position}</td>
+                          <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('member.position', updatedFields)}`}>
+                            {member.position}
+                          </td>
                         )}
-                        <td className="border border-gray-300 p-2">{member.phone}</td>
-                        <td className="border border-gray-300 p-2">{member.whatsapp}</td>
-                        <td className="border border-gray-300 p-2">{member.nic}</td>
-                        <td className="border border-gray-300 p-2">{member.gender}</td>
-                        <td className="border border-gray-300 p-2">{member.permanentAddress}</td>
+                        <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('member.phone', updatedFields)}`}>
+                          {member.phone}
+                        </td>
+                        <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('member.whatsapp', updatedFields)}`}>
+                          {member.whatsapp}
+                        </td>
+                        <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('member.nic', updatedFields)}`}>
+                          {member.nic}
+                        </td>
+                        <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('member.gender', updatedFields)}`}>
+                          {member.gender}
+                        </td>
+                        <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('member.permanentAddress', updatedFields)}`}>
+                          {member.permanentAddress}
+                        </td>
                       </tr>
                     );
                   })}
@@ -1310,6 +1370,24 @@ const SubmissionList = () => {
         </button> */}
       </div>
 
+      {/* Update Legend */}
+      <div className="bg-linear-to-r from-yellow-50 to-yellow-100 border border-yellow-300 rounded-lg p-4 mb-6 shadow-sm">
+        <div className="flex items-start gap-3">
+          <div className="shrink-0 mt-0.5">
+            <svg className="w-6 h-6 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <div className="flex-1">
+            <h3 className="text-sm font-bold text-yellow-900 mb-1">Updated Fields Highlighting</h3>
+            <p className="text-xs text-yellow-800">
+              Fields with a <span className="bg-yellow-100 border-l-4 border-l-yellow-500 px-2 py-0.5 font-semibold">yellow highlight and left border</span> were updated within the last 24 hours.
+              This helps you quickly identify recently changed information.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <h2 className="text-2xl font-bold mb-4">
         Filtered Submissions ({submissions.length})
       </h2>
@@ -1333,7 +1411,10 @@ const SubmissionList = () => {
 
       {!loading &&
         !error &&
-        submissions.map((submission) => (
+        submissions.map((submission) => {
+          const updatedFields = getUpdatedFields(submission);
+          
+          return (
           <div
             key={submission._id}
             id={`submission-${submission._id}`}
@@ -1341,23 +1422,37 @@ const SubmissionList = () => {
           >
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 bg-blue-50 p-4 rounded-md mb-4 text-sm">
-              <p>
-                <strong className="font-semibold">District:</strong>
+              <p className={getFieldHighlightClass('location.district', updatedFields)}>
+                <strong className="font-semibold">District:</strong>{' '}
                 {submission.location.district}
               </p>
-              <p>
-                <strong className="font-semibold">DS Division:</strong>
+              <p className={getFieldHighlightClass('location.divisionalSec', updatedFields)}>
+                <strong className="font-semibold">DS Division:</strong>{' '}
                 {submission.location.divisionalSec}
               </p>
-              <p>
-                <strong className="font-semibold">GN Division:</strong>
+              <p className={getFieldHighlightClass('location.gnDivision', updatedFields)}>
+                <strong className="font-semibold">GN Division:</strong>{' '}
                 {submission.location.gnDivision}
               </p>
               <p>
-                <strong className="font-semibold">Submitted:</strong>
+                <strong className="font-semibold">Submitted:</strong>{' '}
                 {new Date(submission.createdAt).toLocaleDateString()}
               </p>
             </div>
+            
+            {/* Show update indicator if fields were recently changed */}
+            {updatedFields.size > 0 && (
+              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 mb-4">
+                <div className="flex items-center">
+                  <svg className="w-5 h-5 text-yellow-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                  <p className="text-sm text-yellow-800 font-semibold">
+                    Recently Updated - Highlighted fields were changed in the last 24 hours
+                  </p>
+                </div>
+              </div>
+            )}
 
             <div className="p-2 text-right flex gap-2 justify-end">
               {activeTab === "council_info" && (
@@ -1397,10 +1492,11 @@ const SubmissionList = () => {
             </div>
 
             {activeTab === "council_info" &&
-              renderCommunityCouncil(submission.communityCouncil)}
+              renderCommunityCouncil(submission.communityCouncil, updatedFields)}
             {activeTab === "main_form" && renderMainFormData(submission)}
           </div>
-        ))}
+        );
+      })}
 
       {/* Edit Modal */}
       {editingSubmission && (

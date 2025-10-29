@@ -14,9 +14,23 @@ const NotificationsPage = () => {
     const [actionFilter, setActionFilter] = useState('all');
     const [categoryFilter, setCategoryFilter] = useState('all');
     const [priorityFilter, setPriorityFilter] = useState('all');
+    const [expandedNotifications, setExpandedNotifications] = useState(new Set());
 
     // Can view notifications if Super Admin or District Admin
     const canViewNotifications = isSuperAdmin || isDistrictAdmin;
+
+    // Toggle expanded state for a notification
+    const toggleExpanded = (notificationId) => {
+        setExpandedNotifications(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(notificationId)) {
+                newSet.delete(notificationId);
+            } else {
+                newSet.add(notificationId);
+            }
+            return newSet;
+        });
+    };
 
     // Fetch notifications
     const fetchNotifications = useCallback(async () => {
@@ -494,7 +508,13 @@ const NotificationsPage = () => {
                         </p>
                     </div>
                 ) : (
-                    notifications.map((notification) => (
+                    notifications.map((notification) => {
+                        const isExpanded = expandedNotifications.has(notification._id);
+                        const hasDetailedChanges = notification.action === 'UPDATE_SUBMISSION' && 
+                                                   notification.details?.detailedChanges && 
+                                                   notification.details.detailedChanges.length > 0;
+                        
+                        return (
                         <div
                             key={notification._id}
                             className={`bg-white rounded-lg shadow-md p-6 transition-all ${
@@ -578,11 +598,83 @@ const NotificationsPage = () => {
                                         )}
                                     </div>
 
-                                    {/* Changes (for updates) */}
-                                    {notification.details?.changes && (
+                                    {/* Expandable Detailed Changes for UPDATE_SUBMISSION */}
+                                    {hasDetailedChanges && (
+                                        <div className="mt-4">
+                                            <button
+                                                onClick={() => toggleExpanded(notification._id)}
+                                                className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold text-sm transition-colors"
+                                            >
+                                                <span className="text-lg">{isExpanded ? '▼' : '▶'}</span>
+                                                {isExpanded ? 'Hide' : 'Show'} Detailed Changes ({notification.details.changeCount})
+                                            </button>
+                                            
+                                            {isExpanded && (
+                                                <div className="mt-3 space-y-2 animate-fadeIn">
+                                                    {notification.details.detailedChanges.map((change, idx) => (
+                                                        <div 
+                                                            key={idx} 
+                                                            className={`p-4 rounded-lg border-l-4 ${
+                                                                change.category === 'location' 
+                                                                    ? 'bg-blue-50 border-blue-500' 
+                                                                    : 'bg-yellow-50 border-yellow-500'
+                                                            }`}
+                                                        >
+                                                            <div className="flex items-start justify-between gap-2">
+                                                                <div className="flex-1">
+                                                                    <div className="flex items-center gap-2 mb-2">
+                                                                        <p className="font-semibold text-gray-800 text-sm">
+                                                                            {change.field}
+                                                                        </p>
+                                                                        {change.category === 'location' && (
+                                                                            <span className="px-2 py-0.5 bg-blue-200 text-blue-800 rounded-full text-xs font-semibold">
+                                                                                📍 Location
+                                                                            </span>
+                                                                        )}
+                                                                        {change.category === 'member' && (
+                                                                            <span className="px-2 py-0.5 bg-yellow-200 text-yellow-800 rounded-full text-xs font-semibold">
+                                                                                👤 Member
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="flex items-center gap-3 text-sm flex-wrap">
+                                                                        <div className="flex items-center gap-2">
+                                                                            <span className="text-xs text-gray-500 font-medium">From:</span>
+                                                                            <span className="px-3 py-1 bg-red-100 text-red-800 rounded font-mono text-sm border border-red-200">
+                                                                                {change.oldValue || '(empty)'}
+                                                                            </span>
+                                                                        </div>
+                                                                        <span className="text-gray-400 font-bold">→</span>
+                                                                        <div className="flex items-center gap-2">
+                                                                            <span className="text-xs text-gray-500 font-medium">To:</span>
+                                                                            <span className="px-3 py-1 bg-green-100 text-green-800 rounded font-mono text-sm border border-green-200">
+                                                                                {change.newValue || '(empty)'}
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {/* Old Changes Display (fallback for old notifications without detailedChanges) */}
+                                    {!hasDetailedChanges && notification.details?.changes && (
                                         <div className="mt-3 p-3 bg-gray-50 rounded-lg">
                                             <p className="text-xs text-gray-500 mb-1">Changes:</p>
                                             <p className="text-sm text-gray-700">{notification.details.changes}</p>
+                                        </div>
+                                    )}
+
+                                    {/* Changes (for updates) */}
+                                    {!hasDetailedChanges && notification.details?.changeCount !== undefined && notification.action === 'UPDATE_SUBMISSION' && (
+                                        <div className="mt-3">
+                                            <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-semibold">
+                                                📝 {notification.details.changeCount} field{notification.details.changeCount !== 1 ? 's' : ''} updated
+                                            </span>
                                         </div>
                                     )}
                                     
@@ -622,7 +714,7 @@ const NotificationsPage = () => {
                                 </div>
                             </div>
                         </div>
-                    ))
+                    )})
                 )}
             </div>
         </div>

@@ -77,19 +77,8 @@ const NotificationSchema = new mongoose.Schema({
     },
     // Additional context
     details: {
-        district: String,
-        dsDivision: String,
-        gnDivision: String,
-        formType: String,
-        changes: String,
-        username: String,
-        role: String,
-        count: Number,
-        ipAddress: String,
-        exportType: String,
-        timeframe: String,
-        oldValue: String,
-        newValue: String
+        type: mongoose.Schema.Types.Mixed,
+        default: {}
     },
     // Read status
     isRead: {
