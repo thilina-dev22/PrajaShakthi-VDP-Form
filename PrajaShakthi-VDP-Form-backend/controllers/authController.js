@@ -3,6 +3,7 @@
 const User = require("../models/UserModel");
 const jwt = require("jsonwebtoken");
 const { logActivity } = require("../utils/activityLogger");
+const { trackFailedLogin } = require("../utils/notificationHelper");
 
 // Helper to generate JWT and set as HttpOnly cookie (most secure session storage)
 const generateToken = (res, userId, role) => {
@@ -66,6 +67,11 @@ const loginUser = async (req, res) => {
       token,
     });
   } else {
+    // Track failed login attempts (Phase 2)
+    if (username) {
+      await trackFailedLogin(username, req.ip);
+    }
+    
     res.status(401).json({ message: "Invalid username or password" });
   }
 };
