@@ -3,7 +3,8 @@
     "councilForm": "ප්‍රජා සංවර්ධන සභා තොරතුරු",
     "loginAdmin": "Log in as admin",
     "loggedInAs": "ලොග් වී ඇත්තේ",
-    "logout": "Log out"
+    "logout": "Log out",
+    "mySubmissions": "මගේ ඉදිරිපත් කිරීම්"
   },
   "form": {
     "district": "දිස්ත්‍රික්කය",
@@ -17,6 +18,13 @@
     "phone": "දුරකතන අංකය",
     "whatsapp": "වට්ස් ඇප් අංකය",
     "email": "විද්‍යුත් ලිපිනය",
+    "nic": "ජා. හැදුනුම්පත් අංකය",
+    "gender": "ස්ත්‍රී පුරුෂ භාවය",
+    "permanentAddress": "ස්ථිර ලිපිනය",
+    "selectGender": "ස්ත්‍රී පුරුෂ භාවය තෝරන්න",
+    "male": "පුරුෂ",
+    "female": "ස්ත්‍රී",
+    "other": "වෙනත්",
     "submit": "ඉදිරිපත් කරන්න",
     "submitting": "ඉදිරිපත් කරමින්...",
     "successTitle": "සාර්ථකයි!",
