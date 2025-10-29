@@ -3,7 +3,8 @@
     "councilForm": "சமூக மேம்பாட்டு மன்ற தகவல்",
     "loginAdmin": "Log in as admin",
     "loggedInAs": "உள்நுழைந்துள்ளவர்",
-    "logout": "Log out"
+    "logout": "Log out",
+    "mySubmissions": "எனது சமர்ப்பிப்புகள்"
   },
   "form": {
     "district": "மாவட்டம்",
@@ -17,6 +18,13 @@
     "phone": "தொலைபேசி எண்",
     "whatsapp": "வாட்ஸ்அப் எண்",
     "email": "மின்னஞ்சல்",
+    "nic": "தேசிய அடையாள அட்டை",
+    "gender": "பாலினம்",
+    "permanentAddress": "நிரந்தர முகவரி",
+    "selectGender": "பாலினத்தைத் தேர்ந்தெடுக்கவும்",
+    "male": "ஆண்பால்",
+    "female": "பெண்",
+    "other": "மற்றவை",
     "submit": "சமர்ப்பிக்கவும்",
     "submitting": "சமர்ப்பிக்கிறது...",
     "successTitle": "வெற்றி!",

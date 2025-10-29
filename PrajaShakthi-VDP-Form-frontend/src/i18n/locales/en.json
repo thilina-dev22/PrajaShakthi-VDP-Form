@@ -3,7 +3,8 @@
     "councilForm": "Community Development Council",
     "loginAdmin": "Log in as admin",
     "loggedInAs": "Logged in as",
-    "logout": "Logout"
+    "logout": "Logout",
+    "mySubmissions": "My Submissions"
   },
   "form": {
     "district": "District",
@@ -17,6 +18,13 @@
     "phone": "Phone Number",
     "whatsapp": "WhatsApp Number",
     "email": "Email",
+    "nic": "NIC",
+    "gender": "Gender",
+    "permanentAddress": "Permanent Address",
+    "selectGender": "Select Gender",
+    "male": "Male",
+    "female": "Female",
+    "other": "Other",
     "submit": "Submit",
     "submitting": "Submitting...",
     "successTitle": "Success!",

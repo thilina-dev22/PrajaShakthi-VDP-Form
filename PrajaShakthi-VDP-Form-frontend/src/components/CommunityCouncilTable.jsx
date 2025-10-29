@@ -1,32 +1,50 @@
 import React from "react";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 const CommunityCouncilTable = ({ data, onChange }) => {
   const { t } = useTranslation();
 
   // Fixed positions for first 4 rows
   const fixedPositions = [
-    { value: t('council.positionPresident'), label: t('council.positionPresident') },
-    { value: t('council.positionSecretary'), label: t('council.positionSecretary') },
-    { value: t('council.positionGN'), label: t('council.positionGN') },
-    { value: t('council.positionSamurdhi'), label: t('council.positionSamurdhi') },
+    {
+      value: "President",
+      label: t("council.positionPresident"),
+    },
+    {
+      value: "Secretary",
+      label: t("council.positionSecretary"),
+    },
+    { value: "Grama Niladhari", label: t("council.positionGN") },
+    {
+      value: "Samurdhi Development Officer",
+      label: t("council.positionSamurdhi"),
+    },
   ];
 
   // Dropdown options for row 5 only
   const row5PositionOptions = [
-    { value: "", label: t('council.selectPosition') },
-    { value: t('council.positionAgri'), label: t('council.positionAgri') },
-    { value: t('council.positionFisheries'), label: t('council.positionFisheries') },
-    { value: t('council.positionAquaculture'), label: t('council.positionAquaculture') },
-    { value: t('council.positionOther'), label: t('council.positionOther') }
+    { value: "", label: t("council.selectPosition") },
+    {
+      value: "Agricultural Research Production Assistant",
+      label: t("council.positionAgri"),
+    },
+    {
+      value: "Fisheries Officer",
+      label: t("council.positionFisheries"),
+    },
+    {
+      value: "Aquaculture Extension Officer",
+      label: t("council.positionAquaculture"),
+    },
+    { value: t("council.positionOther"), label: t("council.positionOther") },
   ];
 
   // Gender options
   const genderOptions = [
-    { value: "", label: "Select Gender / ස්ත්‍රී පුරුෂ භාවය තෝරන්න" },
-    { value: "Male", label: "Male / පුරුෂ" },
-    { value: "Female", label: "Female / ස්ත්‍රී" },
-    { value: "Other", label: "Other / වෙනත්" }
+    { value: "", label: t("form.selectGender") },
+    { value: "Male", label: t("form.male") },
+    { value: "Female", label: t("form.female") },
+    { value: "Other", label: t("form.other") },
   ];
 
   const sectionsTable1 = [
@@ -75,25 +93,34 @@ const CommunityCouncilTable = ({ data, onChange }) => {
 
   // Check if row 5 position value is custom (not in dropdown)
   const isRow5CustomPosition = (row) => {
-    const otherLabel = t('council.positionOther');
-    return row.position && !row5PositionOptions.some(opt => opt.value === row.position && opt.value !== otherLabel);
+    const otherLabel = t("council.positionOther");
+    return (
+      row.position &&
+      !row5PositionOptions.some(
+        (opt) => opt.value === row.position && opt.value !== otherLabel
+      )
+    );
   };
 
   // Render rows for Table 1 (rows 1-5) with position column
   const renderTable1Rows = (section) => {
     const sectionData = data.slice(section.start, section.end);
     const rowsToRender = [];
-    const otherLabel = t('council.positionOther');
+    const otherLabel = t("council.positionOther");
 
     sectionData.forEach((row, localIndex) => {
       const globalIndex = section.start + localIndex;
-      
+
       // Rows 1-4 (index 0-3) have fixed positions, Row 5 (index 4) has dropdown
       const isFixedPosition = globalIndex < 4;
       const isRow5 = globalIndex === 4;
-      
-      const showCustomInput = isRow5 && (row.position === otherLabel || isRow5CustomPosition(row));
-      const dropdownValue = isRow5 && isRow5CustomPosition(row) && row.position !== otherLabel ? otherLabel : row.position;
+
+      const showCustomInput =
+        isRow5 && (row.position === otherLabel || isRow5CustomPosition(row));
+      const dropdownValue =
+        isRow5 && isRow5CustomPosition(row) && row.position !== otherLabel
+          ? otherLabel
+          : row.position;
 
       rowsToRender.push(
         <tr key={globalIndex} className="border-b hover:bg-gray-50">
@@ -134,8 +161,10 @@ const CommunityCouncilTable = ({ data, onChange }) => {
                   <input
                     type="text"
                     value={row.position === otherLabel ? "" : row.position}
-                    onChange={(e) => onChange(globalIndex, "position", e.target.value)}
-                    placeholder={t('council.enterPosition')}
+                    onChange={(e) =>
+                      onChange(globalIndex, "position", e.target.value)
+                    }
+                    placeholder={t("council.enterPosition")}
                     className={inputClasses}
                   />
                 </div>
@@ -184,7 +213,7 @@ const CommunityCouncilTable = ({ data, onChange }) => {
               value={row.nic}
               onChange={(e) => onChange(globalIndex, "nic", e.target.value)}
               className={inputClasses}
-              placeholder="NIC / ජාතික හැඳුනුම්පත"
+              placeholder={t("form.nic")}
             />
           </td>
           <td className="p-2">
@@ -203,9 +232,11 @@ const CommunityCouncilTable = ({ data, onChange }) => {
           <td className="p-2">
             <textarea
               value={row.permanentAddress}
-              onChange={(e) => onChange(globalIndex, "permanentAddress", e.target.value)}
+              onChange={(e) =>
+                onChange(globalIndex, "permanentAddress", e.target.value)
+              }
               className={inputClasses}
-              placeholder="Permanent Address / ස්ථිර ලිපිනය"
+              placeholder={t("form.permanentAddress")}
               rows="2"
             />
           </td>
@@ -263,7 +294,7 @@ const CommunityCouncilTable = ({ data, onChange }) => {
               value={row.nic}
               onChange={(e) => onChange(globalIndex, "nic", e.target.value)}
               className={inputClasses}
-              placeholder="NIC / ජාතික හැඳුනුම්පත"
+              placeholder={t("form.nic")}
             />
           </td>
           <td className="p-2">
@@ -282,9 +313,11 @@ const CommunityCouncilTable = ({ data, onChange }) => {
           <td className="p-2">
             <textarea
               value={row.permanentAddress}
-              onChange={(e) => onChange(globalIndex, "permanentAddress", e.target.value)}
+              onChange={(e) =>
+                onChange(globalIndex, "permanentAddress", e.target.value)
+              }
               className={inputClasses}
-              placeholder="Permanent Address / ස්ථිර ලිපිනය"
+              placeholder={t("form.permanentAddress")}
               rows="2"
             />
           </td>
@@ -332,35 +365,36 @@ const CommunityCouncilTable = ({ data, onChange }) => {
       {/* TABLE 1: Rows 1-5 with Position Column */}
       <div>
         <h3 className="text-xl font-semibold mb-4 pb-2 border-b">
-          {t('council.committeeMembers')}
+          {t("council.committeeMembers")}
         </h3>
         <div className="overflow-x-auto rounded-lg border">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-100">
               <tr>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[5%]">
-                  {t('council.rowNumber')}
+                  {t("council.rowNumber")}
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
-                  {t('form.name')} <RequiredIndicator />
+                  {t("form.name")} <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
-                  {t('form.position')} <RequiredIndicator />
+                  {t("form.position")} <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[12%]">
-                  {t('form.phone')} <RequiredIndicator />
+                  {t("form.phone")} <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[12%]">
-                  {t('form.whatsapp')} <RequiredIndicator />
+                  {t("form.whatsapp")} <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[13%]">
-                  NIC / හැඳුනුම්පත <RequiredIndicator />
+                  {t("form.nic")}
+                  <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[10%]">
-                  Gender / ස්ත්‍රී පුරුෂ භාවය <RequiredIndicator />
+                  {t("form.gender")} <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[18%]">
-                  Permanent Address / ස්ථිර ලිපිනය <RequiredIndicator />
+                  {t("form.permanentAddress")} <RequiredIndicator />
                 </th>
               </tr>
             </thead>
@@ -369,7 +403,7 @@ const CommunityCouncilTable = ({ data, onChange }) => {
             </tbody>
           </table>
           <div className="p-2 text-sm text-gray-600 bg-gray-50 border-t">
-            <RequiredIndicator /> {t('council.requiredNote')}
+            <RequiredIndicator /> {t("council.requiredNote")}
           </div>
         </div>
       </div>
@@ -377,32 +411,32 @@ const CommunityCouncilTable = ({ data, onChange }) => {
       {/* TABLE 2: Rows 6-20 WITHOUT Position Column */}
       <div>
         <h3 className="text-xl font-semibold mb-4 pb-2 border-b">
-          {t('council.communityReps')}
+          {t("council.communityReps")}
         </h3>
         <div className="overflow-x-auto rounded-lg border">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-100">
               <tr>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[5%]">
-                  {t('council.rowNumber')}
+                  {t("council.rowNumber")}
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[20%]">
-                  {t('form.name')} <RequiredIndicator />
+                  {t("form.name")} <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
-                  {t('form.phone')} <RequiredIndicator />
+                  {t("form.phone")} <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
-                  {t('form.whatsapp')} <RequiredIndicator />
+                  {t("form.whatsapp")} <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
-                  NIC / හැඳුනුම්පත <RequiredIndicator />
+                  {t("form.nic")} <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[12%]">
-                  Gender / ස්ත්‍රී පුරුෂ භාවය <RequiredIndicator />
+                  {t("form.gender")} <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[18%]">
-                  Permanent Address / ස්ථිර ලිපිනය <RequiredIndicator />
+                  {t("form.permanentAddress")} <RequiredIndicator />
                 </th>
               </tr>
             </thead>
@@ -411,7 +445,7 @@ const CommunityCouncilTable = ({ data, onChange }) => {
             </tbody>
           </table>
           <div className="p-2 text-sm text-gray-600 bg-gray-50 border-t">
-            <RequiredIndicator /> {t('council.requiredNote')}
+            <RequiredIndicator /> {t("council.requiredNote")}
           </div>
         </div>
       </div>
@@ -419,32 +453,32 @@ const CommunityCouncilTable = ({ data, onChange }) => {
       {/* TABLE 3: Rows 21-25 WITHOUT Position Column */}
       <div>
         <h3 className="text-xl font-semibold mb-4 pb-2 border-b">
-          {t('council.strategicMembers')}
+          {t("council.strategicMembers")}
         </h3>
         <div className="overflow-x-auto rounded-lg border">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-100">
               <tr>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[5%]">
-                  {t('council.rowNumber')}
+                  {t("council.rowNumber")}
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[20%]">
-                  {t('form.name')} <RequiredIndicator />
+                  {t("form.name")} <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
-                  {t('form.phone')} <RequiredIndicator />
+                  {t("form.phone")} <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
-                  {t('form.whatsapp')} <RequiredIndicator />
+                  {t("form.whatsapp")} <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[15%]">
-                  NIC / හැඳුනුම්පත <RequiredIndicator />
+                  {t("form.nic")} <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[12%]">
-                  Gender / ස්ත්‍රී පුරුෂ භාවය <RequiredIndicator />
+                  {t("form.gender")} <RequiredIndicator />
                 </th>
                 <th className="p-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-[18%]">
-                  Permanent Address / ස්ථිර ලිපිනය <RequiredIndicator />
+                  {t("form.permanentAddress")} <RequiredIndicator />
                 </th>
               </tr>
             </thead>
@@ -453,7 +487,7 @@ const CommunityCouncilTable = ({ data, onChange }) => {
             </tbody>
           </table>
           <div className="p-2 text-sm text-gray-600 bg-gray-50 border-t">
-            <RequiredIndicator /> {t('council.requiredNote')}
+            <RequiredIndicator /> {t("council.requiredNote")}
           </div>
         </div>
       </div>
