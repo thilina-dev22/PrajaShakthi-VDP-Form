@@ -7,11 +7,14 @@ import axios from 'axios';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const NotificationBell = ({ setCurrentRoute }) => {
-    const { isSuperAdmin } = useAuth();
+    const { isSuperAdmin, isDistrictAdmin } = useAuth();
     const [unreadCount, setUnreadCount] = useState(0);
     const [notifications, setNotifications] = useState([]);
     const [showDropdown, setShowDropdown] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    // Show notification bell for Super Admins and District Admins
+    const canViewNotifications = isSuperAdmin || isDistrictAdmin;
 
     // Fetch unread count
     const fetchUnreadCount = async () => {
@@ -75,7 +78,7 @@ const NotificationBell = ({ setCurrentRoute }) => {
 
     // Fetch count on mount and set up polling
     useEffect(() => {
-        if (!isSuperAdmin) return;
+        if (!canViewNotifications) return;
         
         fetchUnreadCount();
         
@@ -83,19 +86,19 @@ const NotificationBell = ({ setCurrentRoute }) => {
         const interval = setInterval(fetchUnreadCount, 30000);
         
         return () => clearInterval(interval);
-    }, [isSuperAdmin]);
+    }, [canViewNotifications]);
 
     // Fetch notifications when dropdown opens
     useEffect(() => {
-        if (!isSuperAdmin) return;
+        if (!canViewNotifications) return;
         
         if (showDropdown) {
             fetchNotifications();
         }
-    }, [showDropdown, isSuperAdmin]);
+    }, [showDropdown, canViewNotifications]);
 
-    // Only show for super admins
-    if (!isSuperAdmin) return null;
+    // Only show for super admins and district admins
+    if (!canViewNotifications) return null;
 
     // Format time ago
     const formatTimeAgo = (date) => {
@@ -138,31 +141,23 @@ const NotificationBell = ({ setCurrentRoute }) => {
                 return '✏️';
             case 'DELETE_SUBMISSION':
             case 'DELETE_USER':
-            case 'BULK_DELETE':
                 return '🗑️';
             case 'ACTIVATE_USER':
                 return '✅';
             case 'DEACTIVATE_USER':
                 return '⏸️';
             case 'FAILED_LOGIN':
-            case 'ACCOUNT_LOCKED':
                 return '🔐';
-            case 'SUSPICIOUS_LOGIN':
             case 'MULTIPLE_EDITS':
             case 'CRITICAL_FIELD_CHANGE':
             case 'DUPLICATE_NIC':
             case 'DATA_ANOMALY':
                 return '⚠️';
-            case 'EXPORT_PDF':
-            case 'EXPORT_EXCEL':
-                return '📥';
             case 'DAILY_SUMMARY':
             case 'WEEKLY_SUMMARY':
             case 'MONTHLY_SUMMARY':
             case 'QUARTERLY_REPORT':
                 return '📊';
-            case 'PENDING_REVIEW_REMINDER':
-                return '⏰';
             case 'INACTIVE_USER_ALERT':
                 return '💤';
             case 'MILESTONE_REACHED':

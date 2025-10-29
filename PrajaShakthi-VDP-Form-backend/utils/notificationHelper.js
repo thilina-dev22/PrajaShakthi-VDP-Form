@@ -123,12 +123,6 @@ const generateNotificationMessage = (action, data, triggeredBy) => {
         case 'FAILED_LOGIN':
             return `Failed login attempts: ${details.count} attempts for ${details.username} from IP ${details.ipAddress}`;
         
-        case 'ACCOUNT_LOCKED':
-            return `Account locked: ${details.username} exceeded maximum login attempts`;
-        
-        case 'SUSPICIOUS_LOGIN':
-            return `Suspicious login detected for ${details.username} from IP ${details.ipAddress}`;
-        
         case 'MULTIPLE_EDITS':
             return `Multiple edits detected: Submission edited ${details.count} times by ${userName}`;
         
@@ -141,16 +135,7 @@ const generateNotificationMessage = (action, data, triggeredBy) => {
         case 'DATA_ANOMALY':
             return `Data anomaly detected: ${details.changes}`;
 
-        // Phase 3: Export & Bulk Operations
-        case 'EXPORT_PDF':
-            return `PDF export generated: ${details.count} submissions exported by ${userName}`;
-        
-        case 'EXPORT_EXCEL':
-            return `Excel export generated: ${details.count} submissions exported by ${userName}`;
-        
-        case 'BULK_DELETE':
-            return `Bulk delete operation: ${details.count} submissions deleted by ${userName}`;
-        
+        // Phase 3: Summaries
         case 'DAILY_SUMMARY':
             return `Daily Summary for ${details.district}: ${details.count} submissions received`;
         
@@ -158,9 +143,6 @@ const generateNotificationMessage = (action, data, triggeredBy) => {
             return `Weekly Summary for ${details.district}: ${details.count} total submissions`;
 
         // Phase 4: Advanced
-        case 'PENDING_REVIEW_REMINDER':
-            return `Reminder: ${details.count} submissions pending review for ${details.timeframe}`;
-        
         case 'MONTHLY_SUMMARY':
             return `Monthly Report: ${details.count} submissions received in ${details.timeframe}`;
         
@@ -179,35 +161,69 @@ const generateNotificationMessage = (action, data, triggeredBy) => {
 };
 
 /**
- * Track failed login attempts and notify if threshold exceeded
+ * Track failed login attempts and create/update notifications
+ * Groups attempts by username within a 1-hour window
  */
 const trackFailedLogin = async (username, ipAddress) => {
     try {
-        const key = `failed_login_${username}`;
-        // This would ideally use Redis, but for now we'll check recent notifications
-        const recentAttempts = await Notification.countDocuments({
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+        
+        // Find existing unread notification for this user within the last hour
+        const existingNotification = await Notification.findOne({
             action: 'FAILED_LOGIN',
             'details.username': username,
-            createdAt: { $gte: new Date(Date.now() - 15 * 60 * 1000) } // Last 15 minutes
-        });
+            createdAt: { $gte: oneHourAgo },
+            isRead: false
+        }).sort({ createdAt: -1 });
 
-        if (recentAttempts >= 2) { // 3rd attempt triggers notification
+        let attemptNumber = 1;
+
+        if (existingNotification) {
+            // Update existing notification with cumulative count
+            attemptNumber = (existingNotification.details.count || 0) + 1;
+            
+            // Update priority based on cumulative attempts
+            let priority = 'medium';
+            if (attemptNumber >= 5) {
+                priority = 'critical';
+            } else if (attemptNumber >= 3) {
+                priority = 'high';
+            }
+
+            // Update the notification
+            existingNotification.details.count = attemptNumber;
+            existingNotification.details.lastAttemptIp = ipAddress;
+            existingNotification.details.lastAttemptAt = new Date();
+            existingNotification.priority = priority;
+            existingNotification.message = `Failed login attempts: ${attemptNumber} attempts for ${username} from IP ${ipAddress}`;
+            
+            await existingNotification.save();
+            
+            console.log(`🔒 Updated failed login notification: ${username} (Total: ${attemptNumber} attempts, Priority: ${priority})`);
+        } else {
+            // Create new notification for first attempt
+            let priority = 'medium';
+
             await notifySuperAdmins(
                 'FAILED_LOGIN',
                 {
                     details: {
                         username,
                         ipAddress,
-                        count: recentAttempts + 1
+                        count: attemptNumber,
+                        lastAttemptIp: ipAddress,
+                        lastAttemptAt: new Date()
                     }
                 },
                 null,
-                'high',
+                priority,
                 'security'
             );
+
+            console.log(`🔒 Created failed login notification: ${username} (Attempt 1)`);
         }
 
-        return recentAttempts + 1;
+        return attemptNumber;
     } catch (error) {
         console.error('Error tracking failed login:', error);
         return 0;

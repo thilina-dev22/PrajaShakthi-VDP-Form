@@ -31,22 +31,16 @@ const NotificationSchema = new mongoose.Schema({
             
             // Phase 2: Important
             'FAILED_LOGIN',
-            'ACCOUNT_LOCKED',
-            'SUSPICIOUS_LOGIN',
             'MULTIPLE_EDITS',
             'CRITICAL_FIELD_CHANGE',
             'DUPLICATE_NIC',
             'DATA_ANOMALY',
             
             // Phase 3: Nice-to-Have
-            'EXPORT_PDF',
-            'EXPORT_EXCEL',
-            'BULK_DELETE',
             'DAILY_SUMMARY',
             'WEEKLY_SUMMARY',
             
             // Phase 4: Advanced
-            'PENDING_REVIEW_REMINDER',
             'MONTHLY_SUMMARY',
             'QUARTERLY_REPORT',
             'INACTIVE_USER_ALERT',

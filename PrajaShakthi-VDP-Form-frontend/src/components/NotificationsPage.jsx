@@ -7,13 +7,16 @@ import axios from 'axios';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const NotificationsPage = () => {
-    const { isSuperAdmin } = useAuth();
+    const { isSuperAdmin, isDistrictAdmin } = useAuth();
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all'); // 'all', 'unread', 'read'
     const [actionFilter, setActionFilter] = useState('all');
     const [categoryFilter, setCategoryFilter] = useState('all');
     const [priorityFilter, setPriorityFilter] = useState('all');
+
+    // Can view notifications if Super Admin or District Admin
+    const canViewNotifications = isSuperAdmin || isDistrictAdmin;
 
     // Fetch notifications
     const fetchNotifications = useCallback(async () => {
@@ -41,17 +44,17 @@ const NotificationsPage = () => {
     }, [filter, categoryFilter, priorityFilter, actionFilter]);
 
     useEffect(() => {
-        if (isSuperAdmin) {
+        if (canViewNotifications) {
             fetchNotifications();
         }
-    }, [filter, categoryFilter, priorityFilter, actionFilter, isSuperAdmin, fetchNotifications]);
+    }, [filter, categoryFilter, priorityFilter, actionFilter, canViewNotifications, fetchNotifications]);
 
-    // Redirect if not super admin
-    if (!isSuperAdmin) {
+    // Redirect if not super admin or district admin
+    if (!canViewNotifications) {
         return (
             <div className="p-8 text-center">
                 <h2 className="text-2xl font-bold text-red-600">Access Denied</h2>
-                <p className="mt-2 text-gray-600">Only super admins can view notifications.</p>
+                <p className="mt-2 text-gray-600">Only Super Admins and District Admins can view notifications.</p>
             </div>
         );
     }
@@ -104,13 +107,20 @@ const NotificationsPage = () => {
         if (!confirm('Are you sure you want to clear all read notifications?')) return;
         
         try {
-            await axios.delete(`${API_URL}/api/notifications/clear-read`, {
+            console.log('Attempting to clear read notifications...');
+            const response = await axios.delete(`${API_URL}/api/notifications/clear-read`, {
                 withCredentials: true
             });
             
+            console.log('Clear read response:', response.data);
             setNotifications(prev => prev.filter(n => !n.isRead));
+            
+            // Refresh notifications from server
+            await fetchNotifications();
         } catch (error) {
             console.error('Error clearing read notifications:', error);
+            console.error('Error response:', error.response?.data);
+            alert('Failed to clear notifications: ' + (error.response?.data?.message || error.message));
         }
     };
 
@@ -187,10 +197,6 @@ const NotificationsPage = () => {
             // Security actions
             case 'FAILED_LOGIN':
                 return 'bg-red-100 text-red-800';
-            case 'ACCOUNT_LOCKED':
-                return 'bg-red-100 text-red-800';
-            case 'SUSPICIOUS_LOGIN':
-                return 'bg-orange-100 text-orange-800';
             case 'MULTIPLE_EDITS':
                 return 'bg-orange-100 text-orange-800';
             case 'CRITICAL_FIELD_CHANGE':
@@ -199,14 +205,6 @@ const NotificationsPage = () => {
                 return 'bg-orange-100 text-orange-800';
             case 'DATA_ANOMALY':
                 return 'bg-yellow-100 text-yellow-800';
-            
-            // Export actions
-            case 'EXPORT_PDF':
-                return 'bg-cyan-100 text-cyan-800';
-            case 'EXPORT_EXCEL':
-                return 'bg-cyan-100 text-cyan-800';
-            case 'BULK_DELETE':
-                return 'bg-red-100 text-red-800';
             
             // Summary actions
             case 'DAILY_SUMMARY':
@@ -219,8 +217,6 @@ const NotificationsPage = () => {
                 return 'bg-teal-100 text-teal-800';
             
             // System actions
-            case 'PENDING_REVIEW_REMINDER':
-                return 'bg-indigo-100 text-indigo-800';
             case 'INACTIVE_USER_ALERT':
                 return 'bg-orange-100 text-orange-800';
             case 'MILESTONE_REACHED':
@@ -257,10 +253,6 @@ const NotificationsPage = () => {
             // Security
             case 'FAILED_LOGIN':
                 return 'Failed Login';
-            case 'ACCOUNT_LOCKED':
-                return 'Account Locked';
-            case 'SUSPICIOUS_LOGIN':
-                return 'Suspicious Login';
             case 'MULTIPLE_EDITS':
                 return 'Multiple Edits';
             case 'CRITICAL_FIELD_CHANGE':
@@ -269,14 +261,6 @@ const NotificationsPage = () => {
                 return 'Duplicate NIC';
             case 'DATA_ANOMALY':
                 return 'Data Anomaly';
-            
-            // Export
-            case 'EXPORT_PDF':
-                return 'PDF Export';
-            case 'EXPORT_EXCEL':
-                return 'Excel Export';
-            case 'BULK_DELETE':
-                return 'Bulk Delete';
             
             // Summary
             case 'DAILY_SUMMARY':
@@ -289,8 +273,6 @@ const NotificationsPage = () => {
                 return 'Quarterly Report';
             
             // System
-            case 'PENDING_REVIEW_REMINDER':
-                return 'Pending Review';
             case 'INACTIVE_USER_ALERT':
                 return 'Inactive User';
             case 'MILESTONE_REACHED':
@@ -331,33 +313,24 @@ const NotificationsPage = () => {
                 return '✏️';
             case 'DELETE_SUBMISSION':
             case 'DELETE_USER':
-            case 'BULK_DELETE':
                 return '🗑️';
             case 'ACTIVATE_USER':
                 return '✅';
             case 'DEACTIVATE_USER':
                 return '⏸️';
             case 'FAILED_LOGIN':
-            case 'ACCOUNT_LOCKED':
                 return '🔐';
-            case 'SUSPICIOUS_LOGIN':
-                return '⚠️';
             case 'MULTIPLE_EDITS':
             case 'CRITICAL_FIELD_CHANGE':
                 return '⚡';
             case 'DUPLICATE_NIC':
             case 'DATA_ANOMALY':
                 return '⚠️';
-            case 'EXPORT_PDF':
-            case 'EXPORT_EXCEL':
-                return '📥';
             case 'DAILY_SUMMARY':
             case 'WEEKLY_SUMMARY':
             case 'MONTHLY_SUMMARY':
             case 'QUARTERLY_REPORT':
                 return '📊';
-            case 'PENDING_REVIEW_REMINDER':
-                return '⏰';
             case 'INACTIVE_USER_ALERT':
                 return '💤';
             case 'MILESTONE_REACHED':
@@ -427,7 +400,6 @@ const NotificationsPage = () => {
                         <option value="user">👤 Users</option>
                         <option value="security">🔒 Security</option>
                         <option value="system">⚙️ System</option>
-                        <option value="export">📊 Exports</option>
                         <option value="summary">📈 Summaries</option>
                     </select>
 
@@ -469,18 +441,12 @@ const NotificationsPage = () => {
                             <option value="CRITICAL_FIELD_CHANGE">Critical Change</option>
                             <option value="DUPLICATE_NIC">Duplicate NIC</option>
                         </optgroup>
-                        <optgroup label="Exports">
-                            <option value="EXPORT_PDF">PDF Export</option>
-                            <option value="EXPORT_EXCEL">Excel Export</option>
-                            <option value="BULK_DELETE">Bulk Delete</option>
-                        </optgroup>
                         <optgroup label="Summaries">
                             <option value="DAILY_SUMMARY">Daily Summary</option>
                             <option value="WEEKLY_SUMMARY">Weekly Summary</option>
                             <option value="MONTHLY_SUMMARY">Monthly Summary</option>
                         </optgroup>
                         <optgroup label="System">
-                            <option value="PENDING_REVIEW_REMINDER">Pending Review</option>
                             <option value="INACTIVE_USER_ALERT">Inactive User</option>
                             <option value="MILESTONE_REACHED">Milestone</option>
                         </optgroup>

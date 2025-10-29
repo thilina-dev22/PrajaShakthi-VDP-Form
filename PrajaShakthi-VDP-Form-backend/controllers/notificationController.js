@@ -135,15 +135,19 @@ const deleteNotification = async (req, res) => {
 
 // @desc   Delete all read notifications
 // @route  DELETE /api/notifications/clear-read
-// @access Private (Super Admin only)
+// @access Private (Super Admin & District Admin)
 const clearReadNotifications = async (req, res) => {
     try {
         const user = req.user;
+
+        console.log(`🗑️  Clearing read notifications for user: ${user.username} (${user._id})`);
 
         const result = await Notification.deleteMany({
             recipientId: user._id,
             isRead: true
         });
+
+        console.log(`✅ Deleted ${result.deletedCount} read notifications`);
 
         res.json({ 
             message: 'Read notifications cleared successfully',

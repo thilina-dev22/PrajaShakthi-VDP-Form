@@ -10,38 +10,6 @@ const { notifySuperAdmins } = require('./notificationHelper');
 const Submission = require('../models/SubmissionModel');
 
 /**
- * Check for pending submissions that need review (Phase 4)
- */
-const checkPendingReviews = async () => {
-    try {
-        const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-        
-        const pendingCount = await Submission.countDocuments({
-            createdAt: { $lte: sevenDaysAgo }
-        });
-
-        if (pendingCount > 0) {
-            await notifySuperAdmins(
-                'PENDING_REVIEW_REMINDER',
-                {
-                    details: {
-                        count: pendingCount,
-                        timeframe: '7 days'
-                    }
-                },
-                null,
-                'low',
-                'system'
-            );
-        }
-
-        console.log(`✅ Checked pending reviews: ${pendingCount} submissions`);
-    } catch (error) {
-        console.error('Error checking pending reviews:', error);
-    }
-};
-
-/**
  * Generate monthly summary (Phase 4)
  */
 const generateMonthlySummary = async () => {
@@ -151,12 +119,6 @@ const initializeScheduler = () => {
         checkInactiveUsers();
     });
 
-    // Check pending reviews - Every day at 10:00 AM
-    cron.schedule('0 10 * * *', () => {
-        console.log('🔔 Checking pending reviews...');
-        checkPendingReviews();
-    });
-
     // Monthly summary - First day of each month at 9:00 AM
     cron.schedule('0 9 1 * *', () => {
         console.log('🔔 Generating monthly summary...');
@@ -174,14 +136,12 @@ const initializeScheduler = () => {
     console.log('  - Daily summary: 6:00 PM daily');
     console.log('  - Weekly summary: 9:00 AM every Monday');
     console.log('  - Inactive users check: 10:00 AM every Sunday');
-    console.log('  - Pending reviews: 10:00 AM daily');
     console.log('  - Monthly summary: 9:00 AM first day of month');
     console.log('  - Milestones check: 8:00 PM daily');
 };
 
 module.exports = {
     initializeScheduler,
-    checkPendingReviews,
     generateMonthlySummary,
     checkMilestones
 };
