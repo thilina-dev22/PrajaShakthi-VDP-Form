@@ -9,16 +9,37 @@ const User = require('../models/UserModel');
 const getNotifications = async (req, res) => {
     try {
         const user = req.user;
-        const { limit = 50, skip = 0, unreadOnly = false } = req.query;
+        const { 
+            limit = 50, 
+            skip = 0, 
+            unreadOnly = false,
+            category,
+            priority,
+            action
+        } = req.query;
 
         const filter = { recipientId: user._id };
+        
         if (unreadOnly === 'true') {
             filter.isRead = false;
+        }
+        
+        if (category) {
+            filter.category = category;
+        }
+        
+        if (priority) {
+            filter.priority = priority;
+        }
+        
+        if (action) {
+            filter.action = action;
         }
 
         const notifications = await Notification.find(filter)
             .populate('triggeredBy', 'username fullName role district divisionalSecretariat')
             .populate('submissionId', 'location formType')
+            .populate('relatedUserId', 'username fullName role district divisionalSecretariat')
             .sort({ createdAt: -1 })
             .limit(parseInt(limit))
             .skip(parseInt(skip));

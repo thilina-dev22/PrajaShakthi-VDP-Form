@@ -2,6 +2,7 @@
 
 const User = require('../models/UserModel');
 const { logActivity } = require('../utils/activityLogger');
+const { notifySuperAdmins } = require('../utils/notificationHelper');
 
 // @desc    Create a new user (District Admin or DS User)
 // @route   POST /api/users
@@ -69,6 +70,23 @@ const createUser = async (req, res) => {
             district: creator.district,
             divisionalSecretariat: creator.divisionalSecretariat
         });
+
+        // Notify super admins when user is created (Phase 1)
+        await notifySuperAdmins(
+            'CREATE_USER',
+            {
+                relatedUserId: newUser._id,
+                details: {
+                    username: newUser.username,
+                    role: newUser.role,
+                    district: newUser.district,
+                    dsDivision: newUser.divisionalSecretariat
+                }
+            },
+            creator,
+            'medium',
+            'user'
+        );
 
         res.status(201).json({
             _id: newUser._id,
@@ -179,6 +197,41 @@ const updateUser = async (req, res) => {
             divisionalSecretariat: currentUser.divisionalSecretariat
         });
 
+        // Notify super admins when user is updated (Phase 1)
+        await notifySuperAdmins(
+            'UPDATE_USER',
+            {
+                relatedUserId: userToUpdate._id,
+                details: {
+                    username: userToUpdate.username,
+                    role: userToUpdate.role,
+                    district: userToUpdate.district,
+                    changes: `Updated: ${Object.keys({ fullName, email, isActive }).join(', ')}`
+                }
+            },
+            currentUser,
+            'low',
+            'user'
+        );
+
+        // Notify about activation/deactivation specifically (Phase 1)
+        if (isActive !== undefined) {
+            await notifySuperAdmins(
+                isActive ? 'ACTIVATE_USER' : 'DEACTIVATE_USER',
+                {
+                    relatedUserId: userToUpdate._id,
+                    details: {
+                        username: userToUpdate.username,
+                        role: userToUpdate.role,
+                        district: userToUpdate.district
+                    }
+                },
+                currentUser,
+                'medium',
+                'user'
+            );
+        }
+
         res.json({
             _id: userToUpdate._id,
             username: userToUpdate.username,
@@ -233,6 +286,21 @@ const deleteUser = async (req, res) => {
             district: currentUser.district,
             divisionalSecretariat: currentUser.divisionalSecretariat
         });
+
+        // Notify super admins when user is deleted (Phase 1)
+        await notifySuperAdmins(
+            'DELETE_USER',
+            {
+                details: {
+                    username: userToDelete.username,
+                    role: userToDelete.role,
+                    district: userToDelete.district
+                }
+            },
+            currentUser,
+            'high',
+            'user'
+        );
 
         res.json({ message: 'User deleted successfully' });
     } catch (error) {

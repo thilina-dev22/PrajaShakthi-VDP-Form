@@ -109,17 +109,96 @@ const NotificationBell = ({ setCurrentRoute }) => {
     };
 
     // Get action icon
-    const getActionIcon = (action) => {
+    const getActionIcon = (action, category) => {
+        // Category-based icons
+        switch (category) {
+            case 'submission':
+                return '📝';
+            case 'user':
+                return '👤';
+            case 'security':
+                return '🔒';
+            case 'system':
+                return '⚙️';
+            case 'export':
+                return '📊';
+            case 'summary':
+                return '📈';
+            default:
+                break;
+        }
+        
+        // Action-specific icons
         switch (action) {
             case 'CREATE_SUBMISSION':
+            case 'CREATE_USER':
                 return '➕';
             case 'UPDATE_SUBMISSION':
+            case 'UPDATE_USER':
                 return '✏️';
             case 'DELETE_SUBMISSION':
+            case 'DELETE_USER':
+            case 'BULK_DELETE':
                 return '🗑️';
+            case 'ACTIVATE_USER':
+                return '✅';
+            case 'DEACTIVATE_USER':
+                return '⏸️';
+            case 'FAILED_LOGIN':
+            case 'ACCOUNT_LOCKED':
+                return '🔐';
+            case 'SUSPICIOUS_LOGIN':
+            case 'MULTIPLE_EDITS':
+            case 'CRITICAL_FIELD_CHANGE':
+            case 'DUPLICATE_NIC':
+            case 'DATA_ANOMALY':
+                return '⚠️';
+            case 'EXPORT_PDF':
+            case 'EXPORT_EXCEL':
+                return '📥';
+            case 'DAILY_SUMMARY':
+            case 'WEEKLY_SUMMARY':
+            case 'MONTHLY_SUMMARY':
+            case 'QUARTERLY_REPORT':
+                return '📊';
+            case 'PENDING_REVIEW_REMINDER':
+                return '⏰';
+            case 'INACTIVE_USER_ALERT':
+                return '💤';
+            case 'MILESTONE_REACHED':
+                return '🎉';
             default:
                 return '📄';
         }
+    };
+
+    // Get priority color
+    const getPriorityColor = (priority) => {
+        switch (priority) {
+            case 'critical':
+                return 'text-red-600';
+            case 'high':
+                return 'text-orange-600';
+            case 'medium':
+                return 'text-yellow-600';
+            case 'low':
+                return 'text-blue-600';
+            default:
+                return 'text-gray-600';
+        }
+    };
+
+    // Get category badge
+    const getCategoryBadge = (category) => {
+        const badges = {
+            submission: '📝',
+            user: '👤',
+            security: '🔒',
+            system: '⚙️',
+            export: '📊',
+            summary: '📈'
+        };
+        return badges[category] || '📄';
     };
 
     return (
@@ -186,21 +265,54 @@ const NotificationBell = ({ setCurrentRoute }) => {
                                 <div
                                     key={notification._id}
                                     onClick={() => !notification.isRead && markAsRead(notification._id)}
-                                    className={`px-4 py-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer ${
+                                    className={`px-4 py-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors ${
                                         !notification.isRead ? 'bg-blue-50' : ''
                                     }`}
                                 >
                                     <div className="flex items-start">
-                                        <span className="text-2xl mr-3">{getActionIcon(notification.action)}</span>
+                                        {/* Icon and Priority Indicator */}
+                                        <div className="flex flex-col items-center mr-3">
+                                            <span className="text-2xl">{getActionIcon(notification.action, notification.category)}</span>
+                                            {notification.priority === 'critical' && <span className="text-xs">🔴</span>}
+                                            {notification.priority === 'high' && <span className="text-xs">🟠</span>}
+                                        </div>
+                                        
                                         <div className="flex-1 min-w-0">
+                                            {/* Category Badge */}
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <span className="text-xs font-semibold text-gray-500 uppercase">
+                                                    {getCategoryBadge(notification.category)} {notification.category || 'system'}
+                                                </span>
+                                                {notification.priority && (
+                                                    <span className={`text-xs font-bold ${getPriorityColor(notification.priority)}`}>
+                                                        {notification.priority.toUpperCase()}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            
+                                            {/* Message */}
                                             <p className={`text-sm ${!notification.isRead ? 'font-semibold text-gray-900' : 'text-gray-700'}`}>
                                                 {notification.message}
                                             </p>
+                                            
+                                            {/* Details */}
                                             {notification.details?.changes && (
                                                 <p className="text-xs text-gray-500 mt-1 truncate">
                                                     {notification.details.changes}
                                                 </p>
                                             )}
+                                            {notification.details?.district && (
+                                                <p className="text-xs text-gray-500 mt-1">
+                                                    📍 {notification.details.district}
+                                                </p>
+                                            )}
+                                            {notification.details?.count !== undefined && (
+                                                <p className="text-xs text-gray-500 mt-1">
+                                                    📊 Count: {notification.details.count}
+                                                </p>
+                                            )}
+                                            
+                                            {/* Footer */}
                                             <p className="text-xs text-gray-400 mt-1">
                                                 {formatTimeAgo(notification.createdAt)}
                                                 {notification.triggeredBy && ` • ${notification.triggeredBy.fullName || notification.triggeredBy.username}`}

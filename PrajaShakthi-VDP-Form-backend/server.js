@@ -9,7 +9,8 @@ const submissionRoutes = require("./routes/submissionRoutes");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
-const { Logger } = require('./middleware/loggingMiddleware')
+const { Logger } = require('./middleware/loggingMiddleware');
+const { initializeScheduler } = require('./utils/notificationScheduler');
 
 dotenv.config();
 
@@ -69,4 +70,9 @@ app.get("/api/health", (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  
+  // Initialize notification scheduler (Phase 3 & 4)
+  initializeScheduler();
+});

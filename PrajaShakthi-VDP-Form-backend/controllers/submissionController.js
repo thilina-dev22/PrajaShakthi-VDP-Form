@@ -1,6 +1,10 @@
 const Submission = require("../models/SubmissionModel");
 const { logActivity } = require("../utils/activityLogger");
-const { notifySuperAdmins, generateNotificationMessage } = require("../utils/notificationHelper");
+const { 
+  notifySuperAdmins, 
+  notifyDistrictAdmins,
+  checkDuplicateNIC 
+} = require("../utils/notificationHelper");
 
 // @desc   Create a new form submission
 // @route  POST /api/submissions
@@ -36,8 +40,8 @@ const createSubmission = async (req, res) => {
       divisionalSecretariat: user.divisionalSecretariat
     });
 
-    // Notify super admins only for council_info submissions
-    if (savedSubmission.formType === 'council_info') {
+    // Notify super admins for council_info and development_plan submissions (Phase 1)
+    if (['council_info', 'development_plan'].includes(savedSubmission.formType)) {
       const notificationDetails = {
         district: savedSubmission.location.district,
         dsDivision: savedSubmission.location.divisionalSec,
@@ -45,15 +49,38 @@ const createSubmission = async (req, res) => {
         formType: savedSubmission.formType
       };
 
-      const message = generateNotificationMessage('CREATE_SUBMISSION', user, notificationDetails);
+      await notifySuperAdmins(
+        'CREATE_SUBMISSION',
+        {
+          submissionId: savedSubmission._id,
+          details: notificationDetails
+        },
+        user,
+        'medium',
+        'submission'
+      );
 
-      await notifySuperAdmins({
-        action: 'CREATE_SUBMISSION',
-        triggeredBy: user._id,
-        submissionId: savedSubmission._id,
-        message,
-        details: notificationDetails
-      });
+      // Also notify district admin (Phase 1)
+      await notifyDistrictAdmins(
+        savedSubmission.location.district,
+        'CREATE_SUBMISSION',
+        {
+          submissionId: savedSubmission._id,
+          details: notificationDetails
+        },
+        user,
+        'low',
+        'submission'
+      );
+    }
+
+    // Check for duplicate NIC entries (Phase 2)
+    if (savedSubmission.communityCouncil && savedSubmission.communityCouncil.committeeMembers) {
+      for (const member of savedSubmission.communityCouncil.committeeMembers) {
+        if (member.nic) {
+          await checkDuplicateNIC(member.nic, savedSubmission._id);
+        }
+      }
     }
 
     res.status(201).json({
@@ -171,8 +198,8 @@ const deleteSubmission = async (req, res) => {
       divisionalSecretariat: user.divisionalSecretariat
     });
 
-    // Notify super admins only for council_info submissions
-    if (submission.formType === 'council_info') {
+    // Notify super admins for council_info and development_plan submissions (Phase 1)
+    if (['council_info', 'development_plan'].includes(submission.formType)) {
       const notificationDetails = {
         district: submission.location.district,
         dsDivision: submission.location.divisionalSec,
@@ -180,15 +207,16 @@ const deleteSubmission = async (req, res) => {
         formType: submission.formType
       };
 
-      const message = generateNotificationMessage('DELETE_SUBMISSION', user, notificationDetails);
-
-      await notifySuperAdmins({
-        action: 'DELETE_SUBMISSION',
-        triggeredBy: user._id,
-        submissionId: submission._id,
-        message,
-        details: notificationDetails
-      });
+      await notifySuperAdmins(
+        'DELETE_SUBMISSION',
+        {
+          submissionId: submission._id,
+          details: notificationDetails
+        },
+        user,
+        'medium',
+        'submission'
+      );
     }
 
     res.sendStatus(204);
@@ -289,8 +317,8 @@ const updateSubmission = async (req, res) => {
       divisionalSecretariat: user.divisionalSecretariat
     });
 
-    // Notify super admins only for council_info submissions
-    if (submission.formType === 'council_info') {
+    // Notify super admins for council_info and development_plan submissions (Phase 1)
+    if (['council_info', 'development_plan'].includes(submission.formType)) {
       const notificationDetails = {
         district: submission.location.district,
         dsDivision: submission.location.divisionalSec,
@@ -299,15 +327,66 @@ const updateSubmission = async (req, res) => {
         changes: changeDescription.length > 100 ? changeDescription.substring(0, 100) + '...' : changeDescription
       };
 
-      const message = generateNotificationMessage('UPDATE_SUBMISSION', user, notificationDetails);
+      await notifySuperAdmins(
+        'UPDATE_SUBMISSION',
+        {
+          submissionId: submission._id,
+          details: notificationDetails
+        },
+        user,
+        'medium',
+        'submission'
+      );
 
-      await notifySuperAdmins({
-        action: 'UPDATE_SUBMISSION',
-        triggeredBy: user._id,
-        submissionId: submission._id,
-        message,
-        details: notificationDetails
-      });
+      // Check for multiple edits (Phase 2)
+      if (submission.editHistory.length >= 3) {
+        await notifySuperAdmins(
+          'MULTIPLE_EDITS',
+          {
+            submissionId: submission._id,
+            details: {
+              count: submission.editHistory.length,
+              district: submission.location.district,
+              formType: submission.formType
+            }
+          },
+          user,
+          'medium',
+          'security'
+        );
+      }
+
+      // Check for critical field changes (Phase 2)
+      const criticalFields = ['position', 'nic', 'gender'];
+      const criticalChanges = changes.filter(change => 
+        criticalFields.some(field => change.toLowerCase().includes(field))
+      );
+      
+      if (criticalChanges.length > 0) {
+        await notifySuperAdmins(
+          'CRITICAL_FIELD_CHANGE',
+          {
+            submissionId: submission._id,
+            details: {
+              changes: criticalChanges.join('; '),
+              district: submission.location.district,
+              formType: submission.formType
+            }
+          },
+          user,
+          'high',
+          'security'
+        );
+      }
+    }
+
+    // Check for duplicate NIC in updated data (Phase 2)
+    if (req.body.communityCouncil && req.body.communityCouncil.committeeMembers) {
+      for (const member of req.body.communityCouncil.committeeMembers) {
+        if (member.nic) {
+          await checkDuplicateNIC(member.nic, submission._id);
+        }
+      }
     }
 
     res.json({

@@ -11,14 +11,25 @@ const NotificationsPage = () => {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all'); // 'all', 'unread', 'read'
-    const [actionFilter, setActionFilter] = useState('all'); // 'all', 'CREATE_SUBMISSION', 'UPDATE_SUBMISSION', 'DELETE_SUBMISSION'
+    const [actionFilter, setActionFilter] = useState('all');
+    const [categoryFilter, setCategoryFilter] = useState('all');
+    const [priorityFilter, setPriorityFilter] = useState('all');
 
     // Fetch notifications
     const fetchNotifications = useCallback(async () => {
         setLoading(true);
         try {
             const unreadOnly = filter === 'unread';
-            const response = await axios.get(`${API_URL}/api/notifications?limit=100&unreadOnly=${unreadOnly}`, {
+            const params = new URLSearchParams({
+                limit: '100',
+                unreadOnly: unreadOnly.toString()
+            });
+            
+            if (categoryFilter !== 'all') params.append('category', categoryFilter);
+            if (priorityFilter !== 'all') params.append('priority', priorityFilter);
+            if (actionFilter !== 'all') params.append('action', actionFilter);
+            
+            const response = await axios.get(`${API_URL}/api/notifications?${params.toString()}`, {
                 withCredentials: true
             });
             setNotifications(response.data.notifications);
@@ -27,13 +38,13 @@ const NotificationsPage = () => {
         } finally {
             setLoading(false);
         }
-    }, [filter]);
+    }, [filter, categoryFilter, priorityFilter, actionFilter]);
 
     useEffect(() => {
         if (isSuperAdmin) {
             fetchNotifications();
         }
-    }, [filter, isSuperAdmin, fetchNotifications]);
+    }, [filter, categoryFilter, priorityFilter, actionFilter, isSuperAdmin, fetchNotifications]);
 
     // Redirect if not super admin
     if (!isSuperAdmin) {
@@ -103,16 +114,6 @@ const NotificationsPage = () => {
         }
     };
 
-    // Filter notifications by action type
-    const filteredNotifications = actionFilter === 'all' 
-        ? notifications 
-        : notifications.filter(n => n.action === actionFilter);
-
-    // Filter by read status (client-side for 'read' filter)
-    const displayNotifications = filter === 'read' 
-        ? filteredNotifications.filter(n => n.isRead)
-        : filteredNotifications;
-
     // Format date
     const formatDate = (date) => {
         return new Date(date).toLocaleString('en-US', {
@@ -124,15 +125,107 @@ const NotificationsPage = () => {
         });
     };
 
+    // Get priority badge color
+    const getPriorityBadgeColor = (priority) => {
+        switch (priority) {
+            case 'critical':
+                return 'bg-red-100 text-red-800 border-red-300';
+            case 'high':
+                return 'bg-orange-100 text-orange-800 border-orange-300';
+            case 'medium':
+                return 'bg-yellow-100 text-yellow-800 border-yellow-300';
+            case 'low':
+                return 'bg-blue-100 text-blue-800 border-blue-300';
+            default:
+                return 'bg-gray-100 text-gray-800 border-gray-300';
+        }
+    };
+
+    // Get category badge color
+    const getCategoryBadgeColor = (category) => {
+        switch (category) {
+            case 'submission':
+                return 'bg-green-100 text-green-800';
+            case 'user':
+                return 'bg-purple-100 text-purple-800';
+            case 'security':
+                return 'bg-red-100 text-red-800';
+            case 'system':
+                return 'bg-indigo-100 text-indigo-800';
+            case 'export':
+                return 'bg-cyan-100 text-cyan-800';
+            case 'summary':
+                return 'bg-teal-100 text-teal-800';
+            default:
+                return 'bg-gray-100 text-gray-800';
+        }
+    };
+
     // Get action badge color
     const getActionBadgeColor = (action) => {
         switch (action) {
+            // Submission actions
             case 'CREATE_SUBMISSION':
                 return 'bg-green-100 text-green-800';
             case 'UPDATE_SUBMISSION':
                 return 'bg-blue-100 text-blue-800';
             case 'DELETE_SUBMISSION':
                 return 'bg-red-100 text-red-800';
+            
+            // User management actions
+            case 'CREATE_USER':
+                return 'bg-purple-100 text-purple-800';
+            case 'UPDATE_USER':
+                return 'bg-purple-100 text-purple-800';
+            case 'DELETE_USER':
+                return 'bg-red-100 text-red-800';
+            case 'ACTIVATE_USER':
+                return 'bg-green-100 text-green-800';
+            case 'DEACTIVATE_USER':
+                return 'bg-orange-100 text-orange-800';
+            
+            // Security actions
+            case 'FAILED_LOGIN':
+                return 'bg-red-100 text-red-800';
+            case 'ACCOUNT_LOCKED':
+                return 'bg-red-100 text-red-800';
+            case 'SUSPICIOUS_LOGIN':
+                return 'bg-orange-100 text-orange-800';
+            case 'MULTIPLE_EDITS':
+                return 'bg-orange-100 text-orange-800';
+            case 'CRITICAL_FIELD_CHANGE':
+                return 'bg-red-100 text-red-800';
+            case 'DUPLICATE_NIC':
+                return 'bg-orange-100 text-orange-800';
+            case 'DATA_ANOMALY':
+                return 'bg-yellow-100 text-yellow-800';
+            
+            // Export actions
+            case 'EXPORT_PDF':
+                return 'bg-cyan-100 text-cyan-800';
+            case 'EXPORT_EXCEL':
+                return 'bg-cyan-100 text-cyan-800';
+            case 'BULK_DELETE':
+                return 'bg-red-100 text-red-800';
+            
+            // Summary actions
+            case 'DAILY_SUMMARY':
+                return 'bg-teal-100 text-teal-800';
+            case 'WEEKLY_SUMMARY':
+                return 'bg-teal-100 text-teal-800';
+            case 'MONTHLY_SUMMARY':
+                return 'bg-teal-100 text-teal-800';
+            case 'QUARTERLY_REPORT':
+                return 'bg-teal-100 text-teal-800';
+            
+            // System actions
+            case 'PENDING_REVIEW_REMINDER':
+                return 'bg-indigo-100 text-indigo-800';
+            case 'INACTIVE_USER_ALERT':
+                return 'bg-orange-100 text-orange-800';
+            case 'MILESTONE_REACHED':
+                return 'bg-green-100 text-green-800';
+            
             default:
                 return 'bg-gray-100 text-gray-800';
         }
@@ -141,14 +234,136 @@ const NotificationsPage = () => {
     // Get action label
     const getActionLabel = (action) => {
         switch (action) {
+            // Submission actions
             case 'CREATE_SUBMISSION':
                 return 'Created';
             case 'UPDATE_SUBMISSION':
                 return 'Updated';
             case 'DELETE_SUBMISSION':
                 return 'Deleted';
+            
+            // User management
+            case 'CREATE_USER':
+                return 'User Created';
+            case 'UPDATE_USER':
+                return 'User Updated';
+            case 'DELETE_USER':
+                return 'User Deleted';
+            case 'ACTIVATE_USER':
+                return 'User Activated';
+            case 'DEACTIVATE_USER':
+                return 'User Deactivated';
+            
+            // Security
+            case 'FAILED_LOGIN':
+                return 'Failed Login';
+            case 'ACCOUNT_LOCKED':
+                return 'Account Locked';
+            case 'SUSPICIOUS_LOGIN':
+                return 'Suspicious Login';
+            case 'MULTIPLE_EDITS':
+                return 'Multiple Edits';
+            case 'CRITICAL_FIELD_CHANGE':
+                return 'Critical Change';
+            case 'DUPLICATE_NIC':
+                return 'Duplicate NIC';
+            case 'DATA_ANOMALY':
+                return 'Data Anomaly';
+            
+            // Export
+            case 'EXPORT_PDF':
+                return 'PDF Export';
+            case 'EXPORT_EXCEL':
+                return 'Excel Export';
+            case 'BULK_DELETE':
+                return 'Bulk Delete';
+            
+            // Summary
+            case 'DAILY_SUMMARY':
+                return 'Daily Summary';
+            case 'WEEKLY_SUMMARY':
+                return 'Weekly Summary';
+            case 'MONTHLY_SUMMARY':
+                return 'Monthly Summary';
+            case 'QUARTERLY_REPORT':
+                return 'Quarterly Report';
+            
+            // System
+            case 'PENDING_REVIEW_REMINDER':
+                return 'Pending Review';
+            case 'INACTIVE_USER_ALERT':
+                return 'Inactive User';
+            case 'MILESTONE_REACHED':
+                return 'Milestone';
+            
             default:
-                return action;
+                return action.replace(/_/g, ' ');
+        }
+    };
+
+    // Get action icon
+    const getActionIcon = (action, category) => {
+        // Category-based icons
+        switch (category) {
+            case 'submission':
+                return '📝';
+            case 'user':
+                return '👤';
+            case 'security':
+                return '🔒';
+            case 'system':
+                return '⚙️';
+            case 'export':
+                return '📊';
+            case 'summary':
+                return '📈';
+            default:
+                break;
+        }
+        
+        // Action-specific icons
+        switch (action) {
+            case 'CREATE_SUBMISSION':
+            case 'CREATE_USER':
+                return '➕';
+            case 'UPDATE_SUBMISSION':
+            case 'UPDATE_USER':
+                return '✏️';
+            case 'DELETE_SUBMISSION':
+            case 'DELETE_USER':
+            case 'BULK_DELETE':
+                return '🗑️';
+            case 'ACTIVATE_USER':
+                return '✅';
+            case 'DEACTIVATE_USER':
+                return '⏸️';
+            case 'FAILED_LOGIN':
+            case 'ACCOUNT_LOCKED':
+                return '🔐';
+            case 'SUSPICIOUS_LOGIN':
+                return '⚠️';
+            case 'MULTIPLE_EDITS':
+            case 'CRITICAL_FIELD_CHANGE':
+                return '⚡';
+            case 'DUPLICATE_NIC':
+            case 'DATA_ANOMALY':
+                return '⚠️';
+            case 'EXPORT_PDF':
+            case 'EXPORT_EXCEL':
+                return '📥';
+            case 'DAILY_SUMMARY':
+            case 'WEEKLY_SUMMARY':
+            case 'MONTHLY_SUMMARY':
+            case 'QUARTERLY_REPORT':
+                return '📊';
+            case 'PENDING_REVIEW_REMINDER':
+                return '⏰';
+            case 'INACTIVE_USER_ALERT':
+                return '💤';
+            case 'MILESTONE_REACHED':
+                return '🎉';
+            default:
+                return '📄';
         }
     };
 
@@ -201,6 +416,34 @@ const NotificationsPage = () => {
                         </button>
                     </div>
 
+                    {/* Category Filter */}
+                    <select
+                        value={categoryFilter}
+                        onChange={(e) => setCategoryFilter(e.target.value)}
+                        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                        <option value="all">All Categories</option>
+                        <option value="submission">📝 Submissions</option>
+                        <option value="user">👤 Users</option>
+                        <option value="security">🔒 Security</option>
+                        <option value="system">⚙️ System</option>
+                        <option value="export">📊 Exports</option>
+                        <option value="summary">📈 Summaries</option>
+                    </select>
+
+                    {/* Priority Filter */}
+                    <select
+                        value={priorityFilter}
+                        onChange={(e) => setPriorityFilter(e.target.value)}
+                        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                        <option value="all">All Priorities</option>
+                        <option value="critical">🔴 Critical</option>
+                        <option value="high">🟠 High</option>
+                        <option value="medium">🟡 Medium</option>
+                        <option value="low">🔵 Low</option>
+                    </select>
+
                     {/* Action Filter */}
                     <select
                         value={actionFilter}
@@ -208,9 +451,39 @@ const NotificationsPage = () => {
                         className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                         <option value="all">All Actions</option>
-                        <option value="CREATE_SUBMISSION">Created</option>
-                        <option value="UPDATE_SUBMISSION">Updated</option>
-                        <option value="DELETE_SUBMISSION">Deleted</option>
+                        <optgroup label="Submissions">
+                            <option value="CREATE_SUBMISSION">Created</option>
+                            <option value="UPDATE_SUBMISSION">Updated</option>
+                            <option value="DELETE_SUBMISSION">Deleted</option>
+                        </optgroup>
+                        <optgroup label="Users">
+                            <option value="CREATE_USER">User Created</option>
+                            <option value="UPDATE_USER">User Updated</option>
+                            <option value="DELETE_USER">User Deleted</option>
+                            <option value="ACTIVATE_USER">User Activated</option>
+                            <option value="DEACTIVATE_USER">User Deactivated</option>
+                        </optgroup>
+                        <optgroup label="Security">
+                            <option value="FAILED_LOGIN">Failed Login</option>
+                            <option value="MULTIPLE_EDITS">Multiple Edits</option>
+                            <option value="CRITICAL_FIELD_CHANGE">Critical Change</option>
+                            <option value="DUPLICATE_NIC">Duplicate NIC</option>
+                        </optgroup>
+                        <optgroup label="Exports">
+                            <option value="EXPORT_PDF">PDF Export</option>
+                            <option value="EXPORT_EXCEL">Excel Export</option>
+                            <option value="BULK_DELETE">Bulk Delete</option>
+                        </optgroup>
+                        <optgroup label="Summaries">
+                            <option value="DAILY_SUMMARY">Daily Summary</option>
+                            <option value="WEEKLY_SUMMARY">Weekly Summary</option>
+                            <option value="MONTHLY_SUMMARY">Monthly Summary</option>
+                        </optgroup>
+                        <optgroup label="System">
+                            <option value="PENDING_REVIEW_REMINDER">Pending Review</option>
+                            <option value="INACTIVE_USER_ALERT">Inactive User</option>
+                            <option value="MILESTONE_REACHED">Milestone</option>
+                        </optgroup>
                     </select>
 
                     {/* Bulk Actions */}
@@ -242,7 +515,7 @@ const NotificationsPage = () => {
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
                         <p className="mt-4 text-gray-600">Loading notifications...</p>
                     </div>
-                ) : displayNotifications.length === 0 ? (
+                ) : notifications.length === 0 ? (
                     <div className="text-center py-12 bg-white rounded-lg shadow-md">
                         <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
@@ -251,11 +524,11 @@ const NotificationsPage = () => {
                         <p className="text-gray-400 text-sm mt-1">
                             {filter === 'unread' && 'All notifications have been read'}
                             {filter === 'read' && 'No read notifications'}
-                            {filter === 'all' && actionFilter !== 'all' && 'No notifications for this action type'}
+                            {filter === 'all' && (categoryFilter !== 'all' || priorityFilter !== 'all' || actionFilter !== 'all') && 'No notifications match your filters'}
                         </p>
                     </div>
                 ) : (
-                    displayNotifications.map((notification) => (
+                    notifications.map((notification) => (
                         <div
                             key={notification._id}
                             className={`bg-white rounded-lg shadow-md p-6 transition-all ${
@@ -265,13 +538,37 @@ const NotificationsPage = () => {
                             <div className="flex items-start justify-between">
                                 <div className="flex-1">
                                     {/* Header */}
-                                    <div className="flex items-center gap-3 mb-2">
+                                    <div className="flex items-center gap-3 mb-2 flex-wrap">
+                                        {/* Icon */}
+                                        <span className="text-2xl">
+                                            {getActionIcon(notification.action, notification.category)}
+                                        </span>
+                                        
+                                        {/* Action Badge */}
                                         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getActionBadgeColor(notification.action)}`}>
                                             {getActionLabel(notification.action)}
                                         </span>
+                                        
+                                        {/* Category Badge */}
+                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getCategoryBadgeColor(notification.category)}`}>
+                                            {notification.category?.toUpperCase() || 'SYSTEM'}
+                                        </span>
+                                        
+                                        {/* Priority Badge */}
+                                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getPriorityBadgeColor(notification.priority)}`}>
+                                            {notification.priority === 'critical' && '🔴 '}
+                                            {notification.priority === 'high' && '🟠 '}
+                                            {notification.priority === 'medium' && '🟡 '}
+                                            {notification.priority === 'low' && '🔵 '}
+                                            {notification.priority?.toUpperCase() || 'MEDIUM'}
+                                        </span>
+                                        
+                                        {/* Timestamp */}
                                         <span className="text-gray-500 text-sm">
                                             {formatDate(notification.createdAt)}
                                         </span>
+                                        
+                                        {/* Unread Badge */}
                                         {!notification.isRead && (
                                             <span className="px-2 py-1 bg-blue-600 text-white rounded-full text-xs font-semibold">
                                                 NEW
@@ -295,9 +592,21 @@ const NotificationsPage = () => {
                                         {notification.details?.gnDivision && (
                                             <span>• {notification.details.gnDivision}</span>
                                         )}
+                                        {notification.details?.formType && (
+                                            <span>📋 {notification.details.formType === 'council_info' ? 'CDC Form' : 'Development Plan'}</span>
+                                        )}
+                                        {notification.details?.username && (
+                                            <span>👤 {notification.details.username}</span>
+                                        )}
+                                        {notification.details?.count !== undefined && (
+                                            <span>📊 Count: {notification.details.count}</span>
+                                        )}
+                                        {notification.details?.ipAddress && (
+                                            <span>🌐 {notification.details.ipAddress}</span>
+                                        )}
                                         {notification.triggeredBy && (
                                             <span>
-                                                👤 {notification.triggeredBy.fullName || notification.triggeredBy.username}
+                                                👤 By: {notification.triggeredBy.fullName || notification.triggeredBy.username}
                                                 {notification.triggeredBy.role && ` (${notification.triggeredBy.role})`}
                                             </span>
                                         )}
@@ -308,6 +617,22 @@ const NotificationsPage = () => {
                                         <div className="mt-3 p-3 bg-gray-50 rounded-lg">
                                             <p className="text-xs text-gray-500 mb-1">Changes:</p>
                                             <p className="text-sm text-gray-700">{notification.details.changes}</p>
+                                        </div>
+                                    )}
+                                    
+                                    {/* Old/New Values */}
+                                    {(notification.details?.oldValue || notification.details?.newValue) && (
+                                        <div className="mt-3 p-3 bg-yellow-50 rounded-lg">
+                                            {notification.details.oldValue && (
+                                                <p className="text-sm text-gray-700">
+                                                    <span className="font-semibold">Old:</span> {notification.details.oldValue}
+                                                </p>
+                                            )}
+                                            {notification.details.newValue && (
+                                                <p className="text-sm text-gray-700">
+                                                    <span className="font-semibold">New:</span> {notification.details.newValue}
+                                                </p>
+                                            )}
                                         </div>
                                     )}
                                 </div>
