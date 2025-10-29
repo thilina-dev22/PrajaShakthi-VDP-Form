@@ -1,5 +1,10 @@
 const Submission = require("../models/SubmissionModel");
 const { logActivity } = require("../utils/activityLogger");
+const { 
+  notifySuperAdmins, 
+  notifyDistrictAdmins,
+  checkDuplicateNIC 
+} = require("../utils/notificationHelper");
 
 // @desc   Create a new form submission
 // @route  POST /api/submissions
@@ -34,6 +39,49 @@ const createSubmission = async (req, res) => {
       district: user.district,
       divisionalSecretariat: user.divisionalSecretariat
     });
+
+    // Notify super admins for council_info and development_plan submissions (Phase 1)
+    if (['council_info', 'development_plan'].includes(savedSubmission.formType)) {
+      const notificationDetails = {
+        district: savedSubmission.location.district,
+        dsDivision: savedSubmission.location.divisionalSec,
+        gnDivision: savedSubmission.location.gnDivision,
+        formType: savedSubmission.formType
+      };
+
+      await notifySuperAdmins(
+        'CREATE_SUBMISSION',
+        {
+          submissionId: savedSubmission._id,
+          details: notificationDetails
+        },
+        user,
+        'medium',
+        'submission'
+      );
+
+      // Also notify district admin (Phase 1)
+      await notifyDistrictAdmins(
+        savedSubmission.location.district,
+        'CREATE_SUBMISSION',
+        {
+          submissionId: savedSubmission._id,
+          details: notificationDetails
+        },
+        user,
+        'low',
+        'submission'
+      );
+    }
+
+    // Check for duplicate NIC entries (Phase 2)
+    if (savedSubmission.communityCouncil && savedSubmission.communityCouncil.committeeMembers) {
+      for (const member of savedSubmission.communityCouncil.committeeMembers) {
+        if (member.nic) {
+          await checkDuplicateNIC(member.nic, savedSubmission._id);
+        }
+      }
+    }
 
     res.status(201).json({
       message: "Submission saved successfully!",
@@ -150,6 +198,27 @@ const deleteSubmission = async (req, res) => {
       divisionalSecretariat: user.divisionalSecretariat
     });
 
+    // Notify super admins for council_info and development_plan submissions (Phase 1)
+    if (['council_info', 'development_plan'].includes(submission.formType)) {
+      const notificationDetails = {
+        district: submission.location.district,
+        dsDivision: submission.location.divisionalSec,
+        gnDivision: submission.location.gnDivision,
+        formType: submission.formType
+      };
+
+      await notifySuperAdmins(
+        'DELETE_SUBMISSION',
+        {
+          submissionId: submission._id,
+          details: notificationDetails
+        },
+        user,
+        'medium',
+        'submission'
+      );
+    }
+
     res.sendStatus(204);
   } catch (error) {
     console.error("Error deleting submission:", error);
@@ -181,12 +250,40 @@ const updateSubmission = async (req, res) => {
 
     // Detect changes for detailed logging
     const changes = [];
+    const detailedChanges = []; // Structured change data for notifications
     const oldData = submission.toObject();
     
     // Check location changes
     if (req.body.location) {
       if (req.body.location.gnDivision && req.body.location.gnDivision !== oldData.location.gnDivision) {
         changes.push(`GN Division: ${oldData.location.gnDivision} → ${req.body.location.gnDivision}`);
+        detailedChanges.push({
+          field: 'GN Division',
+          fieldKey: 'location.gnDivision',
+          oldValue: oldData.location.gnDivision,
+          newValue: req.body.location.gnDivision,
+          category: 'location'
+        });
+      }
+      if (req.body.location.divisionalSec && req.body.location.divisionalSec !== oldData.location.divisionalSec) {
+        changes.push(`DS Division: ${oldData.location.divisionalSec} → ${req.body.location.divisionalSec}`);
+        detailedChanges.push({
+          field: 'DS Division',
+          fieldKey: 'location.divisionalSec',
+          oldValue: oldData.location.divisionalSec,
+          newValue: req.body.location.divisionalSec,
+          category: 'location'
+        });
+      }
+      if (req.body.location.district && req.body.location.district !== oldData.location.district) {
+        changes.push(`District: ${oldData.location.district} → ${req.body.location.district}`);
+        detailedChanges.push({
+          field: 'District',
+          fieldKey: 'location.district',
+          oldValue: oldData.location.district,
+          newValue: req.body.location.district,
+          category: 'location'
+        });
       }
     }
 
@@ -200,11 +297,23 @@ const updateSubmission = async (req, res) => {
           
           newSection.forEach((member, idx) => {
             const oldMember = oldSection[idx] || {};
-            ['name', 'position', 'phone', 'whatsapp', 'email'].forEach(field => {
-              if (member[field] && member[field] !== oldMember[field]) {
-                const sectionName = section === 'committeeMembers' ? 'Committee' : 
-                                  section === 'communityReps' ? 'Community Rep' : 'Strategic';
-                changes.push(`${sectionName} ${idx + 1} ${field}: ${oldMember[field] || 'empty'} → ${member[field]}`);
+            ['name', 'position', 'phone', 'whatsapp', 'email', 'nic', 'gender', 'permanentAddress'].forEach(field => {
+              const oldVal = oldMember[field] || '';
+              const newVal = member[field] || '';
+              if (newVal && newVal !== oldVal) {
+                const sectionName = section === 'committeeMembers' ? 'Committee Member' : 
+                                  section === 'communityReps' ? 'Community Rep' : 'Strategic Member';
+                changes.push(`${sectionName} #${idx + 1} ${field}: ${oldVal || 'empty'} → ${newVal}`);
+                detailedChanges.push({
+                  field: `${sectionName} #${idx + 1} - ${field.charAt(0).toUpperCase() + field.slice(1)}`,
+                  fieldKey: `communityCouncil.${section}[${idx}].${field}`,
+                  oldValue: oldVal,
+                  newValue: newVal,
+                  category: 'member',
+                  section: sectionName,
+                  memberIndex: idx,
+                  memberField: field
+                });
               }
             });
           });
@@ -247,6 +356,80 @@ const updateSubmission = async (req, res) => {
       district: user.district,
       divisionalSecretariat: user.divisionalSecretariat
     });
+
+    // Notify super admins for council_info and development_plan submissions (Phase 1)
+    if (['council_info', 'development_plan'].includes(submission.formType)) {
+      const notificationDetails = {
+        district: submission.location.district,
+        dsDivision: submission.location.divisionalSec,
+        gnDivision: submission.location.gnDivision,
+        formType: submission.formType,
+        changes: changeDescription.length > 100 ? changeDescription.substring(0, 100) + '...' : changeDescription,
+        changeCount: detailedChanges.length,
+        detailedChanges: detailedChanges // Pass structured change data
+      };
+
+      await notifySuperAdmins(
+        'UPDATE_SUBMISSION',
+        {
+          submissionId: submission._id,
+          details: notificationDetails
+        },
+        user,
+        'medium',
+        'submission'
+      );
+
+      // Check for multiple edits (Phase 2)
+      if (submission.editHistory.length >= 3) {
+        await notifySuperAdmins(
+          'MULTIPLE_EDITS',
+          {
+            submissionId: submission._id,
+            details: {
+              count: submission.editHistory.length,
+              district: submission.location.district,
+              formType: submission.formType
+            }
+          },
+          user,
+          'medium',
+          'security'
+        );
+      }
+
+      // Check for critical field changes (Phase 2)
+      const criticalFields = ['position', 'nic', 'gender'];
+      const criticalChanges = changes.filter(change => 
+        criticalFields.some(field => change.toLowerCase().includes(field))
+      );
+      
+      if (criticalChanges.length > 0) {
+        await notifySuperAdmins(
+          'CRITICAL_FIELD_CHANGE',
+          {
+            submissionId: submission._id,
+            details: {
+              changes: criticalChanges.join('; '),
+              district: submission.location.district,
+              formType: submission.formType
+            }
+          },
+          user,
+          'high',
+          'security'
+        );
+      }
+    }
+
+    // Check for duplicate NIC in updated data (Phase 2)
+    if (req.body.communityCouncil && req.body.communityCouncil.committeeMembers) {
+      for (const member of req.body.communityCouncil.committeeMembers) {
+        if (member.nic) {
+          await checkDuplicateNIC(member.nic, submission._id);
+        }
+      }
+    }
 
     res.json({
       message: "Submission updated successfully!",
