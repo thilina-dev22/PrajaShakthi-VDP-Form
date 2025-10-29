@@ -11,7 +11,7 @@ import autoTable from 'jspdf-autotable';
 // REMOVED: import "./AdminTabs.css"; since custom CSS was removed
 
 const SubmissionList = () => {
-  const { isAuthenticated, isSuperAdmin } = useAuth();
+  const { isAuthenticated, isSuperAdmin, isDistrictAdmin, isDSUser, user } = useAuth();
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -36,6 +36,27 @@ const SubmissionList = () => {
     const allDistricts = provincialDataJson[0]?.districts || [];
     setDistricts(allDistricts);
   }, []);
+
+  // Auto-select filters based on user role
+  useEffect(() => {
+    if (user) {
+      // District Admin: auto-select their district
+      if (isDistrictAdmin && user.district) {
+        setFilterDistrict(user.district);
+      }
+      // DS User: auto-select their district and DS division
+      if (isDSUser && user.district) {
+        setFilterDistrict(user.district);
+      }
+    }
+  }, [user, isDistrictAdmin, isDSUser]);
+
+  // Auto-select DS Division for DS User after district is set
+  useEffect(() => {
+    if (isDSUser && user?.divisionalSecretariat && filterDistrict && dsDivisions.length > 0) {
+      setFilterDsDivision(user.divisionalSecretariat);
+    }
+  }, [isDSUser, user, filterDistrict, dsDivisions]);
 
   useEffect(() => {
     setDsDivisions([]);
@@ -102,55 +123,79 @@ const SubmissionList = () => {
       <h3 className="text-xl font-semibold mb-4 pb-2 border-b border-gray-200">
         Filter Submissions
       </h3>
+      
+      {/* Show active filters for District Admin and DS User */}
+      {(isDistrictAdmin || isDSUser) && (
+        <div className="mb-5 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-sm font-medium text-blue-900 mb-2">Active Filters:</p>
+          <div className="flex flex-wrap gap-2">
+            {filterDistrict && (
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-600 text-white">
+                District: {filterDistrict}
+              </span>
+            )}
+            {filterDsDivision && (
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-600 text-white">
+                DS Division: {filterDsDivision}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col md:flex-row gap-5">
-        {/* District Dropdown */}
-        <div className="flex-1">
-          <label className="block mb-2 font-medium text-gray-700 text-base">
-            District:
-          </label>
-          <select
-            value={filterDistrict}
-            onChange={(e) => {
-              setFilterDistrict(e.target.value);
-              setFilterDsDivision("");
-              setFilterGnDivision("");
-            }}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-          >
-            <option value="">-- All Districts --</option>
-            {districts.map((d) => (
-              <option key={d.district.trim()} value={d.district.trim()}>
-                {d.district.trim()}
-              </option>
-            ))}
-          </select>
-        </div>
-        {/* DS Division Dropdown */}
-        <div className="flex-1">
-          <label className="block mb-2 font-medium text-gray-700 text-base">
-            DS Division:
-          </label>
-          <select
-            value={filterDsDivision}
-            onChange={(e) => {
-              setFilterDsDivision(e.target.value);
-              setFilterGnDivision("");
-            }}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-            disabled={!filterDistrict}
-          >
-            <option value="">-- All DS Divisions --</option>
-            {dsDivisions.map((ds) => (
-              <option
-                key={ds.ds_division_name.trim()}
-                value={ds.ds_division_name.trim()}
-              >
-                {ds.ds_division_name.trim()}
-              </option>
-            ))}
-          </select>
-        </div>
-        {/* GN Division Dropdown */}
+        {/* District Dropdown - Hide for District Admin and DS User (pre-selected) */}
+        {!isDistrictAdmin && !isDSUser && (
+          <div className="flex-1">
+            <label className="block mb-2 font-medium text-gray-700 text-base">
+              District:
+            </label>
+            <select
+              value={filterDistrict}
+              onChange={(e) => {
+                setFilterDistrict(e.target.value);
+                setFilterDsDivision("");
+                setFilterGnDivision("");
+              }}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            >
+              <option value="">-- All Districts --</option>
+              {districts.map((d) => (
+                <option key={d.district.trim()} value={d.district.trim()}>
+                  {d.district.trim()}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+        {/* DS Division Dropdown - Hide for DS User (pre-selected) */}
+        {!isDSUser && (
+          <div className="flex-1">
+            <label className="block mb-2 font-medium text-gray-700 text-base">
+              DS Division:
+            </label>
+            <select
+              value={filterDsDivision}
+              onChange={(e) => {
+                setFilterDsDivision(e.target.value);
+                setFilterGnDivision("");
+              }}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              disabled={!filterDistrict}
+            >
+              <option value="">-- All DS Divisions --</option>
+              {dsDivisions.map((ds) => (
+                <option
+                  key={ds.ds_division_name.trim()}
+                  value={ds.ds_division_name.trim()}
+                >
+                  {ds.ds_division_name.trim()}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+        {/* GN Division Dropdown - Always visible */}
         <div className="flex-1">
           <label className="block mb-2 font-medium text-gray-700 text-base">
             GN Division:
