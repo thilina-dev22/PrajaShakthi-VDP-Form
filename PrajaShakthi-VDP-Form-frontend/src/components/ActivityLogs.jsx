@@ -19,6 +19,9 @@ const ActivityLogs = () => {
         endDate: ''
     });
 
+    // Check if user is Super Admin
+    const isSuperAdmin = user?.role === 'superadmin';
+
     useEffect(() => {
         fetchLogs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -54,6 +57,47 @@ const ActivityLogs = () => {
         const { name, value } = e.target;
         setFilters(prev => ({ ...prev, [name]: value }));
         setPage(1); // Reset to first page on filter change
+    };
+
+    // Download activity logs
+    const downloadActivityLogs = async (includeOldLogs = false) => {
+        try {
+            const params = new URLSearchParams({
+                includeOldLogs: includeOldLogs.toString()
+            });
+            
+            // Add current filters if not downloading old logs
+            if (!includeOldLogs) {
+                if (filters.action) params.append('action', filters.action);
+                if (filters.startDate) params.append('startDate', filters.startDate);
+                if (filters.endDate) params.append('endDate', filters.endDate);
+            }
+            
+            const response = await axios.get(`${API_URL}/api/activity-logs/export?${params.toString()}`, {
+                withCredentials: true,
+                responseType: 'blob' // Important for file download
+            });
+            
+            // Create a download link
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            
+            const timestamp = new Date().toISOString().split('T')[0];
+            link.setAttribute('download', `activity-logs-${includeOldLogs ? 'old-' : ''}${timestamp}.json`);
+            
+            document.body.appendChild(link);
+            link.click();
+            
+            // Cleanup
+            link.parentNode.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            
+            alert('Activity logs downloaded successfully!');
+        } catch (err) {
+            console.error('Error downloading activity logs:', err);
+            alert('Failed to download activity logs. Please try again.');
+        }
     };
 
     const formatDate = (dateString) => {
@@ -194,6 +238,23 @@ const ActivityLogs = () => {
                         </button>
                     </div>
                 </div>
+
+                {/* Download Actions - Only for Super Admin */}
+                {isSuperAdmin && (
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                        <button
+                            onClick={() => downloadActivityLogs(false)}
+                            className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition flex items-center gap-2"
+                            title="Download activity logs with current filters applied"
+                        >
+                            <span>📥</span>
+                            <span>Download Logs</span>
+                        </button>
+                        <p className="text-sm text-gray-600 mt-2">
+                            💡 Download logs in JSON format with current filters. Logs older than 1 month are automatically deleted.
+                        </p>
+                    </div>
+                )}
             </div>
 
             {error && (

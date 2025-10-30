@@ -116,6 +116,40 @@ const NotificationsPage = () => {
         }
     };
 
+    // Download activity logs
+    const downloadActivityLogs = async (includeOldLogs = false) => {
+        try {
+            const params = new URLSearchParams({
+                includeOldLogs: includeOldLogs.toString()
+            });
+            
+            const response = await axios.get(`${API_URL}/api/activity-logs/export?${params.toString()}`, {
+                withCredentials: true,
+                responseType: 'blob' // Important for file download
+            });
+            
+            // Create a download link
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            
+            const timestamp = new Date().toISOString().split('T')[0];
+            link.setAttribute('download', `activity-logs-${includeOldLogs ? 'old-' : ''}${timestamp}.json`);
+            
+            document.body.appendChild(link);
+            link.click();
+            
+            // Cleanup
+            link.parentNode.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            
+            alert('Activity logs downloaded successfully!');
+        } catch (error) {
+            console.error('Error downloading activity logs:', error);
+            alert('Failed to download activity logs. Please try again.');
+        }
+    };
+
     // Clear all read notifications
     const clearReadNotifications = async () => {
         if (!confirm('Are you sure you want to clear all read notifications?')) return;
@@ -235,6 +269,10 @@ const NotificationsPage = () => {
                 return 'bg-orange-100 text-orange-800';
             case 'MILESTONE_REACHED':
                 return 'bg-green-100 text-green-800';
+            case 'LOG_DELETION_REMINDER':
+                return 'bg-yellow-100 text-yellow-800';
+            case 'SYSTEM_CLEANUP':
+                return 'bg-blue-100 text-blue-800';
             
             default:
                 return 'bg-gray-100 text-gray-800';
@@ -291,6 +329,10 @@ const NotificationsPage = () => {
                 return 'Inactive User';
             case 'MILESTONE_REACHED':
                 return 'Milestone';
+            case 'LOG_DELETION_REMINDER':
+                return 'Log Cleanup Warning';
+            case 'SYSTEM_CLEANUP':
+                return 'System Cleanup';
             
             default:
                 return action.replace(/_/g, ' ');
@@ -349,6 +391,10 @@ const NotificationsPage = () => {
                 return '💤';
             case 'MILESTONE_REACHED':
                 return '🎉';
+            case 'LOG_DELETION_REMINDER':
+                return '⚠️';
+            case 'SYSTEM_CLEANUP':
+                return '🧹';
             default:
                 return '📄';
         }
@@ -463,6 +509,8 @@ const NotificationsPage = () => {
                         <optgroup label="System">
                             <option value="INACTIVE_USER_ALERT">Inactive User</option>
                             <option value="MILESTONE_REACHED">Milestone</option>
+                            <option value="LOG_DELETION_REMINDER">Log Cleanup Warning</option>
+                            <option value="SYSTEM_CLEANUP">System Cleanup</option>
                         </optgroup>
                     </select>
 
@@ -697,6 +745,17 @@ const NotificationsPage = () => {
 
                                 {/* Actions */}
                                 <div className="flex flex-col gap-2 ml-4">
+                                    {/* Download button for log deletion reminders */}
+                                    {notification.action === 'LOG_DELETION_REMINDER' && isSuperAdmin && (
+                                        <button
+                                            onClick={() => downloadActivityLogs(true)}
+                                            className="px-3 py-1 text-sm bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors flex items-center gap-1"
+                                            title="Download logs before deletion"
+                                        >
+                                            <span>📥</span>
+                                            <span>Download Old Logs</span>
+                                        </button>
+                                    )}
                                     {!notification.isRead && (
                                         <button
                                             onClick={() => markAsRead(notification._id)}

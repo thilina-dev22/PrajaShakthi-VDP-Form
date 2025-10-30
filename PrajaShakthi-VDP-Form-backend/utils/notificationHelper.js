@@ -156,6 +156,13 @@ const generateNotificationMessage = (action, data, triggeredBy) => {
         case 'MILESTONE_REACHED':
             return `Milestone reached: ${details.count} submissions received for ${details.district}`;
 
+        // Phase 5: System Maintenance
+        case 'LOG_DELETION_REMINDER':
+            return `⚠️ Activity Log Cleanup: ${details.count} logs will be deleted on ${details.deletionDate}. Download logs before deletion if needed.`;
+        
+        case 'SYSTEM_CLEANUP':
+            return `System Cleanup Complete: ${details.count} ${details.cleanupType} deleted (older than ${details.cutoffDate})`;
+
         default:
             return `Notification: ${action} by ${userName}`;
     }
