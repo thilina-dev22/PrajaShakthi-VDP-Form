@@ -7,6 +7,7 @@ import DevelopmentForm from './DevelopmentForm';
 import UserManagement from './UserManagement';
 import ActivityLogs from './ActivityLogs';
 import NotificationsPage from './NotificationsPage';
+import PasswordManagement from './PasswordManagement';
 import Navigation from './Navigation';
 
 const AppRoutes = () => {
@@ -49,6 +50,8 @@ const renderRoute = (route, isSuperAdmin, isDistrictAdmin, isDSUser, setCurrentR
         return <DevelopmentForm setCurrentRoute={setCurrentRoute} />;
       case 'submissions':
         return <SubmissionList />;
+      case 'password':
+        return <PasswordManagement />;
       default:
         return <CommunityCouncilForm setCurrentRoute={setCurrentRoute} />;
     }
@@ -65,6 +68,8 @@ const renderRoute = (route, isSuperAdmin, isDistrictAdmin, isDSUser, setCurrentR
         return <ActivityLogs />;
       case 'notifications':
         return <NotificationsPage />;
+      case 'password':
+        return <PasswordManagement />;
       default:
         return <SubmissionList />;
     }
