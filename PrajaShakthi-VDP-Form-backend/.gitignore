@@ -1,2 +1,5 @@
 node_modules
 .env
+
+# Security: Never commit account credentials
+# scripts/admin_accounts_report.json

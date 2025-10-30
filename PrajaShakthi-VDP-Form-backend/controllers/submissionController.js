@@ -6,12 +6,29 @@ const {
   checkDuplicateNIC 
 } = require("../utils/notificationHelper");
 
-// @desc   Create a new form submission
-// @route  POST /api/submissions
+// @desc   Create a new form submission
+// @route  POST /api/submissions
 // @access Public (anonymous submissions allowed)
 const createSubmission = async (req, res) => {
   try {
     const user = req.user;
+    
+    // Validation: Only one CDC form submission per GN Division
+    if (req.body.formType === 'council_info') {
+      const existingSubmission = await Submission.findOne({
+        formType: 'council_info',
+        'location.district': req.body.location?.district,
+        'location.divisionalSec': req.body.location?.divisionalSec,
+        'location.gnDivision': req.body.location?.gnDivision
+      });
+
+      if (existingSubmission) {
+        return res.status(400).json({ 
+          message: `A CDC form has already been submitted for ${req.body.location?.gnDivision} GN Division. Only one submission per GN Division is allowed.`,
+          existingSubmissionId: existingSubmission._id
+        });
+      }
+    }
     
     // Automatically set createdBy from authenticated user
     const submissionData = {
@@ -95,11 +112,21 @@ const createSubmission = async (req, res) => {
   }
 };
 
-// @desc   Get all submissions (with filtering based on role)
+// @desc   Get all submissions (with filtering based on role) - PAGINATED
 // @route   GET /api/submissions
 // @access Private
 const getSubmissions = async (req, res) => {
-  const { district, divisionalSec, gnDivision, formType } = req.query;
+  const { 
+    district, 
+    divisionalSec, 
+    gnDivision, 
+    formType,
+    page = 1,
+    limit = 50,
+    sortBy = 'createdAt',
+    sortOrder = 'desc'
+  } = req.query;
+  
   const user = req.user;
   const filter = {};
 
@@ -128,29 +155,68 @@ const getSubmissions = async (req, res) => {
   }
 
   try {
-    const submissions = await Submission.find(filter)
-      .populate('createdBy', 'username fullName')
-      .populate('lastModifiedBy', 'username fullName')
-      .populate('editHistory.editedBy', 'username fullName')
-      .sort({ createdAt: -1 });
+    // Convert to numbers and validate
+    const pageNum = Math.max(1, parseInt(page));
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit))); // Max 100 per page
+    const skip = (pageNum - 1) * limitNum;
 
-    // Log activity
-    await logActivity({
+    // Build sort object
+    const sort = {};
+    sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
+
+    // Execute query with pagination
+    const [submissions, totalCount] = await Promise.all([
+      Submission.find(filter)
+        .select('-__v') // Exclude version field
+        .populate('createdBy', 'username fullName')
+        .populate('lastModifiedBy', 'username fullName')
+        .populate({
+          path: 'editHistory.editedBy',
+          select: 'username fullName',
+          options: { limit: 5 } // Limit edit history population
+        })
+        .sort(sort)
+        .skip(skip)
+        .limit(limitNum)
+        .lean(), // Use lean() for better performance
+      Submission.countDocuments(filter)
+    ]);
+
+    // Calculate pagination metadata
+    const totalPages = Math.ceil(totalCount / limitNum);
+    const hasNextPage = pageNum < totalPages;
+    const hasPrevPage = pageNum > 1;
+
+    // Log activity (async, don't wait)
+    logActivity({
       userId: user._id,
       username: user.username,
       userRole: user.role,
       action: 'VIEW_SUBMISSIONS',
       details: { 
         count: submissions.length,
+        totalCount,
+        page: pageNum,
         filters: { district, divisionalSec, gnDivision, formType }
       },
       ipAddress: req.ip,
       userAgent: req.get('user-agent'),
       district: user.district,
       divisionalSecretariat: user.divisionalSecretariat
-    });
+    }).catch(err => console.error('Error logging activity:', err));
 
-    res.status(200).json(submissions);
+    res.status(200).json({
+      success: true,
+      data: submissions,
+      pagination: {
+        currentPage: pageNum,
+        totalPages,
+        totalCount,
+        limit: limitNum,
+        hasNextPage,
+        hasPrevPage
+      }
+    });
   } catch (error) {
     console.error("Error fetching submissions:", error);
     res
@@ -246,6 +312,34 @@ const updateSubmission = async (req, res) => {
     // District admins can edit submissions from their district
     if (user.role === 'district_admin' && submission.location.district !== user.district) {
       return res.status(403).json({ message: "Not authorized to edit this submission" });
+    }
+
+    // Validation: If changing location for council_info, ensure no duplicate exists for new GN Division
+    if (submission.formType === 'council_info' && req.body.location) {
+      const isLocationChanging = 
+        (req.body.location.district && req.body.location.district !== submission.location.district) ||
+        (req.body.location.divisionalSec && req.body.location.divisionalSec !== submission.location.divisionalSec) ||
+        (req.body.location.gnDivision && req.body.location.gnDivision !== submission.location.gnDivision);
+
+      if (isLocationChanging) {
+        const newDistrict = req.body.location.district || submission.location.district;
+        const newDS = req.body.location.divisionalSec || submission.location.divisionalSec;
+        const newGN = req.body.location.gnDivision || submission.location.gnDivision;
+
+        const existingSubmission = await Submission.findOne({
+          _id: { $ne: submission._id }, // Exclude current submission
+          formType: 'council_info',
+          'location.district': newDistrict,
+          'location.divisionalSec': newDS,
+          'location.gnDivision': newGN
+        });
+
+        if (existingSubmission) {
+          return res.status(400).json({ 
+            message: `A Community Council form already exists for ${newGN} GN Division in ${newDS}, ${newDistrict}. Each GN Division can only have one Community Council form.` 
+          });
+        }
+      }
     }
 
     // Detect changes for detailed logging

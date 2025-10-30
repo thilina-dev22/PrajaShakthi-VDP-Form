@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 
 const Login = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const { login, loading, authError } = useAuth();
@@ -15,10 +15,63 @@ const Login = () => {
         await login(username, password);
     };
 
+    const changeLanguage = (lng) => {
+        i18n.changeLanguage(lng);
+    };
+
+    const getLanguageLabel = (lang) => {
+        switch (lang) {
+            case "en":
+                return "English";
+            case "si":
+                return "සිංහල";
+            case "ta":
+                return "தமிழ்";
+            default:
+                return "සිංහල";
+        }
+    };
+
     return (
-        <div className="max-w-md mx-auto mt-10 p-8 bg-white rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold text-center text-[#A8234A] mb-8">{t('login.title')}</h2>
-            <form onSubmit={handleSubmit}>
+        <div className="min-h-screen bg-gray-50">
+            {/* Login Navbar */}
+            <header className="bg-[#680921] text-white p-4 shadow-md w-full">
+                <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center">
+                    {/* Logo and Title */}
+                    <div className="flex items-center gap-3 mb-4 sm:mb-0">
+                        <img
+                            src="/logo.png"
+                            alt="CDC Logo"
+                            className="h-12 sm:h-14 w-auto"
+                        />
+                        <h1 className="text-xl sm:text-2xl font-bold">CDC Data Collection Portal</h1>
+                    </div>
+
+                    {/* Language Switcher */}
+                    <div className="flex items-center gap-2">
+                        <div className="flex gap-1 bg-white/10 rounded-lg p-1">
+                            {["si", "ta", "en"].map((lang) => (
+                                <button
+                                    key={lang}
+                                    onClick={() => changeLanguage(lang)}
+                                    className={`px-3 py-1 rounded transition-colors ${
+                                        i18n.language === lang
+                                            ? "bg-white text-[#680921] font-semibold"
+                                            : "text-white hover:bg-white/20"
+                                    }`}
+                                >
+                                    {getLanguageLabel(lang)}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            {/* Login Form */}
+            <div className="max-w-md mx-auto mt-10 p-8 bg-white rounded-lg shadow-md">
+                <h2 className="text-2xl font-bold text-center text-[#A8234A] mb-8">{t('login.title')}</h2>
+                <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
                         {t('login.username')}:
@@ -56,6 +109,7 @@ const Login = () => {
                     </button>
                 </div>
             </form>
+        </div>
         </div>
     );
 };

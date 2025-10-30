@@ -22,6 +22,14 @@ const SubmissionList = () => {
   const [filterDsDivision, setFilterDsDivision] = useState("");
   const [filterGnDivision, setFilterGnDivision] = useState("");
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(50);
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const [hasPrevPage, setHasPrevPage] = useState(false);
+
   const [districts, setDistricts] = useState([]);
   const [dsDivisions, setDsDivisions] = useState([]);
   const [gnDivisions, setGnDivisions] = useState([]);
@@ -94,14 +102,27 @@ const SubmissionList = () => {
           district: filterDistrict,
           divisionalSec: filterDsDivision,
           gnDivision: filterGnDivision,
-          formType: activeTab, // <-- Pass the active tab as a filter
+          formType: activeTab,
+          page: currentPage,
+          limit: itemsPerPage,
         };
         const cleanedFilters = Object.fromEntries(
           Object.entries(filters).filter(([, v]) => v)
         );
 
-        const data = await getSubmissions(cleanedFilters);
-        setSubmissions(data);
+        const response = await getSubmissions(cleanedFilters);
+        
+        // Handle paginated response
+        if (response.success && response.data) {
+          setSubmissions(response.data);
+          setTotalPages(response.pagination.totalPages);
+          setTotalCount(response.pagination.totalCount);
+          setHasNextPage(response.pagination.hasNextPage);
+          setHasPrevPage(response.pagination.hasPrevPage);
+        } else {
+          // Fallback for backward compatibility (if response is array)
+          setSubmissions(Array.isArray(response) ? response : []);
+        }
       } catch (error) {
         setError(error.message);
       } finally {
@@ -116,7 +137,14 @@ const SubmissionList = () => {
     filterDsDivision,
     filterGnDivision,
     activeTab,
+    currentPage,
+    itemsPerPage,
   ]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterDistrict, filterDsDivision, filterGnDivision, activeTab]);
 
   const FilterPanel = () => (
     <div className="max-w-4xl mx-auto p-8 bg-white rounded-xl shadow-lg mb-5">
@@ -796,51 +824,81 @@ const SubmissionList = () => {
 
   // Helper function to check if a field was recently updated
   const getUpdatedFields = (submission) => {
-    const updatedFields = new Set();
+    const updatedFields = new Map(); // Store row-specific data
     
-    // Get the most recent edit from history
+    // Process ALL edits from history (not just recent ones)
     if (submission.editHistory && submission.editHistory.length > 0) {
-      const latestEdit = submission.editHistory[submission.editHistory.length - 1];
-      const editTime = new Date(latestEdit.editedAt);
-      const now = new Date();
-      const hoursSinceEdit = (now - editTime) / (1000 * 60 * 60);
-      
-      // Only highlight if edit was within last 24 hours
-      if (hoursSinceEdit < 24) {
-        // Parse changes description to extract field names
-        // Format: "Updated: field1, field2, field3"
-        if (latestEdit.changes) {
-          const changes = latestEdit.changes.toLowerCase();
+      // Loop through ALL edit history entries
+      submission.editHistory.forEach(edit => {
+        // Parse changes description to extract field names and row numbers
+        // Format: "Committee Member #1 name: old → new; Committee Member #3 phone: old → new"
+        if (edit.changes) {
+          const changeEntries = edit.changes.split(';');
           
-          // Location fields
-          if (changes.includes('district') || changes.includes('location')) updatedFields.add('location.district');
-          if (changes.includes('divisional') || changes.includes('ds')) updatedFields.add('location.divisionalSec');
-          if (changes.includes('gn') || changes.includes('gndivision')) updatedFields.add('location.gnDivision');
-          
-          // Member fields - check for member changes
-          if (changes.includes('name')) updatedFields.add('member.name');
-          if (changes.includes('position')) updatedFields.add('member.position');
-          if (changes.includes('phone')) updatedFields.add('member.phone');
-          if (changes.includes('whatsapp')) updatedFields.add('member.whatsapp');
-          if (changes.includes('nic')) updatedFields.add('member.nic');
-          if (changes.includes('gender')) updatedFields.add('member.gender');
-          if (changes.includes('address') || changes.includes('permanent')) updatedFields.add('member.permanentAddress');
+          changeEntries.forEach(entry => {
+            const trimmedEntry = entry.trim().toLowerCase();
+            
+            // Location fields (no row number)
+            if (trimmedEntry.includes('district:') && trimmedEntry.includes('→')) {
+              updatedFields.set('location.district', true);
+            }
+            if ((trimmedEntry.includes('ds division:') || trimmedEntry.includes('divisional')) && trimmedEntry.includes('→')) {
+              updatedFields.set('location.divisionalSec', true);
+            }
+            if ((trimmedEntry.includes('gn division:') || trimmedEntry.includes('gndivision')) && trimmedEntry.includes('→')) {
+              updatedFields.set('location.gnDivision', true);
+            }
+            
+            // Member fields - parse row number
+            // Format: "Committee Member #5 name: old → new"
+            const memberPattern = /(committee member|community rep|strategic member)\s*#(\d+)\s+(\w+):/i;
+            const match = entry.match(memberPattern);
+            
+            if (match) {
+              const sectionType = match[1].toLowerCase();
+              const rowNumber = parseInt(match[2], 10);
+              const fieldName = match[3].toLowerCase();
+              
+              // Map section type to section key
+              let sectionKey = '';
+              if (sectionType.includes('committee')) sectionKey = 'committeeMembers';
+              else if (sectionType.includes('community')) sectionKey = 'communityReps';
+              else if (sectionType.includes('strategic')) sectionKey = 'strategicMembers';
+              
+              if (sectionKey) {
+                // Store with section, row index (0-based), and field
+                const arrayIndex = rowNumber - 1; // Convert to 0-based index
+                const key = `${sectionKey}[${arrayIndex}].${fieldName}`;
+                updatedFields.set(key, true);
+              }
+            }
+          });
         }
-      }
+      });
     }
     
     return updatedFields;
   };
 
   // Helper function to get CSS classes for updated fields
-  const getFieldHighlightClass = (fieldPath, updatedFields) => {
-    if (updatedFields.has(fieldPath)) {
+  const getFieldHighlightClass = (fieldPath, updatedFields, sectionKey = null, memberIndex = null) => {
+    // For location fields (no section/index)
+    if (!sectionKey && !memberIndex && updatedFields.has(fieldPath)) {
       return 'bg-yellow-100 border-l-4 border-l-yellow-500 font-semibold';
     }
+    
+    // For member fields (with section and index)
+    if (sectionKey !== null && memberIndex !== null) {
+      const specificKey = `${sectionKey}[${memberIndex}].${fieldPath}`;
+      if (updatedFields.has(specificKey)) {
+        return 'bg-yellow-100 border-l-4 border-l-yellow-500 font-semibold';
+      }
+    }
+    
     return '';
   };
 
-  const renderCommunityCouncil = (councilData, updatedFields = new Set()) => {
+  const renderCommunityCouncil = (councilData, updatedFields = new Map()) => {
     if (
       !councilData ||
       typeof councilData !== "object" ||
@@ -909,27 +967,27 @@ const SubmissionList = () => {
                         className="even:bg-gray-50"
                       >
                         <td className="border border-gray-300 p-2 font-semibold">{globalRowNumber}</td>
-                        <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('member.name', updatedFields)}`}>
+                        <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('name', updatedFields, section.key, index)}`}>
                           {member.name}
                         </td>
                         {section.showPosition && (
-                          <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('member.position', updatedFields)}`}>
+                          <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('position', updatedFields, section.key, index)}`}>
                             {member.position}
                           </td>
                         )}
-                        <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('member.phone', updatedFields)}`}>
+                        <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('phone', updatedFields, section.key, index)}`}>
                           {member.phone}
                         </td>
-                        <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('member.whatsapp', updatedFields)}`}>
+                        <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('whatsapp', updatedFields, section.key, index)}`}>
                           {member.whatsapp}
                         </td>
-                        <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('member.nic', updatedFields)}`}>
+                        <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('nic', updatedFields, section.key, index)}`}>
                           {member.nic}
                         </td>
-                        <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('member.gender', updatedFields)}`}>
+                        <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('gender', updatedFields, section.key, index)}`}>
                           {member.gender}
                         </td>
-                        <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('member.permanentAddress', updatedFields)}`}>
+                        <td className={`border border-gray-300 p-2 ${getFieldHighlightClass('permanentaddress', updatedFields, section.key, index)}`}>
                           {member.permanentAddress}
                         </td>
                       </tr>
@@ -1295,17 +1353,17 @@ const SubmissionList = () => {
                             disabled
                           />
                         ) : (
-                          // Row 5: Dropdown with position options
+                          // Row 5: Dropdown with position options (English values)
                           <select
                             value={member.position || ''}
                             onChange={(e) => handleMemberChange(section, idx, 'position', e.target.value)}
                             className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
                           >
                             <option value="">Select Position</option>
-                            <option value="කෘෂිකර්ම නිලධාරි">කෘෂිකර්ම නිලධාරි (Agricultural Officer)</option>
-                            <option value="ධීවර සංවර්ධන නිලධාරි">ධීවර සංවර්ධන නිලධාරි (Fisheries Officer)</option>
-                            <option value="ජලජ සංවර්ධන නිලධාරි">ජලජ සංවර්ධන නිලධාරි (Aquaculture Officer)</option>
-                            <option value="වෙනත්">වෙනත් (Other)</option>
+                            <option value="Agricultural Officer">කෘෂිකර්ම නිලධාරි (Agricultural Officer)</option>
+                            <option value="Fisheries Officer">ධීවර සංවර්ධන නිලධාරි (Fisheries Officer)</option>
+                            <option value="Aquaculture Officer">ජලජ සංවර්ධන නිලධාරි (Aquaculture Officer)</option>
+                            <option value="Other">වෙනත් (Other)</option>
                           </select>
                         )}
                       </div>
@@ -1426,8 +1484,8 @@ const SubmissionList = () => {
           <div className="flex-1">
             <h3 className="text-sm font-bold text-yellow-900 mb-1">Updated Fields Highlighting</h3>
             <p className="text-xs text-yellow-800">
-              Fields with a <span className="bg-yellow-100 border-l-4 border-l-yellow-500 px-2 py-0.5 font-semibold">yellow highlight and left border</span> were updated within the last 24 hours.
-              This helps you quickly identify recently changed information.
+              Fields with a <span className="bg-yellow-100 border-l-4 border-l-yellow-500 px-2 py-0.5 font-semibold">yellow highlight and left border</span> have been edited.
+              This helps you quickly identify changed information from the edit history.
             </p>
           </div>
         </div>
@@ -1485,7 +1543,7 @@ const SubmissionList = () => {
               </p>
             </div>
             
-            {/* Show update indicator if fields were recently changed */}
+            {/* Show update indicator if fields were changed */}
             {updatedFields.size > 0 && (
               <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 mb-4">
                 <div className="flex items-center">
@@ -1493,7 +1551,7 @@ const SubmissionList = () => {
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                   </svg>
                   <p className="text-sm text-yellow-800 font-semibold">
-                    Recently Updated - Highlighted fields were changed in the last 24 hours
+                    This submission has been edited - Highlighted fields show all changes from edit history
                   </p>
                 </div>
               </div>
@@ -1664,6 +1722,130 @@ const SubmissionList = () => {
                   Close
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Pagination Controls */}
+      {!loading && !error && submissions.length > 0 && (
+        <div className="bg-white border border-gray-200 rounded-lg p-6 mt-6 shadow-sm">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            {/* Page Info */}
+            <div className="text-sm text-gray-600">
+              Showing <span className="font-semibold">{((currentPage - 1) * itemsPerPage) + 1}</span> to{' '}
+              <span className="font-semibold">
+                {Math.min(currentPage * itemsPerPage, totalCount)}
+              </span> of{' '}
+              <span className="font-semibold">{totalCount}</span> submissions
+            </div>
+
+            {/* Page Controls */}
+            <div className="flex items-center gap-2">
+              {/* First Page */}
+              <button
+                onClick={() => setCurrentPage(1)}
+                disabled={!hasPrevPage}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition ${
+                  hasPrevPage
+                    ? 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
+                title="First Page"
+              >
+                «
+              </button>
+
+              {/* Previous Page */}
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={!hasPrevPage}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition ${
+                  hasPrevPage
+                    ? 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                Previous
+              </button>
+
+              {/* Page Numbers */}
+              <div className="flex items-center gap-1">
+                {(() => {
+                  const pages = [];
+                  const showPages = 5;
+                  let startPage = Math.max(1, currentPage - Math.floor(showPages / 2));
+                  let endPage = Math.min(totalPages, startPage + showPages - 1);
+                  
+                  if (endPage - startPage < showPages - 1) {
+                    startPage = Math.max(1, endPage - showPages + 1);
+                  }
+
+                  for (let i = startPage; i <= endPage; i++) {
+                    pages.push(
+                      <button
+                        key={i}
+                        onClick={() => setCurrentPage(i)}
+                        className={`px-3 py-2 rounded-md text-sm font-medium transition ${
+                          currentPage === i
+                            ? 'bg-[#A8234A] text-white'
+                            : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                        }`}
+                      >
+                        {i}
+                      </button>
+                    );
+                  }
+                  return pages;
+                })()}
+              </div>
+
+              {/* Next Page */}
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={!hasNextPage}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition ${
+                  hasNextPage
+                    ? 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                Next
+              </button>
+
+              {/* Last Page */}
+              <button
+                onClick={() => setCurrentPage(totalPages)}
+                disabled={!hasNextPage}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition ${
+                  hasNextPage
+                    ? 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
+                title="Last Page"
+              >
+                »
+              </button>
+            </div>
+
+            {/* Items Per Page */}
+            <div className="flex items-center gap-2">
+              <label htmlFor="itemsPerPage" className="text-sm text-gray-600">
+                Per page:
+              </label>
+              <select
+                id="itemsPerPage"
+                value={itemsPerPage}
+                onChange={(e) => {
+                  setItemsPerPage(Number(e.target.value));
+                  setCurrentPage(1);
+                }}
+                className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#A8234A] focus:border-transparent"
+              >
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
             </div>
           </div>
         </div>

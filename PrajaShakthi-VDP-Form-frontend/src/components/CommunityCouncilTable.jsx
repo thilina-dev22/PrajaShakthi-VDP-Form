@@ -25,7 +25,7 @@ const CommunityCouncilTable = ({ data, onChange }) => {
   const row5PositionOptions = [
     { value: "", label: t("council.selectPosition") },
     {
-      value: "Agricultural Research Production Assistant",
+      value: "Agricultural Officer",
       label: t("council.positionAgri"),
     },
     {
@@ -33,10 +33,10 @@ const CommunityCouncilTable = ({ data, onChange }) => {
       label: t("council.positionFisheries"),
     },
     {
-      value: "Aquaculture Extension Officer",
+      value: "Aquaculture Officer",
       label: t("council.positionAquaculture"),
     },
-    { value: t("council.positionOther"), label: t("council.positionOther") },
+    { value: "Other", label: t("council.positionOther") },
   ];
 
   // Gender options
@@ -93,11 +93,10 @@ const CommunityCouncilTable = ({ data, onChange }) => {
 
   // Check if row 5 position value is custom (not in dropdown)
   const isRow5CustomPosition = (row) => {
-    const otherLabel = t("council.positionOther");
     return (
       row.position &&
       !row5PositionOptions.some(
-        (opt) => opt.value === row.position && opt.value !== otherLabel
+        (opt) => opt.value === row.position && opt.value !== "Other"
       )
     );
   };
@@ -106,7 +105,7 @@ const CommunityCouncilTable = ({ data, onChange }) => {
   const renderTable1Rows = (section) => {
     const sectionData = data.slice(section.start, section.end);
     const rowsToRender = [];
-    const otherLabel = t("council.positionOther");
+    const otherLabel = "Other"; // Use English value consistently
 
     sectionData.forEach((row, localIndex) => {
       const globalIndex = section.start + localIndex;
