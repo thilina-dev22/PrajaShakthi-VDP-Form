@@ -13,7 +13,9 @@ The following fixes have been applied to resolve the production deployment issue
 
 ### Frontend Deployment (Already Deployed)
 
-**Your Frontend URL:** `https://praja-shakthi-vdp-form-5aaz-git-main-thilinas-projects-98fabc7e.vercel.app`
+**Your Frontend URLs:** 
+- Main: `https://praja-shakthi-vdp-form-5aaz.vercel.app`
+- Git Branch URL: `https://praja-shakthi-vdp-form-5aaz-git-main-thilinas-projects-98fabc7e.vercel.app`
 
 1. Go to your frontend project in Vercel Dashboard
 2. Navigate to **Settings** → **Environment Variables**
@@ -44,26 +46,27 @@ Make sure the following environment variables are set in your backend Vercel pro
 
 ### Verify CORS Configuration
 
-The backend `server.js` already includes your frontend URL in the CORS allowedOrigins:
+The backend `server.js` now includes both your frontend URLs in the CORS allowedOrigins:
 ```javascript
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
   "https://praja-shakthi-vdp-form-5aaz-git-main-thilinas-projects-98fabc7e.vercel.app",
+  "https://praja-shakthi-vdp-form-5aaz.vercel.app", // New production URL
   process.env.CORS_ORIGIN,
 ].filter(Boolean);
 ```
 
-✅ This is correct!
+✅ This is correct and already pushed to GitHub!
 
 ## 🧪 Testing After Deployment
 
-1. Open your frontend URL: `https://praja-shakthi-vdp-form-5aaz-git-main-thilinas-projects-98fabc7e.vercel.app`
+1. Open your frontend URL: `https://praja-shakthi-vdp-form-5aaz.vercel.app`
 2. Open **Browser DevTools** (F12) → **Console** tab
 3. Try to login
 4. Check for errors:
    - ❌ `ERR_CONNECTION_REFUSED` → Backend environment variable not set
-   - ❌ `CORS error` → Check backend CORS configuration
+   - ❌ `CORS error` → Backend needs to be redeployed (already pushed to GitHub)
    - ✅ No errors → Everything is working!
 
 ## 🔍 Troubleshooting
