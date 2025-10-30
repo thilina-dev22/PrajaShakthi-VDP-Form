@@ -34,6 +34,7 @@ const allowedOrigins = [
   "http://localhost:5174",
   // Add your production frontend domain(s) below without trailing slash
   "https://praja-shakthi-vdp-form-5aaz-git-main-thilinas-projects-98fabc7e.vercel.app",
+  "https://praja-shakthi-vdp-form-5aaz.vercel.app", // New production URL
   process.env.CORS_ORIGIN, // optional single origin via env
 ].filter(Boolean);
 
