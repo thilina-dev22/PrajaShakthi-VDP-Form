@@ -9,8 +9,10 @@ const submissionRoutes = require("./routes/submissionRoutes");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const activityLogRoutes = require("./routes/activityLogRoutes");
 const { Logger } = require('./middleware/loggingMiddleware');
 const { initializeScheduler } = require('./utils/notificationScheduler');
+const { initializeLogCleanupScheduler } = require('./utils/activityLogCleanup');
 
 dotenv.config();
 
@@ -62,6 +64,7 @@ app.use("/api/submissions", submissionRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/activity-logs", activityLogRoutes);
 
 // Simple health check endpoint for uptime and deployment verification
 app.get("/api/health", (req, res) => {
@@ -75,4 +78,8 @@ app.listen(PORT, () => {
   
   // Initialize notification scheduler (Phase 3 & 4)
   initializeScheduler();
+  
+  // Initialize activity log cleanup scheduler (Phase 5: System Maintenance)
+  initializeLogCleanupScheduler();
+  console.log('✅ Activity log cleanup scheduler initialized');
 });

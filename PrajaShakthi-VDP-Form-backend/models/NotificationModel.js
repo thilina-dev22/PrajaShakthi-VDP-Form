@@ -44,7 +44,11 @@ const NotificationSchema = new mongoose.Schema({
             'MONTHLY_SUMMARY',
             'QUARTERLY_REPORT',
             'INACTIVE_USER_ALERT',
-            'MILESTONE_REACHED'
+            'MILESTONE_REACHED',
+            
+            // Phase 5: System Maintenance
+            'LOG_DELETION_REMINDER',
+            'SYSTEM_CLEANUP'
         ],
         required: true
     },
