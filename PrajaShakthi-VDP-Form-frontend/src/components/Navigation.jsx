@@ -63,12 +63,6 @@ const Navigation = ({ setCurrentRoute = () => {} }) => {
           >
             {t("nav.mySubmissions")}
           </button>
-          <button
-            onClick={() => setCurrentRoute("password")}
-            className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-[#8B1C3D] transition-colors"
-          >
-            {t("nav.passwordManagement")}
-          </button>
         </nav>
       )}
 
@@ -91,12 +85,6 @@ const Navigation = ({ setCurrentRoute = () => {} }) => {
             className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-[#8B1C3D] transition-colors"
           >
             Activity Logs
-          </button>
-          <button
-            onClick={() => setCurrentRoute("password")}
-            className="bg-transparent text-white border border-white rounded px-4 py-2 hover:bg-[#8B1C3D] transition-colors"
-          >
-            Password Management
           </button>
         </nav>
       )}

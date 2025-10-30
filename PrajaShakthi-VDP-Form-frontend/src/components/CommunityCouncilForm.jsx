@@ -67,33 +67,23 @@ const CommunityCouncilForm = () => {
     // Auto-populate for DS users
     if (user && user.role === "ds_user") {
       if (user.district) {
+        setDistrict(user.district);
         // Find and set DS divisions for the user's district
-        // Match by English name (after the last '/')
-        const selectedDistrictData = allDistricts.find((d) => {
-          const districtName = d.district.trim();
-          // Extract English name (text after last '/')
-          const englishName = districtName.split('/').pop().trim();
-          return englishName === user.district;
-        });
-        
+        const selectedDistrictData = allDistricts.find(
+          (d) => d.district.trim() === user.district
+        );
         if (selectedDistrictData) {
-          // Set district to the full trilingual name so dropdown shows it correctly
-          setDistrict(selectedDistrictData.district.trim());
           setDsDivisions(selectedDistrictData.ds_divisions);
 
           // Set divisional secretariat
           if (user.divisionalSecretariat) {
-            // Find and set GN divisions - match by English name
-            const selectedDsData = selectedDistrictData.ds_divisions.find((ds) => {
-              const dsName = ds.ds_division_name.trim();
-              // Extract English name (text after last '/')
-              const englishName = dsName.split('/').pop().trim();
-              return englishName === user.divisionalSecretariat;
-            });
-            
+            setDivisionalSec(user.divisionalSecretariat);
+
+            // Find and set GN divisions
+            const selectedDsData = selectedDistrictData.ds_divisions.find(
+              (ds) => ds.ds_division_name.trim() === user.divisionalSecretariat
+            );
             if (selectedDsData) {
-              // Set to full trilingual name
-              setDivisionalSec(selectedDsData.ds_division_name.trim());
               setGnDivisions(selectedDsData.gn_divisions);
             }
           }

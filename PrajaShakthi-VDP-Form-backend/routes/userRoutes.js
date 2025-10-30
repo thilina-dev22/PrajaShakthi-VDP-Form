@@ -7,17 +7,9 @@ const {
     getUsers,
     updateUser,
     deleteUser,
-    getActivityLogs,
-    changeOwnPassword,
-    getUsersUnderAuthority,
-    updateSubordinatePassword
+    getActivityLogs
 } = require('../controllers/userController');
 const { protect, superAdminOnly, adminOnly } = require('../middleware/authMiddleware');
-
-// Password management routes (before parameterized routes)
-router.put('/change-password', protect, changeOwnPassword); // All users can change own password
-router.get('/subordinates', protect, adminOnly, getUsersUnderAuthority); // Admins view subordinates
-router.put('/:id/reset-password', protect, adminOnly, updateSubordinatePassword); // Admins reset subordinate password
 
 // User management routes
 router.post('/', protect, adminOnly, createUser); // SuperAdmin and DistrictAdmin can create users

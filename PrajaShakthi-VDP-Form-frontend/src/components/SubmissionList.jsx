@@ -50,40 +50,19 @@ const SubmissionList = () => {
     if (user) {
       // District Admin: auto-select their district
       if (isDistrictAdmin && user.district) {
-        // Find the full trilingual district name
-        const districtData = districts.find((d) => {
-          const englishName = d.district.trim().split('/').pop().trim();
-          return englishName === user.district;
-        });
-        if (districtData) {
-          setFilterDistrict(districtData.district.trim());
-        }
+        setFilterDistrict(user.district);
       }
       // DS User: auto-select their district and DS division
       if (isDSUser && user.district) {
-        // Find the full trilingual district name
-        const districtData = districts.find((d) => {
-          const englishName = d.district.trim().split('/').pop().trim();
-          return englishName === user.district;
-        });
-        if (districtData) {
-          setFilterDistrict(districtData.district.trim());
-        }
+        setFilterDistrict(user.district);
       }
     }
-  }, [user, isDistrictAdmin, isDSUser, districts]);
+  }, [user, isDistrictAdmin, isDSUser]);
 
   // Auto-select DS Division for DS User after district is set
   useEffect(() => {
     if (isDSUser && user?.divisionalSecretariat && filterDistrict && dsDivisions.length > 0) {
-      // Find the full trilingual DS division name
-      const dsData = dsDivisions.find((ds) => {
-        const englishName = ds.ds_division_name.trim().split('/').pop().trim();
-        return englishName === user.divisionalSecretariat;
-      });
-      if (dsData) {
-        setFilterDsDivision(dsData.ds_division_name.trim());
-      }
+      setFilterDsDivision(user.divisionalSecretariat);
     }
   }, [isDSUser, user, filterDistrict, dsDivisions]);
 
