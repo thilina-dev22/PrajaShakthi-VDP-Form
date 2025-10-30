@@ -4,8 +4,7 @@
     "loginAdmin": "Log in as admin",
     "loggedInAs": "ලොග් වී ඇත්තේ",
     "logout": "Log out",
-    "mySubmissions": "මගේ ඉදිරිපත් කිරීම්",
-    "passwordManagement": "මුරපද කළමනාකරණය"
+    "mySubmissions": "මගේ ඉදිරිපත් කිරීම්"
   },
   "form": {
     "district": "දිස්ත්‍රික්කය",
@@ -86,41 +85,5 @@
     "delete": "මකන්න",
     "noResults": "ඉදිරිපත් කිරීම් හමු නොවීය",
     "loading": "පූරණය වෙමින්..."
-  },
-  "passwordManagement": {
-    "title": "මුරපද කළමනාකරණය",
-    "changeOwnPassword": "මගේ මුරපදය වෙනස් කරන්න",
-    "manageSubordinates": "යටත් පරිශීලකයින්ගේ මුරපද කළමනාකරණය",
-    "currentPassword": "වත්මන් මුරපදය",
-    "newPassword": "නව මුරපදය",
-    "confirmPassword": "නව මුරපදය තහවුරු කරන්න",
-    "updatePassword": "මුරපදය යාවත්කාලීන කරන්න",
-    "updating": "යාවත්කාලීන කරමින්...",
-    "resetPassword": "මුරපදය නැවත සකසන්න",
-    "resetting": "නැවත සකසමින්...",
-    "selectUserToReset": "මුරපදය නැවත සැකසීමට පරිශීලකයා තෝරන්න",
-    "selectUser": "-- පරිශීලකයා තෝරන්න --",
-    "selectedUser": "තෝරාගත් පරිශීලකයා",
-    "username": "පරිශීලක නාමය",
-    "role": "භූමිකාව",
-    "district": "දිස්ත්‍රික්කය",
-    "dsOffice": "ප්‍රාදේශීය ලේකම් කාර්යාලය",
-    "allFieldsRequired": "සියලුම ක්ෂේත්‍ර අවශ්‍ය වේ",
-    "passwordMinLength": "මුරපදය අවම වශයෙන් අක්ෂර 6ක් විය යුතුය",
-    "passwordMismatch": "මුරපද නොගැළපේ",
-    "ownPasswordSuccess": "ඔබගේ මුරපදය සාර්ථකව වෙනස් කර ඇත",
-    "subordinatePasswordSuccess": "{{username}} සඳහා මුරපදය සාර්ථකව නැවත සකස් කර ඇත",
-    "error": "දෝෂයක් සිදු විය. කරුණාකර නැවත උත්සාහ කරන්න.",
-    "passwordRequirement": "අවම වශයෙන් අක්ෂර 6ක් අවශ්‍යයි",
-    "securityTips": "ආරක්ෂණ ඉඟි",
-    "tip1": "අකුරු, සංඛ්‍යා සහ සංකේත මිශ්‍රණයක් සහිත ශක්තිමත් මුරපදයක් භාවිතා කරන්න",
-    "tip2": "වඩා හොඳ ආරක්ෂාවක් සඳහා ඔබේ මුරපදය නිතිපතා වෙනස් කරන්න",
-    "tip3": "ඔබගේ මුරපදය කිසි විටෙකත් කිසිවෙකු සමඟ බෙදා නොගන්න",
-    "tip4": "යටත් මුරපද නැවත සැකසීමේදී ඔවුන්ට වහාම දැනුම් දෙන්න"
-  },
-  "roles": {
-    "superadmin": "ප්‍රධාන පරිපාලක",
-    "districtAdmin": "දිස්ත්‍රික් පරිපාලක",
-    "dsUser": "ප්‍රාදේශීය ලේකම් පරිශීලක"
   }
 }
