@@ -92,6 +92,23 @@ const SubmissionSchema = new mongoose.Schema(
   }
 );
 
+// Add indexes for better query performance
+SubmissionSchema.index({ createdAt: -1 }); // Sort by creation date
+SubmissionSchema.index({ 'location.district': 1, createdAt: -1 }); // District filter + sort
+SubmissionSchema.index({ 'location.divisionalSec': 1, createdAt: -1 }); // DS filter + sort
+SubmissionSchema.index({ 'location.gnDivision': 1 }); // GN filter
+SubmissionSchema.index({ formType: 1, createdAt: -1 }); // Form type filter + sort
+SubmissionSchema.index({ createdBy: 1, createdAt: -1 }); // User's submissions
+SubmissionSchema.index({ status: 1 }); // Status filter
+
+// Compound index for common query patterns
+SubmissionSchema.index({ 
+  'location.district': 1, 
+  'location.divisionalSec': 1, 
+  formType: 1,
+  createdAt: -1 
+});
+
 const Submission = mongoose.model("Submission", SubmissionSchema);
 
 module.exports = Submission;

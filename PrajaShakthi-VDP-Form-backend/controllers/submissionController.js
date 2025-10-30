@@ -95,11 +95,21 @@ const createSubmission = async (req, res) => {
   }
 };
 
-// @desc   Get all submissions (with filtering based on role)
+// @desc   Get all submissions (with filtering based on role) - PAGINATED
 // @route   GET /api/submissions
 // @access Private
 const getSubmissions = async (req, res) => {
-  const { district, divisionalSec, gnDivision, formType } = req.query;
+  const { 
+    district, 
+    divisionalSec, 
+    gnDivision, 
+    formType,
+    page = 1,
+    limit = 50,
+    sortBy = 'createdAt',
+    sortOrder = 'desc'
+  } = req.query;
+  
   const user = req.user;
   const filter = {};
 
@@ -128,29 +138,68 @@ const getSubmissions = async (req, res) => {
   }
 
   try {
-    const submissions = await Submission.find(filter)
-      .populate('createdBy', 'username fullName')
-      .populate('lastModifiedBy', 'username fullName')
-      .populate('editHistory.editedBy', 'username fullName')
-      .sort({ createdAt: -1 });
+    // Convert to numbers and validate
+    const pageNum = Math.max(1, parseInt(page));
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit))); // Max 100 per page
+    const skip = (pageNum - 1) * limitNum;
 
-    // Log activity
-    await logActivity({
+    // Build sort object
+    const sort = {};
+    sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
+
+    // Execute query with pagination
+    const [submissions, totalCount] = await Promise.all([
+      Submission.find(filter)
+        .select('-__v') // Exclude version field
+        .populate('createdBy', 'username fullName')
+        .populate('lastModifiedBy', 'username fullName')
+        .populate({
+          path: 'editHistory.editedBy',
+          select: 'username fullName',
+          options: { limit: 5 } // Limit edit history population
+        })
+        .sort(sort)
+        .skip(skip)
+        .limit(limitNum)
+        .lean(), // Use lean() for better performance
+      Submission.countDocuments(filter)
+    ]);
+
+    // Calculate pagination metadata
+    const totalPages = Math.ceil(totalCount / limitNum);
+    const hasNextPage = pageNum < totalPages;
+    const hasPrevPage = pageNum > 1;
+
+    // Log activity (async, don't wait)
+    logActivity({
       userId: user._id,
       username: user.username,
       userRole: user.role,
       action: 'VIEW_SUBMISSIONS',
       details: { 
         count: submissions.length,
+        totalCount,
+        page: pageNum,
         filters: { district, divisionalSec, gnDivision, formType }
       },
       ipAddress: req.ip,
       userAgent: req.get('user-agent'),
       district: user.district,
       divisionalSecretariat: user.divisionalSecretariat
-    });
+    }).catch(err => console.error('Error logging activity:', err));
 
-    res.status(200).json(submissions);
+    res.status(200).json({
+      success: true,
+      data: submissions,
+      pagination: {
+        currentPage: pageNum,
+        totalPages,
+        totalCount,
+        limit: limitNum,
+        hasNextPage,
+        hasPrevPage
+      }
+    });
   } catch (error) {
     console.error("Error fetching submissions:", error);
     res

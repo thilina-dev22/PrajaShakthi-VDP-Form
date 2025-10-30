@@ -22,6 +22,14 @@ const SubmissionList = () => {
   const [filterDsDivision, setFilterDsDivision] = useState("");
   const [filterGnDivision, setFilterGnDivision] = useState("");
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(50);
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const [hasPrevPage, setHasPrevPage] = useState(false);
+
   const [districts, setDistricts] = useState([]);
   const [dsDivisions, setDsDivisions] = useState([]);
   const [gnDivisions, setGnDivisions] = useState([]);
@@ -94,14 +102,27 @@ const SubmissionList = () => {
           district: filterDistrict,
           divisionalSec: filterDsDivision,
           gnDivision: filterGnDivision,
-          formType: activeTab, // <-- Pass the active tab as a filter
+          formType: activeTab,
+          page: currentPage,
+          limit: itemsPerPage,
         };
         const cleanedFilters = Object.fromEntries(
           Object.entries(filters).filter(([, v]) => v)
         );
 
-        const data = await getSubmissions(cleanedFilters);
-        setSubmissions(data);
+        const response = await getSubmissions(cleanedFilters);
+        
+        // Handle paginated response
+        if (response.success && response.data) {
+          setSubmissions(response.data);
+          setTotalPages(response.pagination.totalPages);
+          setTotalCount(response.pagination.totalCount);
+          setHasNextPage(response.pagination.hasNextPage);
+          setHasPrevPage(response.pagination.hasPrevPage);
+        } else {
+          // Fallback for backward compatibility (if response is array)
+          setSubmissions(Array.isArray(response) ? response : []);
+        }
       } catch (error) {
         setError(error.message);
       } finally {
@@ -116,7 +137,14 @@ const SubmissionList = () => {
     filterDsDivision,
     filterGnDivision,
     activeTab,
+    currentPage,
+    itemsPerPage,
   ]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterDistrict, filterDsDivision, filterGnDivision, activeTab]);
 
   const FilterPanel = () => (
     <div className="max-w-4xl mx-auto p-8 bg-white rounded-xl shadow-lg mb-5">
@@ -1664,6 +1692,130 @@ const SubmissionList = () => {
                   Close
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Pagination Controls */}
+      {!loading && !error && submissions.length > 0 && (
+        <div className="bg-white border border-gray-200 rounded-lg p-6 mt-6 shadow-sm">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            {/* Page Info */}
+            <div className="text-sm text-gray-600">
+              Showing <span className="font-semibold">{((currentPage - 1) * itemsPerPage) + 1}</span> to{' '}
+              <span className="font-semibold">
+                {Math.min(currentPage * itemsPerPage, totalCount)}
+              </span> of{' '}
+              <span className="font-semibold">{totalCount}</span> submissions
+            </div>
+
+            {/* Page Controls */}
+            <div className="flex items-center gap-2">
+              {/* First Page */}
+              <button
+                onClick={() => setCurrentPage(1)}
+                disabled={!hasPrevPage}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition ${
+                  hasPrevPage
+                    ? 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
+                title="First Page"
+              >
+                «
+              </button>
+
+              {/* Previous Page */}
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={!hasPrevPage}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition ${
+                  hasPrevPage
+                    ? 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                Previous
+              </button>
+
+              {/* Page Numbers */}
+              <div className="flex items-center gap-1">
+                {(() => {
+                  const pages = [];
+                  const showPages = 5;
+                  let startPage = Math.max(1, currentPage - Math.floor(showPages / 2));
+                  let endPage = Math.min(totalPages, startPage + showPages - 1);
+                  
+                  if (endPage - startPage < showPages - 1) {
+                    startPage = Math.max(1, endPage - showPages + 1);
+                  }
+
+                  for (let i = startPage; i <= endPage; i++) {
+                    pages.push(
+                      <button
+                        key={i}
+                        onClick={() => setCurrentPage(i)}
+                        className={`px-3 py-2 rounded-md text-sm font-medium transition ${
+                          currentPage === i
+                            ? 'bg-[#A8234A] text-white'
+                            : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                        }`}
+                      >
+                        {i}
+                      </button>
+                    );
+                  }
+                  return pages;
+                })()}
+              </div>
+
+              {/* Next Page */}
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={!hasNextPage}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition ${
+                  hasNextPage
+                    ? 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                Next
+              </button>
+
+              {/* Last Page */}
+              <button
+                onClick={() => setCurrentPage(totalPages)}
+                disabled={!hasNextPage}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition ${
+                  hasNextPage
+                    ? 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
+                title="Last Page"
+              >
+                »
+              </button>
+            </div>
+
+            {/* Items Per Page */}
+            <div className="flex items-center gap-2">
+              <label htmlFor="itemsPerPage" className="text-sm text-gray-600">
+                Per page:
+              </label>
+              <select
+                id="itemsPerPage"
+                value={itemsPerPage}
+                onChange={(e) => {
+                  setItemsPerPage(Number(e.target.value));
+                  setCurrentPage(1);
+                }}
+                className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-[#A8234A] focus:border-transparent"
+              >
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
             </div>
           </div>
         </div>
