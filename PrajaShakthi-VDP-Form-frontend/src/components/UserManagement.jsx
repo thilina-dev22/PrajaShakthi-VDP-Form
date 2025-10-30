@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import provincialData from '../data/provincial_data.json';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -30,11 +31,9 @@ const UserManagement = () => {
         loadDistricts();
     }, []);
 
-    const loadDistricts = async () => {
+    const loadDistricts = () => {
         try {
-            const response = await fetch('/src/data/provincial_data.json');
-            const data = await response.json();
-            const districtList = data.flatMap(province => 
+            const districtList = provincialData.flatMap(province => 
                 province.districts.map(d => d.district)
             );
             setDistricts([...new Set(districtList)]);
@@ -43,12 +42,9 @@ const UserManagement = () => {
         }
     };
 
-    const loadDSDivisions = async (selectedDistrict) => {
+    const loadDSDivisions = (selectedDistrict) => {
         try {
-            const response = await fetch('/src/data/provincial_data.json');
-            const data = await response.json();
-            
-            for (const province of data) {
+            for (const province of provincialData) {
                 const district = province.districts.find(d => d.district === selectedDistrict);
                 if (district) {
                     setDSDivisions(district.ds_divisions.map(ds => ds.ds_division_name));
