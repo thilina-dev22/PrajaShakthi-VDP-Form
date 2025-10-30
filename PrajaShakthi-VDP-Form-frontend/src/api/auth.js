@@ -1,6 +1,6 @@
-// Base API URL: in production set VITE_API_BASE_URL to your backend URL; in dev falls back to relative paths (Vite proxy)
-const API_BASE = (import.meta.env && import.meta.env.VITE_API_BASE_URL
-  ? String(import.meta.env.VITE_API_BASE_URL)
+// Base API URL: in production set VITE_API_URL to your backend URL; in dev falls back to relative paths (Vite proxy)
+const API_BASE = (import.meta.env && import.meta.env.VITE_API_URL
+  ? String(import.meta.env.VITE_API_URL)
   : "").replace(/\/$/, "");
 
 const API_URL = `${API_BASE}/api/auth`;
