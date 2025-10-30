@@ -1,0 +1,2490 @@
+{
+  "generatedAt": "2025-10-30T05:58:39.624Z",
+  "summary": {
+    "totalDistricts": 25,
+    "totalDSUsers": 329,
+    "deletedAccounts": 5
+  },
+  "districtAdmins": [
+    {
+      "district": "Anuradhapura",
+      "username": "admin_anuradhapura",
+      "password": "District@123",
+      "email": "admin_anuradhapura@prajashakthi.lk",
+      "dsOfficesCount": 22
+    },
+    {
+      "district": "Kurunegala",
+      "username": "admin_kurunegala",
+      "password": "District@123",
+      "email": "admin_kurunegala@prajashakthi.lk",
+      "dsOfficesCount": 27
+    },
+    {
+      "district": "Hambantota",
+      "username": "admin_hambantota",
+      "password": "District@123",
+      "email": "admin_hambantota@prajashakthi.lk",
+      "dsOfficesCount": 12
+    },
+    {
+      "district": "Ampara",
+      "username": "admin_ampara",
+      "password": "District@123",
+      "email": "admin_ampara@prajashakthi.lk",
+      "dsOfficesCount": 20
+    },
+    {
+      "district": "Kalutara",
+      "username": "admin_kalutara",
+      "password": "District@123",
+      "email": "admin_kalutara@prajashakthi.lk",
+      "dsOfficesCount": 14
+    },
+    {
+      "district": "Kegalle",
+      "username": "admin_kegalle",
+      "password": "District@123",
+      "email": "admin_kegalle@prajashakthi.lk",
+      "dsOfficesCount": 11
+    },
+    {
+      "district": "Kilinochchi",
+      "username": "admin_kilinochchi",
+      "password": "District@123",
+      "email": "admin_kilinochchi@prajashakthi.lk",
+      "dsOfficesCount": 4
+    },
+    {
+      "district": "Colombo",
+      "username": "admin_colombo",
+      "password": "District@123",
+      "email": "admin_colombo@prajashakthi.lk",
+      "dsOfficesCount": 13
+    },
+    {
+      "district": "Gampaha",
+      "username": "admin_gampaha",
+      "password": "District@123",
+      "email": "admin_gampaha@prajashakthi.lk",
+      "dsOfficesCount": 13
+    },
+    {
+      "district": "Galle",
+      "username": "admin_galle",
+      "password": "District@123",
+      "email": "admin_galle@prajashakthi.lk",
+      "dsOfficesCount": 22
+    },
+    {
+      "district": "Trincomalee",
+      "username": "admin_trincomalee",
+      "password": "District@123",
+      "email": "admin_trincomalee@prajashakthi.lk",
+      "dsOfficesCount": 11
+    },
+    {
+      "district": "Nuwara Eliya",
+      "username": "admin_nuwara_eliya",
+      "password": "District@123",
+      "email": "admin_nuwara_eliya@prajashakthi.lk",
+      "dsOfficesCount": 10
+    },
+    {
+      "district": "Puttalam",
+      "username": "admin_puttalam",
+      "password": "District@123",
+      "email": "admin_puttalam@prajashakthi.lk",
+      "dsOfficesCount": 16
+    },
+    {
+      "district": "Polonnaruwa",
+      "username": "admin_polonnaruwa",
+      "password": "District@123",
+      "email": "admin_polonnaruwa@prajashakthi.lk",
+      "dsOfficesCount": 7
+    },
+    {
+      "district": "Badulla",
+      "username": "admin_badulla",
+      "password": "District@123",
+      "email": "admin_badulla@prajashakthi.lk",
+      "dsOfficesCount": 15
+    },
+    {
+      "district": "Batticaloa",
+      "username": "admin_batticaloa",
+      "password": "District@123",
+      "email": "admin_batticaloa@prajashakthi.lk",
+      "dsOfficesCount": 10
+    },
+    {
+      "district": "Mannar",
+      "username": "admin_mannar",
+      "password": "District@123",
+      "email": "admin_mannar@prajashakthi.lk",
+      "dsOfficesCount": 5
+    },
+    {
+      "district": "Kandy",
+      "username": "admin_kandy",
+      "password": "District@123",
+      "email": "admin_kandy@prajashakthi.lk",
+      "dsOfficesCount": 20
+    },
+    {
+      "district": "Matara",
+      "username": "admin_matara",
+      "password": "District@123",
+      "email": "admin_matara@prajashakthi.lk",
+      "dsOfficesCount": 16
+    },
+    {
+      "district": "Matale",
+      "username": "admin_matale",
+      "password": "District@123",
+      "email": "admin_matale@prajashakthi.lk",
+      "dsOfficesCount": 10
+    },
+    {
+      "district": "Mullaitivu",
+      "username": "admin_mullaitivu",
+      "password": "District@123",
+      "email": "admin_mullaitivu@prajashakthi.lk",
+      "dsOfficesCount": 6
+    },
+    {
+      "district": "Moneragala",
+      "username": "admin_moneragala",
+      "password": "District@123",
+      "email": "admin_moneragala@prajashakthi.lk",
+      "dsOfficesCount": 11
+    },
+    {
+      "district": "Jaffna",
+      "username": "admin_jaffna",
+      "password": "District@123",
+      "email": "admin_jaffna@prajashakthi.lk",
+      "dsOfficesCount": 12
+    },
+    {
+      "district": "Ratnapura",
+      "username": "admin_ratnapura",
+      "password": "District@123",
+      "email": "admin_ratnapura@prajashakthi.lk",
+      "dsOfficesCount": 18
+    },
+    {
+      "district": "Vavuniya",
+      "username": "admin_vavuniya",
+      "password": "District@123",
+      "email": "admin_vavuniya@prajashakthi.lk",
+      "dsOfficesCount": 4
+    }
+  ],
+  "dsUsers": [
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Medawachchiya",
+      "username": "ds_anuradhapura_medawachchiya",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_medawachchiya@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Ipalogama",
+      "username": "ds_anuradhapura_ipalogama",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_ipalogama@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Kahatagasdigiliya",
+      "username": "ds_anuradhapura_kahatagasdigiliya",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_kahatagasdigiliya@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Kekirawa",
+      "username": "ds_anuradhapura_kekirawa",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_kekirawa@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Kebithigollewa",
+      "username": "ds_anuradhapura_kebithigollewa",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_kebithigollewa@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Galnewa",
+      "username": "ds_anuradhapura_galnewa",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_galnewa@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Galenbindunuwewa",
+      "username": "ds_anuradhapura_galenbindunuwewa",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_galenbindunuwewa@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Thambuttegama",
+      "username": "ds_anuradhapura_thambuttegama",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_thambuttegama@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Thalawa",
+      "username": "ds_anuradhapura_thalawa",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_thalawa@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Thirappane",
+      "username": "ds_anuradhapura_thirappane",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_thirappane@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Nachchadoowa",
+      "username": "ds_anuradhapura_nachchadoowa",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_nachchadoowa@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Nuwaragam Palatha East",
+      "username": "ds_anuradhapura_nuwaragam_palatha_east",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_nuwaragam_palatha_east@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Nuwaragam Palatha Central",
+      "username": "ds_anuradhapura_nuwaragam_palatha_central",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_nuwaragam_palatha_central@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Nochchiyagama",
+      "username": "ds_anuradhapura_nochchiyagama",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_nochchiyagama@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Padaviya",
+      "username": "ds_anuradhapura_padaviya",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_padaviya@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Palagala",
+      "username": "ds_anuradhapura_palagala",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_palagala@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Palugaswewa",
+      "username": "ds_anuradhapura_palugaswewa",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_palugaswewa@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Mahavilachchiya",
+      "username": "ds_anuradhapura_mahavilachchiya",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_mahavilachchiya@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Mihinthale",
+      "username": "ds_anuradhapura_mihinthale",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_mihinthale@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Rambewa",
+      "username": "ds_anuradhapura_rambewa",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_rambewa@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Rajanganaya",
+      "username": "ds_anuradhapura_rajanganaya",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_rajanganaya@prajashakthi.lk"
+    },
+    {
+      "district": "Anuradhapura",
+      "dsOffice": "Horowpothana",
+      "username": "ds_anuradhapura_horowpothana",
+      "password": "DSUser@123",
+      "email": "ds_anuradhapura_horowpothana@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Ambanpola",
+      "username": "ds_kurunegala_ambanpola",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_ambanpola@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Alawwa",
+      "username": "ds_kurunegala_alawwa",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_alawwa@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Ehetuwewa",
+      "username": "ds_kurunegala_ehetuwewa",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_ehetuwewa@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Ibbagamuwa",
+      "username": "ds_kurunegala_ibbagamuwa",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_ibbagamuwa@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Kurunegala",
+      "username": "ds_kurunegala_kurunegala",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_kurunegala@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Kuliyapitiya East",
+      "username": "ds_kurunegala_kuliyapitiya_east",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_kuliyapitiya_east@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Kotavehera",
+      "username": "ds_kurunegala_kotavehera",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_kotavehera@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Kobeigane",
+      "username": "ds_kurunegala_kobeigane",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_kobeigane@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Ganewatta",
+      "username": "ds_kurunegala_ganewatta",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_ganewatta@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Galgamuwa",
+      "username": "ds_kurunegala_galgamuwa",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_galgamuwa@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Giribawa",
+      "username": "ds_kurunegala_giribawa",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_giribawa@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Narammala",
+      "username": "ds_kurunegala_narammala",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_narammala@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Nikaweratiya",
+      "username": "ds_kurunegala_nikaweratiya",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_nikaweratiya@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Panduwasnuwara",
+      "username": "ds_kurunegala_panduwasnuwara",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_panduwasnuwara@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Pannala",
+      "username": "ds_kurunegala_pannala",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_pannala@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Polgahawela",
+      "username": "ds_kurunegala_polgahawela",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_polgahawela@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Polpithigama",
+      "username": "ds_kurunegala_polpithigama",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_polpithigama@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Bamunakotuwa",
+      "username": "ds_kurunegala_bamunakotuwa",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_bamunakotuwa@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Bingiriya",
+      "username": "ds_kurunegala_bingiriya",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_bingiriya@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Mallawapitiya",
+      "username": "ds_kurunegala_mallawapitiya",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_mallawapitiya@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Mahawa",
+      "username": "ds_kurunegala_mahawa",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_mahawa@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Mawathagama",
+      "username": "ds_kurunegala_mawathagama",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_mawathagama@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Maspotha",
+      "username": "ds_kurunegala_maspotha",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_maspotha@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Rasnayakapura",
+      "username": "ds_kurunegala_rasnayakapura",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_rasnayakapura@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Rideegama",
+      "username": "ds_kurunegala_rideegama",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_rideegama@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Wariyapola",
+      "username": "ds_kurunegala_wariyapola",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_wariyapola@prajashakthi.lk"
+    },
+    {
+      "district": "Kurunegala",
+      "dsOffice": "Weerambugedara",
+      "username": "ds_kurunegala_weerambugedara",
+      "password": "DSUser@123",
+      "email": "ds_kurunegala_weerambugedara@prajashakthi.lk"
+    },
+    {
+      "district": "Hambantota",
+      "dsOffice": "Angunakolapelessa",
+      "username": "ds_hambantota_angunakolapelessa",
+      "password": "DSUser@123",
+      "email": "ds_hambantota_angunakolapelessa@prajashakthi.lk"
+    },
+    {
+      "district": "Hambantota",
+      "dsOffice": "Ambalantota",
+      "username": "ds_hambantota_ambalantota",
+      "password": "DSUser@123",
+      "email": "ds_hambantota_ambalantota@prajashakthi.lk"
+    },
+    {
+      "district": "Hambantota",
+      "dsOffice": "Okewela",
+      "username": "ds_hambantota_okewela",
+      "password": "DSUser@123",
+      "email": "ds_hambantota_okewela@prajashakthi.lk"
+    },
+    {
+      "district": "Hambantota",
+      "dsOffice": "Katuwana",
+      "username": "ds_hambantota_katuwana",
+      "password": "DSUser@123",
+      "email": "ds_hambantota_katuwana@prajashakthi.lk"
+    },
+    {
+      "district": "Hambantota",
+      "dsOffice": "Tangalle",
+      "username": "ds_hambantota_tangalle",
+      "password": "DSUser@123",
+      "email": "ds_hambantota_tangalle@prajashakthi.lk"
+    },
+    {
+      "district": "Hambantota",
+      "dsOffice": "Tissamaharama",
+      "username": "ds_hambantota_tissamaharama",
+      "password": "DSUser@123",
+      "email": "ds_hambantota_tissamaharama@prajashakthi.lk"
+    },
+    {
+      "district": "Hambantota",
+      "dsOffice": "Beliatta",
+      "username": "ds_hambantota_beliatta",
+      "password": "DSUser@123",
+      "email": "ds_hambantota_beliatta@prajashakthi.lk"
+    },
+    {
+      "district": "Hambantota",
+      "dsOffice": "Lunugamvehera",
+      "username": "ds_hambantota_lunugamvehera",
+      "password": "DSUser@123",
+      "email": "ds_hambantota_lunugamvehera@prajashakthi.lk"
+    },
+    {
+      "district": "Hambantota",
+      "dsOffice": "Walasmulla",
+      "username": "ds_hambantota_walasmulla",
+      "password": "DSUser@123",
+      "email": "ds_hambantota_walasmulla@prajashakthi.lk"
+    },
+    {
+      "district": "Hambantota",
+      "dsOffice": "Weeraketiya",
+      "username": "ds_hambantota_weeraketiya",
+      "password": "DSUser@123",
+      "email": "ds_hambantota_weeraketiya@prajashakthi.lk"
+    },
+    {
+      "district": "Hambantota",
+      "dsOffice": "Sooriyawewa",
+      "username": "ds_hambantota_sooriyawewa",
+      "password": "DSUser@123",
+      "email": "ds_hambantota_sooriyawewa@prajashakthi.lk"
+    },
+    {
+      "district": "Hambantota",
+      "dsOffice": "Hambantota",
+      "username": "ds_hambantota_hambantota",
+      "password": "DSUser@123",
+      "email": "ds_hambantota_hambantota@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Akkaraipattu",
+      "username": "ds_ampara_akkaraipattu",
+      "password": "DSUser@123",
+      "email": "ds_ampara_akkaraipattu@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Addalaichenai",
+      "username": "ds_ampara_addalaichenai",
+      "password": "DSUser@123",
+      "email": "ds_ampara_addalaichenai@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Ampara",
+      "username": "ds_ampara_ampara",
+      "password": "DSUser@123",
+      "email": "ds_ampara_ampara@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Alayadiwembu",
+      "username": "ds_ampara_alayadiwembu",
+      "password": "DSUser@123",
+      "email": "ds_ampara_alayadiwembu@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Irakkamam",
+      "username": "ds_ampara_irakkamam",
+      "password": "DSUser@123",
+      "email": "ds_ampara_irakkamam@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Uhana",
+      "username": "ds_ampara_uhana",
+      "password": "DSUser@123",
+      "email": "ds_ampara_uhana@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Kalmunai North Sub Office",
+      "username": "ds_ampara_kalmunai_north_sub_office",
+      "password": "DSUser@123",
+      "email": "ds_ampara_kalmunai_north_sub_office@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Kalmunai",
+      "username": "ds_ampara_kalmunai",
+      "password": "DSUser@123",
+      "email": "ds_ampara_kalmunai@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Karaitivu",
+      "username": "ds_ampara_karaitivu",
+      "password": "DSUser@123",
+      "email": "ds_ampara_karaitivu@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Thirukkovil",
+      "username": "ds_ampara_thirukkovil",
+      "password": "DSUser@123",
+      "email": "ds_ampara_thirukkovil@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Damana",
+      "username": "ds_ampara_damana",
+      "password": "DSUser@123",
+      "email": "ds_ampara_damana@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Dehiattakandiya",
+      "username": "ds_ampara_dehiattakandiya",
+      "password": "DSUser@123",
+      "email": "ds_ampara_dehiattakandiya@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Navithanvelly",
+      "username": "ds_ampara_navithanvelly",
+      "password": "DSUser@123",
+      "email": "ds_ampara_navithanvelly@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Ninthavur",
+      "username": "ds_ampara_ninthavur",
+      "password": "DSUser@123",
+      "email": "ds_ampara_ninthavur@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Padiyathalawa",
+      "username": "ds_ampara_padiyathalawa",
+      "password": "DSUser@123",
+      "email": "ds_ampara_padiyathalawa@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Pothuvil",
+      "username": "ds_ampara_pothuvil",
+      "password": "DSUser@123",
+      "email": "ds_ampara_pothuvil@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Mahaoya",
+      "username": "ds_ampara_mahaoya",
+      "password": "DSUser@123",
+      "email": "ds_ampara_mahaoya@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Lahugala",
+      "username": "ds_ampara_lahugala",
+      "password": "DSUser@123",
+      "email": "ds_ampara_lahugala@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Samanthurai",
+      "username": "ds_ampara_samanthurai",
+      "password": "DSUser@123",
+      "email": "ds_ampara_samanthurai@prajashakthi.lk"
+    },
+    {
+      "district": "Ampara",
+      "dsOffice": "Sainthamarathu",
+      "username": "ds_ampara_sainthamarathu",
+      "password": "DSUser@123",
+      "email": "ds_ampara_sainthamarathu@prajashakthi.lk"
+    },
+    {
+      "district": "Kalutara",
+      "dsOffice": "Agalawatte",
+      "username": "ds_kalutara_agalawatte",
+      "password": "DSUser@123",
+      "email": "ds_kalutara_agalawatte@prajashakthi.lk"
+    },
+    {
+      "district": "Kalutara",
+      "dsOffice": "Ingiriya",
+      "username": "ds_kalutara_ingiriya",
+      "password": "DSUser@123",
+      "email": "ds_kalutara_ingiriya@prajashakthi.lk"
+    },
+    {
+      "district": "Kalutara",
+      "dsOffice": "Kalutara",
+      "username": "ds_kalutara_kalutara",
+      "password": "DSUser@123",
+      "email": "ds_kalutara_kalutara@prajashakthi.lk"
+    },
+    {
+      "district": "Kalutara",
+      "dsOffice": "Dobamgoda",
+      "username": "ds_kalutara_dobamgoda",
+      "password": "DSUser@123",
+      "email": "ds_kalutara_dobamgoda@prajashakthi.lk"
+    },
+    {
+      "district": "Kalutara",
+      "dsOffice": "Panadura",
+      "username": "ds_kalutara_panadura",
+      "password": "DSUser@123",
+      "email": "ds_kalutara_panadura@prajashakthi.lk"
+    },
+    {
+      "district": "Kalutara",
+      "dsOffice": "Palinda Nuwara",
+      "username": "ds_kalutara_palinda_nuwara",
+      "password": "DSUser@123",
+      "email": "ds_kalutara_palinda_nuwara@prajashakthi.lk"
+    },
+    {
+      "district": "Kalutara",
+      "dsOffice": "Bandaragama",
+      "username": "ds_kalutara_bandaragama",
+      "password": "DSUser@123",
+      "email": "ds_kalutara_bandaragama@prajashakthi.lk"
+    },
+    {
+      "district": "Kalutara",
+      "dsOffice": "Bulathsinhala",
+      "username": "ds_kalutara_bulathsinhala",
+      "password": "DSUser@123",
+      "email": "ds_kalutara_bulathsinhala@prajashakthi.lk"
+    },
+    {
+      "district": "Kalutara",
+      "dsOffice": "Beruwala",
+      "username": "ds_kalutara_beruwala",
+      "password": "DSUser@123",
+      "email": "ds_kalutara_beruwala@prajashakthi.lk"
+    },
+    {
+      "district": "Kalutara",
+      "dsOffice": "Mathugama",
+      "username": "ds_kalutara_mathugama",
+      "password": "DSUser@123",
+      "email": "ds_kalutara_mathugama@prajashakthi.lk"
+    },
+    {
+      "district": "Kalutara",
+      "dsOffice": "Madurawala",
+      "username": "ds_kalutara_madurawala",
+      "password": "DSUser@123",
+      "email": "ds_kalutara_madurawala@prajashakthi.lk"
+    },
+    {
+      "district": "Kalutara",
+      "dsOffice": "Millaniya",
+      "username": "ds_kalutara_millaniya",
+      "password": "DSUser@123",
+      "email": "ds_kalutara_millaniya@prajashakthi.lk"
+    },
+    {
+      "district": "Kalutara",
+      "dsOffice": "Walallawita",
+      "username": "ds_kalutara_walallawita",
+      "password": "DSUser@123",
+      "email": "ds_kalutara_walallawita@prajashakthi.lk"
+    },
+    {
+      "district": "Kalutara",
+      "dsOffice": "Horana",
+      "username": "ds_kalutara_horana",
+      "password": "DSUser@123",
+      "email": "ds_kalutara_horana@prajashakthi.lk"
+    },
+    {
+      "district": "Kegalle",
+      "dsOffice": "Aranayaka",
+      "username": "ds_kegalle_aranayaka",
+      "password": "DSUser@123",
+      "email": "ds_kegalle_aranayaka@prajashakthi.lk"
+    },
+    {
+      "district": "Kegalle",
+      "dsOffice": "Kegalle",
+      "username": "ds_kegalle_kegalle",
+      "password": "DSUser@123",
+      "email": "ds_kegalle_kegalle@prajashakthi.lk"
+    },
+    {
+      "district": "Kegalle",
+      "dsOffice": "Galigamuwa",
+      "username": "ds_kegalle_galigamuwa",
+      "password": "DSUser@123",
+      "email": "ds_kegalle_galigamuwa@prajashakthi.lk"
+    },
+    {
+      "district": "Kegalle",
+      "dsOffice": "Deraniyagala",
+      "username": "ds_kegalle_deraniyagala",
+      "password": "DSUser@123",
+      "email": "ds_kegalle_deraniyagala@prajashakthi.lk"
+    },
+    {
+      "district": "Kegalle",
+      "dsOffice": "Dehiovita",
+      "username": "ds_kegalle_dehiovita",
+      "password": "DSUser@123",
+      "email": "ds_kegalle_dehiovita@prajashakthi.lk"
+    },
+    {
+      "district": "Kegalle",
+      "dsOffice": "Bulathkohupitiya",
+      "username": "ds_kegalle_bulathkohupitiya",
+      "password": "DSUser@123",
+      "email": "ds_kegalle_bulathkohupitiya@prajashakthi.lk"
+    },
+    {
+      "district": "Kegalle",
+      "dsOffice": "Mawanella",
+      "username": "ds_kegalle_mawanella",
+      "password": "DSUser@123",
+      "email": "ds_kegalle_mawanella@prajashakthi.lk"
+    },
+    {
+      "district": "Kegalle",
+      "dsOffice": "Yatiyanthota",
+      "username": "ds_kegalle_yatiyanthota",
+      "password": "DSUser@123",
+      "email": "ds_kegalle_yatiyanthota@prajashakthi.lk"
+    },
+    {
+      "district": "Kegalle",
+      "dsOffice": "Rambukkana",
+      "username": "ds_kegalle_rambukkana",
+      "password": "DSUser@123",
+      "email": "ds_kegalle_rambukkana@prajashakthi.lk"
+    },
+    {
+      "district": "Kegalle",
+      "dsOffice": "Ruwanwella",
+      "username": "ds_kegalle_ruwanwella",
+      "password": "DSUser@123",
+      "email": "ds_kegalle_ruwanwella@prajashakthi.lk"
+    },
+    {
+      "district": "Kegalle",
+      "dsOffice": "Warakapola",
+      "username": "ds_kegalle_warakapola",
+      "password": "DSUser@123",
+      "email": "ds_kegalle_warakapola@prajashakthi.lk"
+    },
+    {
+      "district": "Kilinochchi",
+      "dsOffice": "Kandavalai",
+      "username": "ds_kilinochchi_kandavalai",
+      "password": "DSUser@123",
+      "email": "ds_kilinochchi_kandavalai@prajashakthi.lk"
+    },
+    {
+      "district": "Kilinochchi",
+      "dsOffice": "Karachchi",
+      "username": "ds_kilinochchi_karachchi",
+      "password": "DSUser@123",
+      "email": "ds_kilinochchi_karachchi@prajashakthi.lk"
+    },
+    {
+      "district": "Kilinochchi",
+      "dsOffice": "Pachchilaipalli",
+      "username": "ds_kilinochchi_pachchilaipalli",
+      "password": "DSUser@123",
+      "email": "ds_kilinochchi_pachchilaipalli@prajashakthi.lk"
+    },
+    {
+      "district": "Kilinochchi",
+      "dsOffice": "Poonakary",
+      "username": "ds_kilinochchi_poonakary",
+      "password": "DSUser@123",
+      "email": "ds_kilinochchi_poonakary@prajashakthi.lk"
+    },
+    {
+      "district": "Colombo",
+      "dsOffice": "Kaduwela",
+      "username": "ds_colombo_kaduwela",
+      "password": "DSUser@123",
+      "email": "ds_colombo_kaduwela@prajashakthi.lk"
+    },
+    {
+      "district": "Colombo",
+      "dsOffice": "Kasbawa",
+      "username": "ds_colombo_kasbawa",
+      "password": "DSUser@123",
+      "email": "ds_colombo_kasbawa@prajashakthi.lk"
+    },
+    {
+      "district": "Colombo",
+      "dsOffice": "Colonnawa",
+      "username": "ds_colombo_colonnawa",
+      "password": "DSUser@123",
+      "email": "ds_colombo_colonnawa@prajashakthi.lk"
+    },
+    {
+      "district": "Colombo",
+      "dsOffice": "Colombo",
+      "username": "ds_colombo_colombo",
+      "password": "DSUser@123",
+      "email": "ds_colombo_colombo@prajashakthi.lk"
+    },
+    {
+      "district": "Colombo",
+      "dsOffice": "Thimbirigasyaya",
+      "username": "ds_colombo_thimbirigasyaya",
+      "password": "DSUser@123",
+      "email": "ds_colombo_thimbirigasyaya@prajashakthi.lk"
+    },
+    {
+      "district": "Colombo",
+      "dsOffice": "Dehiwala-Mount Lavinia",
+      "username": "ds_colombo_dehiwala_mount_lavinia",
+      "password": "DSUser@123",
+      "email": "ds_colombo_dehiwala_mount_lavinia@prajashakthi.lk"
+    },
+    {
+      "district": "Colombo",
+      "dsOffice": "Padukka",
+      "username": "ds_colombo_padukka",
+      "password": "DSUser@123",
+      "email": "ds_colombo_padukka@prajashakthi.lk"
+    },
+    {
+      "district": "Colombo",
+      "dsOffice": "Maharagama",
+      "username": "ds_colombo_maharagama",
+      "password": "DSUser@123",
+      "email": "ds_colombo_maharagama@prajashakthi.lk"
+    },
+    {
+      "district": "Colombo",
+      "dsOffice": "Moratuwa",
+      "username": "ds_colombo_moratuwa",
+      "password": "DSUser@123",
+      "email": "ds_colombo_moratuwa@prajashakthi.lk"
+    },
+    {
+      "district": "Colombo",
+      "dsOffice": "Ratmalana",
+      "username": "ds_colombo_ratmalana",
+      "password": "DSUser@123",
+      "email": "ds_colombo_ratmalana@prajashakthi.lk"
+    },
+    {
+      "district": "Colombo",
+      "dsOffice": "Sri Jayewardenepura Kotte",
+      "username": "ds_colombo_sri_jayewardenepura_kotte",
+      "password": "DSUser@123",
+      "email": "ds_colombo_sri_jayewardenepura_kotte@prajashakthi.lk"
+    },
+    {
+      "district": "Colombo",
+      "dsOffice": "Hanwella",
+      "username": "ds_colombo_hanwella",
+      "password": "DSUser@123",
+      "email": "ds_colombo_hanwella@prajashakthi.lk"
+    },
+    {
+      "district": "Colombo",
+      "dsOffice": "Homagama",
+      "username": "ds_colombo_homagama",
+      "password": "DSUser@123",
+      "email": "ds_colombo_homagama@prajashakthi.lk"
+    },
+    {
+      "district": "Gampaha",
+      "dsOffice": "Attanagalla",
+      "username": "ds_gampaha_attanagalla",
+      "password": "DSUser@123",
+      "email": "ds_gampaha_attanagalla@prajashakthi.lk"
+    },
+    {
+      "district": "Gampaha",
+      "dsOffice": "Katana",
+      "username": "ds_gampaha_katana",
+      "password": "DSUser@123",
+      "email": "ds_gampaha_katana@prajashakthi.lk"
+    },
+    {
+      "district": "Gampaha",
+      "dsOffice": "Kelaniya",
+      "username": "ds_gampaha_kelaniya",
+      "password": "DSUser@123",
+      "email": "ds_gampaha_kelaniya@prajashakthi.lk"
+    },
+    {
+      "district": "Gampaha",
+      "dsOffice": "Gampaha",
+      "username": "ds_gampaha_gampaha",
+      "password": "DSUser@123",
+      "email": "ds_gampaha_gampaha@prajashakthi.lk"
+    },
+    {
+      "district": "Gampaha",
+      "dsOffice": "Ja Ela",
+      "username": "ds_gampaha_ja_ela",
+      "password": "DSUser@123",
+      "email": "ds_gampaha_ja_ela@prajashakthi.lk"
+    },
+    {
+      "district": "Gampaha",
+      "dsOffice": "Divulapitiya",
+      "username": "ds_gampaha_divulapitiya",
+      "password": "DSUser@123",
+      "email": "ds_gampaha_divulapitiya@prajashakthi.lk"
+    },
+    {
+      "district": "Gampaha",
+      "dsOffice": "Dompe",
+      "username": "ds_gampaha_dompe",
+      "password": "DSUser@123",
+      "email": "ds_gampaha_dompe@prajashakthi.lk"
+    },
+    {
+      "district": "Gampaha",
+      "dsOffice": "Biyagama",
+      "username": "ds_gampaha_biyagama",
+      "password": "DSUser@123",
+      "email": "ds_gampaha_biyagama@prajashakthi.lk"
+    },
+    {
+      "district": "Gampaha",
+      "dsOffice": "Mahara",
+      "username": "ds_gampaha_mahara",
+      "password": "DSUser@123",
+      "email": "ds_gampaha_mahara@prajashakthi.lk"
+    },
+    {
+      "district": "Gampaha",
+      "dsOffice": "Minuwangoda",
+      "username": "ds_gampaha_minuwangoda",
+      "password": "DSUser@123",
+      "email": "ds_gampaha_minuwangoda@prajashakthi.lk"
+    },
+    {
+      "district": "Gampaha",
+      "dsOffice": "Negombo",
+      "username": "ds_gampaha_negombo",
+      "password": "DSUser@123",
+      "email": "ds_gampaha_negombo@prajashakthi.lk"
+    },
+    {
+      "district": "Gampaha",
+      "dsOffice": "Mirigama",
+      "username": "ds_gampaha_mirigama",
+      "password": "DSUser@123",
+      "email": "ds_gampaha_mirigama@prajashakthi.lk"
+    },
+    {
+      "district": "Gampaha",
+      "dsOffice": "Wattala",
+      "username": "ds_gampaha_wattala",
+      "password": "DSUser@123",
+      "email": "ds_gampaha_wattala@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Akmeemana",
+      "username": "ds_galle_akmeemana",
+      "password": "DSUser@123",
+      "email": "ds_galle_akmeemana@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Ambalangoda",
+      "username": "ds_galle_ambalangoda",
+      "password": "DSUser@123",
+      "email": "ds_galle_ambalangoda@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Elpitiya",
+      "username": "ds_galle_elpitiya",
+      "password": "DSUser@123",
+      "email": "ds_galle_elpitiya@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Imaduwa",
+      "username": "ds_galle_imaduwa",
+      "password": "DSUser@123",
+      "email": "ds_galle_imaduwa@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Karandeniya",
+      "username": "ds_galle_karandeniya",
+      "password": "DSUser@123",
+      "email": "ds_galle_karandeniya@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Galle Four Gravets",
+      "username": "ds_galle_galle_four_gravets",
+      "password": "DSUser@123",
+      "email": "ds_galle_galle_four_gravets@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Gonapinuwala",
+      "username": "ds_galle_gonapinuwala",
+      "password": "DSUser@123",
+      "email": "ds_galle_gonapinuwala@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Thawalama",
+      "username": "ds_galle_thawalama",
+      "password": "DSUser@123",
+      "email": "ds_galle_thawalama@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Nagoda",
+      "username": "ds_galle_nagoda",
+      "password": "DSUser@123",
+      "email": "ds_galle_nagoda@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Niyagama",
+      "username": "ds_galle_niyagama",
+      "password": "DSUser@123",
+      "email": "ds_galle_niyagama@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Neluwa",
+      "username": "ds_galle_neluwa",
+      "password": "DSUser@123",
+      "email": "ds_galle_neluwa@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Baddegama",
+      "username": "ds_galle_baddegama",
+      "password": "DSUser@123",
+      "email": "ds_galle_baddegama@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Balapitiya",
+      "username": "ds_galle_balapitiya",
+      "password": "DSUser@123",
+      "email": "ds_galle_balapitiya@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Benthota",
+      "username": "ds_galle_benthota",
+      "password": "DSUser@123",
+      "email": "ds_galle_benthota@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Bope-Poddala",
+      "username": "ds_galle_bope_poddala",
+      "password": "DSUser@123",
+      "email": "ds_galle_bope_poddala@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Madampagama",
+      "username": "ds_galle_madampagama",
+      "password": "DSUser@123",
+      "email": "ds_galle_madampagama@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Yakkalamulla",
+      "username": "ds_galle_yakkalamulla",
+      "password": "DSUser@123",
+      "email": "ds_galle_yakkalamulla@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Rathgama",
+      "username": "ds_galle_rathgama",
+      "password": "DSUser@123",
+      "email": "ds_galle_rathgama@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Waduramba",
+      "username": "ds_galle_waduramba",
+      "password": "DSUser@123",
+      "email": "ds_galle_waduramba@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Welivitiya-Divithura",
+      "username": "ds_galle_welivitiya_divithura",
+      "password": "DSUser@123",
+      "email": "ds_galle_welivitiya_divithura@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Habaraduwa",
+      "username": "ds_galle_habaraduwa",
+      "password": "DSUser@123",
+      "email": "ds_galle_habaraduwa@prajashakthi.lk"
+    },
+    {
+      "district": "Galle",
+      "dsOffice": "Hikkaduwa",
+      "username": "ds_galle_hikkaduwa",
+      "password": "DSUser@123",
+      "email": "ds_galle_hikkaduwa@prajashakthi.lk"
+    },
+    {
+      "district": "Trincomalee",
+      "dsOffice": "Kantalai",
+      "username": "ds_trincomalee_kantalai",
+      "password": "DSUser@123",
+      "email": "ds_trincomalee_kantalai@prajashakthi.lk"
+    },
+    {
+      "district": "Trincomalee",
+      "dsOffice": "Kinniya",
+      "username": "ds_trincomalee_kinniya",
+      "password": "DSUser@123",
+      "email": "ds_trincomalee_kinniya@prajashakthi.lk"
+    },
+    {
+      "district": "Trincomalee",
+      "dsOffice": "Kuchchaveli",
+      "username": "ds_trincomalee_kuchchaveli",
+      "password": "DSUser@123",
+      "email": "ds_trincomalee_kuchchaveli@prajashakthi.lk"
+    },
+    {
+      "district": "Trincomalee",
+      "dsOffice": "Trincomalee Town and Gravets",
+      "username": "ds_trincomalee_trincomalee_town_and_gravets",
+      "password": "DSUser@123",
+      "email": "ds_trincomalee_trincomalee_town_and_gravets@prajashakthi.lk"
+    },
+    {
+      "district": "Trincomalee",
+      "dsOffice": "Gomarankadawala",
+      "username": "ds_trincomalee_gomarankadawala",
+      "password": "DSUser@123",
+      "email": "ds_trincomalee_gomarankadawala@prajashakthi.lk"
+    },
+    {
+      "district": "Trincomalee",
+      "dsOffice": "Thambalagamuwa",
+      "username": "ds_trincomalee_thambalagamuwa",
+      "password": "DSUser@123",
+      "email": "ds_trincomalee_thambalagamuwa@prajashakthi.lk"
+    },
+    {
+      "district": "Trincomalee",
+      "dsOffice": "Padavi Sri Pura",
+      "username": "ds_trincomalee_padavi_sri_pura",
+      "password": "DSUser@123",
+      "email": "ds_trincomalee_padavi_sri_pura@prajashakthi.lk"
+    },
+    {
+      "district": "Trincomalee",
+      "dsOffice": "Muthur",
+      "username": "ds_trincomalee_muthur",
+      "password": "DSUser@123",
+      "email": "ds_trincomalee_muthur@prajashakthi.lk"
+    },
+    {
+      "district": "Trincomalee",
+      "dsOffice": "Morawewa",
+      "username": "ds_trincomalee_morawewa",
+      "password": "DSUser@123",
+      "email": "ds_trincomalee_morawewa@prajashakthi.lk"
+    },
+    {
+      "district": "Trincomalee",
+      "dsOffice": "Verugal",
+      "username": "ds_trincomalee_verugal",
+      "password": "DSUser@123",
+      "email": "ds_trincomalee_verugal@prajashakthi.lk"
+    },
+    {
+      "district": "Trincomalee",
+      "dsOffice": "Seruwila",
+      "username": "ds_trincomalee_seruwila",
+      "password": "DSUser@123",
+      "email": "ds_trincomalee_seruwila@prajashakthi.lk"
+    },
+    {
+      "district": "Nuwara Eliya",
+      "dsOffice": "Ambagamuwa",
+      "username": "ds_nuwara_eliya_ambagamuwa",
+      "password": "DSUser@123",
+      "email": "ds_nuwara_eliya_ambagamuwa@prajashakthi.lk"
+    },
+    {
+      "district": "Nuwara Eliya",
+      "dsOffice": "Kothmale (West)",
+      "username": "ds_nuwara_eliya_kothmale_west",
+      "password": "DSUser@123",
+      "email": "ds_nuwara_eliya_kothmale_west@prajashakthi.lk"
+    },
+    {
+      "district": "Nuwara Eliya",
+      "dsOffice": "Kothmale",
+      "username": "ds_nuwara_eliya_kothmale",
+      "password": "DSUser@123",
+      "email": "ds_nuwara_eliya_kothmale@prajashakthi.lk"
+    },
+    {
+      "district": "Nuwara Eliya",
+      "dsOffice": "Thalawakale",
+      "username": "ds_nuwara_eliya_thalawakale",
+      "password": "DSUser@123",
+      "email": "ds_nuwara_eliya_thalawakale@prajashakthi.lk"
+    },
+    {
+      "district": "Nuwara Eliya",
+      "dsOffice": "Nildandahinna",
+      "username": "ds_nuwara_eliya_nildandahinna",
+      "password": "DSUser@123",
+      "email": "ds_nuwara_eliya_nildandahinna@prajashakthi.lk"
+    },
+    {
+      "district": "Nuwara Eliya",
+      "dsOffice": "Nuwara Eliya",
+      "username": "ds_nuwara_eliya_nuwara_eliya",
+      "password": "DSUser@123",
+      "email": "ds_nuwara_eliya_nuwara_eliya@prajashakthi.lk"
+    },
+    {
+      "district": "Nuwara Eliya",
+      "dsOffice": "Norwood",
+      "username": "ds_nuwara_eliya_norwood",
+      "password": "DSUser@123",
+      "email": "ds_nuwara_eliya_norwood@prajashakthi.lk"
+    },
+    {
+      "district": "Nuwara Eliya",
+      "dsOffice": "Mathurata",
+      "username": "ds_nuwara_eliya_mathurata",
+      "password": "DSUser@123",
+      "email": "ds_nuwara_eliya_mathurata@prajashakthi.lk"
+    },
+    {
+      "district": "Nuwara Eliya",
+      "dsOffice": "Walapane",
+      "username": "ds_nuwara_eliya_walapane",
+      "password": "DSUser@123",
+      "email": "ds_nuwara_eliya_walapane@prajashakthi.lk"
+    },
+    {
+      "district": "Nuwara Eliya",
+      "dsOffice": "Hanguranketha",
+      "username": "ds_nuwara_eliya_hanguranketha",
+      "password": "DSUser@123",
+      "email": "ds_nuwara_eliya_hanguranketha@prajashakthi.lk"
+    },
+    {
+      "district": "Puttalam",
+      "dsOffice": "Anamaduwa",
+      "username": "ds_puttalam_anamaduwa",
+      "password": "DSUser@123",
+      "email": "ds_puttalam_anamaduwa@prajashakthi.lk"
+    },
+    {
+      "district": "Puttalam",
+      "dsOffice": "Arachchikattuwa",
+      "username": "ds_puttalam_arachchikattuwa",
+      "password": "DSUser@123",
+      "email": "ds_puttalam_arachchikattuwa@prajashakthi.lk"
+    },
+    {
+      "district": "Puttalam",
+      "dsOffice": "Karuwalagaswewa",
+      "username": "ds_puttalam_karuwalagaswewa",
+      "password": "DSUser@123",
+      "email": "ds_puttalam_karuwalagaswewa@prajashakthi.lk"
+    },
+    {
+      "district": "Puttalam",
+      "dsOffice": "Kalpitiya",
+      "username": "ds_puttalam_kalpitiya",
+      "password": "DSUser@123",
+      "email": "ds_puttalam_kalpitiya@prajashakthi.lk"
+    },
+    {
+      "district": "Puttalam",
+      "dsOffice": "Dankotuwa",
+      "username": "ds_puttalam_dankotuwa",
+      "password": "DSUser@123",
+      "email": "ds_puttalam_dankotuwa@prajashakthi.lk"
+    },
+    {
+      "district": "Puttalam",
+      "dsOffice": "Nawagattegama",
+      "username": "ds_puttalam_nawagattegama",
+      "password": "DSUser@123",
+      "email": "ds_puttalam_nawagattegama@prajashakthi.lk"
+    },
+    {
+      "district": "Puttalam",
+      "dsOffice": "Nattandiya",
+      "username": "ds_puttalam_nattandiya",
+      "password": "DSUser@123",
+      "email": "ds_puttalam_nattandiya@prajashakthi.lk"
+    },
+    {
+      "district": "Puttalam",
+      "dsOffice": "Pallama",
+      "username": "ds_puttalam_pallama",
+      "password": "DSUser@123",
+      "email": "ds_puttalam_pallama@prajashakthi.lk"
+    },
+    {
+      "district": "Puttalam",
+      "dsOffice": "Puttalam",
+      "username": "ds_puttalam_puttalam",
+      "password": "DSUser@123",
+      "email": "ds_puttalam_puttalam@prajashakthi.lk"
+    },
+    {
+      "district": "Puttalam",
+      "dsOffice": "Mahakumbukkadawala",
+      "username": "ds_puttalam_mahakumbukkadawala",
+      "password": "DSUser@123",
+      "email": "ds_puttalam_mahakumbukkadawala@prajashakthi.lk"
+    },
+    {
+      "district": "Puttalam",
+      "dsOffice": "Mahawewa",
+      "username": "ds_puttalam_mahawewa",
+      "password": "DSUser@123",
+      "email": "ds_puttalam_mahawewa@prajashakthi.lk"
+    },
+    {
+      "district": "Puttalam",
+      "dsOffice": "Madampe",
+      "username": "ds_puttalam_madampe",
+      "password": "DSUser@123",
+      "email": "ds_puttalam_madampe@prajashakthi.lk"
+    },
+    {
+      "district": "Puttalam",
+      "dsOffice": "Mundalama",
+      "username": "ds_puttalam_mundalama",
+      "password": "DSUser@123",
+      "email": "ds_puttalam_mundalama@prajashakthi.lk"
+    },
+    {
+      "district": "Puttalam",
+      "dsOffice": "Vanathavilluwa",
+      "username": "ds_puttalam_vanathavilluwa",
+      "password": "DSUser@123",
+      "email": "ds_puttalam_vanathavilluwa@prajashakthi.lk"
+    },
+    {
+      "district": "Puttalam",
+      "dsOffice": "Wennappuwa",
+      "username": "ds_puttalam_wennappuwa",
+      "password": "DSUser@123",
+      "email": "ds_puttalam_wennappuwa@prajashakthi.lk"
+    },
+    {
+      "district": "Puttalam",
+      "dsOffice": "Chilaw",
+      "username": "ds_puttalam_chilaw",
+      "password": "DSUser@123",
+      "email": "ds_puttalam_chilaw@prajashakthi.lk"
+    },
+    {
+      "district": "Polonnaruwa",
+      "dsOffice": "Elahera",
+      "username": "ds_polonnaruwa_elahera",
+      "password": "DSUser@123",
+      "email": "ds_polonnaruwa_elahera@prajashakthi.lk"
+    },
+    {
+      "district": "Polonnaruwa",
+      "dsOffice": "Thamankaduwa",
+      "username": "ds_polonnaruwa_thamankaduwa",
+      "password": "DSUser@123",
+      "email": "ds_polonnaruwa_thamankaduwa@prajashakthi.lk"
+    },
+    {
+      "district": "Polonnaruwa",
+      "dsOffice": "Dimbulagala",
+      "username": "ds_polonnaruwa_dimbulagala",
+      "password": "DSUser@123",
+      "email": "ds_polonnaruwa_dimbulagala@prajashakthi.lk"
+    },
+    {
+      "district": "Polonnaruwa",
+      "dsOffice": "Medirigiriya",
+      "username": "ds_polonnaruwa_medirigiriya",
+      "password": "DSUser@123",
+      "email": "ds_polonnaruwa_medirigiriya@prajashakthi.lk"
+    },
+    {
+      "district": "Polonnaruwa",
+      "dsOffice": "Lankapura",
+      "username": "ds_polonnaruwa_lankapura",
+      "password": "DSUser@123",
+      "email": "ds_polonnaruwa_lankapura@prajashakthi.lk"
+    },
+    {
+      "district": "Polonnaruwa",
+      "dsOffice": "Welikanda",
+      "username": "ds_polonnaruwa_welikanda",
+      "password": "DSUser@123",
+      "email": "ds_polonnaruwa_welikanda@prajashakthi.lk"
+    },
+    {
+      "district": "Polonnaruwa",
+      "dsOffice": "Hingurakgoda",
+      "username": "ds_polonnaruwa_hingurakgoda",
+      "password": "DSUser@123",
+      "email": "ds_polonnaruwa_hingurakgoda@prajashakthi.lk"
+    },
+    {
+      "district": "Badulla",
+      "dsOffice": "Badulla",
+      "username": "ds_badulla_badulla",
+      "password": "DSUser@123",
+      "email": "ds_badulla_badulla@prajashakthi.lk"
+    },
+    {
+      "district": "Badulla",
+      "dsOffice": "Ella",
+      "username": "ds_badulla_ella",
+      "password": "DSUser@123",
+      "email": "ds_badulla_ella@prajashakthi.lk"
+    },
+    {
+      "district": "Badulla",
+      "dsOffice": "Uva-Paranagama",
+      "username": "ds_badulla_uva_paranagama",
+      "password": "DSUser@123",
+      "email": "ds_badulla_uva_paranagama@prajashakthi.lk"
+    },
+    {
+      "district": "Badulla",
+      "dsOffice": "Kandaketiya",
+      "username": "ds_badulla_kandaketiya",
+      "password": "DSUser@123",
+      "email": "ds_badulla_kandaketiya@prajashakthi.lk"
+    },
+    {
+      "district": "Badulla",
+      "dsOffice": "Passara",
+      "username": "ds_badulla_passara",
+      "password": "DSUser@123",
+      "email": "ds_badulla_passara@prajashakthi.lk"
+    },
+    {
+      "district": "Badulla",
+      "dsOffice": "Bandarawela",
+      "username": "ds_badulla_bandarawela",
+      "password": "DSUser@123",
+      "email": "ds_badulla_bandarawela@prajashakthi.lk"
+    },
+    {
+      "district": "Badulla",
+      "dsOffice": "Mahiyanganaya",
+      "username": "ds_badulla_mahiyanganaya",
+      "password": "DSUser@123",
+      "email": "ds_badulla_mahiyanganaya@prajashakthi.lk"
+    },
+    {
+      "district": "Badulla",
+      "dsOffice": "Meegahakivula",
+      "username": "ds_badulla_meegahakivula",
+      "password": "DSUser@123",
+      "email": "ds_badulla_meegahakivula@prajashakthi.lk"
+    },
+    {
+      "district": "Badulla",
+      "dsOffice": "Rideemaliyadda",
+      "username": "ds_badulla_rideemaliyadda",
+      "password": "DSUser@123",
+      "email": "ds_badulla_rideemaliyadda@prajashakthi.lk"
+    },
+    {
+      "district": "Badulla",
+      "dsOffice": "Lunugala",
+      "username": "ds_badulla_lunugala",
+      "password": "DSUser@123",
+      "email": "ds_badulla_lunugala@prajashakthi.lk"
+    },
+    {
+      "district": "Badulla",
+      "dsOffice": "Welimada",
+      "username": "ds_badulla_welimada",
+      "password": "DSUser@123",
+      "email": "ds_badulla_welimada@prajashakthi.lk"
+    },
+    {
+      "district": "Badulla",
+      "dsOffice": "Soranathota",
+      "username": "ds_badulla_soranathota",
+      "password": "DSUser@123",
+      "email": "ds_badulla_soranathota@prajashakthi.lk"
+    },
+    {
+      "district": "Badulla",
+      "dsOffice": "Haputale",
+      "username": "ds_badulla_haputale",
+      "password": "DSUser@123",
+      "email": "ds_badulla_haputale@prajashakthi.lk"
+    },
+    {
+      "district": "Badulla",
+      "dsOffice": "Haldummulla",
+      "username": "ds_badulla_haldummulla",
+      "password": "DSUser@123",
+      "email": "ds_badulla_haldummulla@prajashakthi.lk"
+    },
+    {
+      "district": "Badulla",
+      "dsOffice": "Hali-Ela",
+      "username": "ds_badulla_hali_ela",
+      "password": "DSUser@123",
+      "email": "ds_badulla_hali_ela@prajashakthi.lk"
+    },
+    {
+      "district": "Batticaloa",
+      "dsOffice": "Eravur Town",
+      "username": "ds_batticaloa_eravur_town",
+      "password": "DSUser@123",
+      "email": "ds_batticaloa_eravur_town@prajashakthi.lk"
+    },
+    {
+      "district": "Batticaloa",
+      "dsOffice": "Eravur Pattu",
+      "username": "ds_batticaloa_eravur_pattu",
+      "password": "DSUser@123",
+      "email": "ds_batticaloa_eravur_pattu@prajashakthi.lk"
+    },
+    {
+      "district": "Batticaloa",
+      "dsOffice": "Kattankudy",
+      "username": "ds_batticaloa_kattankudy",
+      "password": "DSUser@123",
+      "email": "ds_batticaloa_kattankudy@prajashakthi.lk"
+    },
+    {
+      "district": "Batticaloa",
+      "dsOffice": "Koralai Pattu North",
+      "username": "ds_batticaloa_koralai_pattu_north",
+      "password": "DSUser@123",
+      "email": "ds_batticaloa_koralai_pattu_north@prajashakthi.lk"
+    },
+    {
+      "district": "Batticaloa",
+      "dsOffice": "Koralai Pattu South (Kiran)",
+      "username": "ds_batticaloa_koralai_pattu_south_kiran",
+      "password": "DSUser@123",
+      "email": "ds_batticaloa_koralai_pattu_south_kiran@prajashakthi.lk"
+    },
+    {
+      "district": "Batticaloa",
+      "dsOffice": "Porativu Pattu",
+      "username": "ds_batticaloa_porativu_pattu",
+      "password": "DSUser@123",
+      "email": "ds_batticaloa_porativu_pattu@prajashakthi.lk"
+    },
+    {
+      "district": "Batticaloa",
+      "dsOffice": "Manmunai North",
+      "username": "ds_batticaloa_manmunai_north",
+      "password": "DSUser@123",
+      "email": "ds_batticaloa_manmunai_north@prajashakthi.lk"
+    },
+    {
+      "district": "Batticaloa",
+      "dsOffice": "Manmunai West",
+      "username": "ds_batticaloa_manmunai_west",
+      "password": "DSUser@123",
+      "email": "ds_batticaloa_manmunai_west@prajashakthi.lk"
+    },
+    {
+      "district": "Batticaloa",
+      "dsOffice": "Manmunai Pattu (Arayampathy",
+      "username": "ds_batticaloa_manmunai_pattu_arayampathy",
+      "password": "DSUser@123",
+      "email": "ds_batticaloa_manmunai_pattu_arayampathy@prajashakthi.lk"
+    },
+    {
+      "district": "Batticaloa",
+      "dsOffice": "Manmunai South & Eruvil Pattu",
+      "username": "ds_batticaloa_manmunai_south_eruvil_pattu",
+      "password": "DSUser@123",
+      "email": "ds_batticaloa_manmunai_south_eruvil_pattu@prajashakthi.lk"
+    },
+    {
+      "district": "Mannar",
+      "dsOffice": "Nanaddan",
+      "username": "ds_mannar_nanaddan",
+      "password": "DSUser@123",
+      "email": "ds_mannar_nanaddan@prajashakthi.lk"
+    },
+    {
+      "district": "Mannar",
+      "dsOffice": "Madhu",
+      "username": "ds_mannar_madhu",
+      "password": "DSUser@123",
+      "email": "ds_mannar_madhu@prajashakthi.lk"
+    },
+    {
+      "district": "Mannar",
+      "dsOffice": "Manthai West",
+      "username": "ds_mannar_manthai_west",
+      "password": "DSUser@123",
+      "email": "ds_mannar_manthai_west@prajashakthi.lk"
+    },
+    {
+      "district": "Mannar",
+      "dsOffice": "Mannar Town",
+      "username": "ds_mannar_mannar_town",
+      "password": "DSUser@123",
+      "email": "ds_mannar_mannar_town@prajashakthi.lk"
+    },
+    {
+      "district": "Mannar",
+      "dsOffice": "Musalai",
+      "username": "ds_mannar_musalai",
+      "password": "DSUser@123",
+      "email": "ds_mannar_musalai@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Poojapitiya",
+      "username": "ds_kandy_poojapitiya",
+      "password": "DSUser@123",
+      "email": "ds_kandy_poojapitiya@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Akurana",
+      "username": "ds_kandy_akurana",
+      "password": "DSUser@123",
+      "email": "ds_kandy_akurana@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Udadumbara",
+      "username": "ds_kandy_udadumbara",
+      "password": "DSUser@123",
+      "email": "ds_kandy_udadumbara@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Udapalatha",
+      "username": "ds_kandy_udapalatha",
+      "password": "DSUser@123",
+      "email": "ds_kandy_udapalatha@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Udunuwara",
+      "username": "ds_kandy_udunuwara",
+      "password": "DSUser@123",
+      "email": "ds_kandy_udunuwara@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Kundasale",
+      "username": "ds_kandy_kundasale",
+      "password": "DSUser@123",
+      "email": "ds_kandy_kundasale@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Ganga Ihala Korale",
+      "username": "ds_kandy_ganga_ihala_korale",
+      "password": "DSUser@123",
+      "email": "ds_kandy_ganga_ihala_korale@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Thumpane",
+      "username": "ds_kandy_thumpane",
+      "password": "DSUser@123",
+      "email": "ds_kandy_thumpane@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Delthota",
+      "username": "ds_kandy_delthota",
+      "password": "DSUser@123",
+      "email": "ds_kandy_delthota@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Doluwa",
+      "username": "ds_kandy_doluwa",
+      "password": "DSUser@123",
+      "email": "ds_kandy_doluwa@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Panwila",
+      "username": "ds_kandy_panwila",
+      "password": "DSUser@123",
+      "email": "ds_kandy_panwila@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Pasbage Korale",
+      "username": "ds_kandy_pasbage_korale",
+      "password": "DSUser@123",
+      "email": "ds_kandy_pasbage_korale@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Pathadumbara",
+      "username": "ds_kandy_pathadumbara",
+      "password": "DSUser@123",
+      "email": "ds_kandy_pathadumbara@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Pathahewaheta",
+      "username": "ds_kandy_pathahewaheta",
+      "password": "DSUser@123",
+      "email": "ds_kandy_pathahewaheta@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Kandy Four Gravets & Gangawata Korale",
+      "username": "ds_kandy_kandy_four_gravets_gangawata_korale",
+      "password": "DSUser@123",
+      "email": "ds_kandy_kandy_four_gravets_gangawata_korale@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Medadumbara",
+      "username": "ds_kandy_medadumbara",
+      "password": "DSUser@123",
+      "email": "ds_kandy_medadumbara@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Minipe",
+      "username": "ds_kandy_minipe",
+      "password": "DSUser@123",
+      "email": "ds_kandy_minipe@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Yatinuwara",
+      "username": "ds_kandy_yatinuwara",
+      "password": "DSUser@123",
+      "email": "ds_kandy_yatinuwara@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Hatharaliyadda",
+      "username": "ds_kandy_hatharaliyadda",
+      "password": "DSUser@123",
+      "email": "ds_kandy_hatharaliyadda@prajashakthi.lk"
+    },
+    {
+      "district": "Kandy",
+      "dsOffice": "Harispattuwa",
+      "username": "ds_kandy_harispattuwa",
+      "password": "DSUser@123",
+      "email": "ds_kandy_harispattuwa@prajashakthi.lk"
+    },
+    {
+      "district": "Matara",
+      "dsOffice": "Akuressa",
+      "username": "ds_matara_akuressa",
+      "password": "DSUser@123",
+      "email": "ds_matara_akuressa@prajashakthi.lk"
+    },
+    {
+      "district": "Matara",
+      "dsOffice": "Athuraliya",
+      "username": "ds_matara_athuraliya",
+      "password": "DSUser@123",
+      "email": "ds_matara_athuraliya@prajashakthi.lk"
+    },
+    {
+      "district": "Matara",
+      "dsOffice": "Four Gravets",
+      "username": "ds_matara_four_gravets",
+      "password": "DSUser@123",
+      "email": "ds_matara_four_gravets@prajashakthi.lk"
+    },
+    {
+      "district": "Matara",
+      "dsOffice": "Kamburupitiya",
+      "username": "ds_matara_kamburupitiya",
+      "password": "DSUser@123",
+      "email": "ds_matara_kamburupitiya@prajashakthi.lk"
+    },
+    {
+      "district": "Matara",
+      "dsOffice": "Kirinda Puhulwella",
+      "username": "ds_matara_kirinda_puhulwella",
+      "password": "DSUser@123",
+      "email": "ds_matara_kirinda_puhulwella@prajashakthi.lk"
+    },
+    {
+      "district": "Matara",
+      "dsOffice": "Kotapola",
+      "username": "ds_matara_kotapola",
+      "password": "DSUser@123",
+      "email": "ds_matara_kotapola@prajashakthi.lk"
+    },
+    {
+      "district": "Matara",
+      "dsOffice": "Thihagoda",
+      "username": "ds_matara_thihagoda",
+      "password": "DSUser@123",
+      "email": "ds_matara_thihagoda@prajashakthi.lk"
+    },
+    {
+      "district": "Matara",
+      "dsOffice": "Dickwella",
+      "username": "ds_matara_dickwella",
+      "password": "DSUser@123",
+      "email": "ds_matara_dickwella@prajashakthi.lk"
+    },
+    {
+      "district": "Matara",
+      "dsOffice": "Devinuwara",
+      "username": "ds_matara_devinuwara",
+      "password": "DSUser@123",
+      "email": "ds_matara_devinuwara@prajashakthi.lk"
+    },
+    {
+      "district": "Matara",
+      "dsOffice": "Pasgoda",
+      "username": "ds_matara_pasgoda",
+      "password": "DSUser@123",
+      "email": "ds_matara_pasgoda@prajashakthi.lk"
+    },
+    {
+      "district": "Matara",
+      "dsOffice": "Pitabeddara",
+      "username": "ds_matara_pitabeddara",
+      "password": "DSUser@123",
+      "email": "ds_matara_pitabeddara@prajashakthi.lk"
+    },
+    {
+      "district": "Matara",
+      "dsOffice": "Malimbada",
+      "username": "ds_matara_malimbada",
+      "password": "DSUser@123",
+      "email": "ds_matara_malimbada@prajashakthi.lk"
+    },
+    {
+      "district": "Matara",
+      "dsOffice": "Mulatiyana",
+      "username": "ds_matara_mulatiyana",
+      "password": "DSUser@123",
+      "email": "ds_matara_mulatiyana@prajashakthi.lk"
+    },
+    {
+      "district": "Matara",
+      "dsOffice": "Weligama",
+      "username": "ds_matara_weligama",
+      "password": "DSUser@123",
+      "email": "ds_matara_weligama@prajashakthi.lk"
+    },
+    {
+      "district": "Matara",
+      "dsOffice": "Welipitiya",
+      "username": "ds_matara_welipitiya",
+      "password": "DSUser@123",
+      "email": "ds_matara_welipitiya@prajashakthi.lk"
+    },
+    {
+      "district": "Matara",
+      "dsOffice": "Hakmana",
+      "username": "ds_matara_hakmana",
+      "password": "DSUser@123",
+      "email": "ds_matara_hakmana@prajashakthi.lk"
+    },
+    {
+      "district": "Matale",
+      "dsOffice": "Ambanganga Korale",
+      "username": "ds_matale_ambanganga_korale",
+      "password": "DSUser@123",
+      "email": "ds_matale_ambanganga_korale@prajashakthi.lk"
+    },
+    {
+      "district": "Matale",
+      "dsOffice": "Ukuwela",
+      "username": "ds_matale_ukuwela",
+      "password": "DSUser@123",
+      "email": "ds_matale_ukuwela@prajashakthi.lk"
+    },
+    {
+      "district": "Matale",
+      "dsOffice": "Galewela",
+      "username": "ds_matale_galewela",
+      "password": "DSUser@123",
+      "email": "ds_matale_galewela@prajashakthi.lk"
+    },
+    {
+      "district": "Matale",
+      "dsOffice": "Dambulla",
+      "username": "ds_matale_dambulla",
+      "password": "DSUser@123",
+      "email": "ds_matale_dambulla@prajashakthi.lk"
+    },
+    {
+      "district": "Matale",
+      "dsOffice": "Naula",
+      "username": "ds_matale_naula",
+      "password": "DSUser@123",
+      "email": "ds_matale_naula@prajashakthi.lk"
+    },
+    {
+      "district": "Matale",
+      "dsOffice": "Pallepola",
+      "username": "ds_matale_pallepola",
+      "password": "DSUser@123",
+      "email": "ds_matale_pallepola@prajashakthi.lk"
+    },
+    {
+      "district": "Matale",
+      "dsOffice": "Matale",
+      "username": "ds_matale_matale",
+      "password": "DSUser@123",
+      "email": "ds_matale_matale@prajashakthi.lk"
+    },
+    {
+      "district": "Matale",
+      "dsOffice": "Yatawatta",
+      "username": "ds_matale_yatawatta",
+      "password": "DSUser@123",
+      "email": "ds_matale_yatawatta@prajashakthi.lk"
+    },
+    {
+      "district": "Matale",
+      "dsOffice": "Rattota",
+      "username": "ds_matale_rattota",
+      "password": "DSUser@123",
+      "email": "ds_matale_rattota@prajashakthi.lk"
+    },
+    {
+      "district": "Matale",
+      "dsOffice": "Wilgamuwa",
+      "username": "ds_matale_wilgamuwa",
+      "password": "DSUser@123",
+      "email": "ds_matale_wilgamuwa@prajashakthi.lk"
+    },
+    {
+      "district": "Mullaitivu",
+      "dsOffice": "Oddusuddan",
+      "username": "ds_mullaitivu_oddusuddan",
+      "password": "DSUser@123",
+      "email": "ds_mullaitivu_oddusuddan@prajashakthi.lk"
+    },
+    {
+      "district": "Mullaitivu",
+      "dsOffice": "Thunukkai",
+      "username": "ds_mullaitivu_thunukkai",
+      "password": "DSUser@123",
+      "email": "ds_mullaitivu_thunukkai@prajashakthi.lk"
+    },
+    {
+      "district": "Mullaitivu",
+      "dsOffice": "Puthukudiyiruppu",
+      "username": "ds_mullaitivu_puthukudiyiruppu",
+      "password": "DSUser@123",
+      "email": "ds_mullaitivu_puthukudiyiruppu@prajashakthi.lk"
+    },
+    {
+      "district": "Mullaitivu",
+      "dsOffice": "Manthai East",
+      "username": "ds_mullaitivu_manthai_east",
+      "password": "DSUser@123",
+      "email": "ds_mullaitivu_manthai_east@prajashakthi.lk"
+    },
+    {
+      "district": "Mullaitivu",
+      "dsOffice": "Maritimepattu",
+      "username": "ds_mullaitivu_maritimepattu",
+      "password": "DSUser@123",
+      "email": "ds_mullaitivu_maritimepattu@prajashakthi.lk"
+    },
+    {
+      "district": "Mullaitivu",
+      "dsOffice": "Welioya",
+      "username": "ds_mullaitivu_welioya",
+      "password": "DSUser@123",
+      "email": "ds_mullaitivu_welioya@prajashakthi.lk"
+    },
+    {
+      "district": "Moneragala",
+      "dsOffice": "Katharagama",
+      "username": "ds_moneragala_katharagama",
+      "password": "DSUser@123",
+      "email": "ds_moneragala_katharagama@prajashakthi.lk"
+    },
+    {
+      "district": "Moneragala",
+      "dsOffice": "Thanamalvila",
+      "username": "ds_moneragala_thanamalvila",
+      "password": "DSUser@123",
+      "email": "ds_moneragala_thanamalvila@prajashakthi.lk"
+    },
+    {
+      "district": "Moneragala",
+      "dsOffice": "Badalkumbura",
+      "username": "ds_moneragala_badalkumbura",
+      "password": "DSUser@123",
+      "email": "ds_moneragala_badalkumbura@prajashakthi.lk"
+    },
+    {
+      "district": "Moneragala",
+      "dsOffice": "Bibile",
+      "username": "ds_moneragala_bibile",
+      "password": "DSUser@123",
+      "email": "ds_moneragala_bibile@prajashakthi.lk"
+    },
+    {
+      "district": "Moneragala",
+      "dsOffice": "Buttala",
+      "username": "ds_moneragala_buttala",
+      "password": "DSUser@123",
+      "email": "ds_moneragala_buttala@prajashakthi.lk"
+    },
+    {
+      "district": "Moneragala",
+      "dsOffice": "Madulla",
+      "username": "ds_moneragala_madulla",
+      "password": "DSUser@123",
+      "email": "ds_moneragala_madulla@prajashakthi.lk"
+    },
+    {
+      "district": "Moneragala",
+      "dsOffice": "Medagama",
+      "username": "ds_moneragala_medagama",
+      "password": "DSUser@123",
+      "email": "ds_moneragala_medagama@prajashakthi.lk"
+    },
+    {
+      "district": "Moneragala",
+      "dsOffice": "Moneragala",
+      "username": "ds_moneragala_moneragala",
+      "password": "DSUser@123",
+      "email": "ds_moneragala_moneragala@prajashakthi.lk"
+    },
+    {
+      "district": "Moneragala",
+      "dsOffice": "Wellawaya",
+      "username": "ds_moneragala_wellawaya",
+      "password": "DSUser@123",
+      "email": "ds_moneragala_wellawaya@prajashakthi.lk"
+    },
+    {
+      "district": "Moneragala",
+      "dsOffice": "Siyambalanduwa",
+      "username": "ds_moneragala_siyambalanduwa",
+      "password": "DSUser@123",
+      "email": "ds_moneragala_siyambalanduwa@prajashakthi.lk"
+    },
+    {
+      "district": "Moneragala",
+      "dsOffice": "Sevanagala",
+      "username": "ds_moneragala_sevanagala",
+      "password": "DSUser@123",
+      "email": "ds_moneragala_sevanagala@prajashakthi.lk"
+    },
+    {
+      "district": "Jaffna",
+      "dsOffice": "Delft",
+      "username": "ds_jaffna_delft",
+      "password": "DSUser@123",
+      "email": "ds_jaffna_delft@prajashakthi.lk"
+    },
+    {
+      "district": "Jaffna",
+      "dsOffice": "Island North (Kayts)",
+      "username": "ds_jaffna_island_north_kayts",
+      "password": "DSUser@123",
+      "email": "ds_jaffna_island_north_kayts@prajashakthi.lk"
+    },
+    {
+      "district": "Jaffna",
+      "dsOffice": "Karainagar",
+      "username": "ds_jaffna_karainagar",
+      "password": "DSUser@123",
+      "email": "ds_jaffna_karainagar@prajashakthi.lk"
+    },
+    {
+      "district": "Jaffna",
+      "dsOffice": "Thenmaradchi (Chavakachcheri)",
+      "username": "ds_jaffna_thenmaradchi_chavakachcheri",
+      "password": "DSUser@123",
+      "email": "ds_jaffna_thenmaradchi_chavakachcheri@prajashakthi.lk"
+    },
+    {
+      "district": "Jaffna",
+      "dsOffice": "Island South ,Velanai",
+      "username": "ds_jaffna_island_south_velanai",
+      "password": "DSUser@123",
+      "email": "ds_jaffna_island_south_velanai@prajashakthi.lk"
+    },
+    {
+      "district": "Jaffna",
+      "dsOffice": "Nallur",
+      "username": "ds_jaffna_nallur",
+      "password": "DSUser@123",
+      "email": "ds_jaffna_nallur@prajashakthi.lk"
+    },
+    {
+      "district": "Jaffna",
+      "dsOffice": "Jaffna",
+      "username": "ds_jaffna_jaffna",
+      "password": "DSUser@123",
+      "email": "ds_jaffna_jaffna@prajashakthi.lk"
+    },
+    {
+      "district": "Jaffna",
+      "dsOffice": "Vadamaradchy South-West, Karaveddy",
+      "username": "ds_jaffna_vadamaradchy_south_west_karaveddy",
+      "password": "DSUser@123",
+      "email": "ds_jaffna_vadamaradchy_south_west_karaveddy@prajashakthi.lk"
+    },
+    {
+      "district": "Jaffna",
+      "dsOffice": "Valikamam North (Tellipallai)",
+      "username": "ds_jaffna_valikamam_north_tellipallai",
+      "password": "DSUser@123",
+      "email": "ds_jaffna_valikamam_north_tellipallai@prajashakthi.lk"
+    },
+    {
+      "district": "Jaffna",
+      "dsOffice": "Valikamam South (Uduvil)",
+      "username": "ds_jaffna_valikamam_south_uduvil",
+      "password": "DSUser@123",
+      "email": "ds_jaffna_valikamam_south_uduvil@prajashakthi.lk"
+    },
+    {
+      "district": "Jaffna",
+      "dsOffice": "Valikamam South-West (Sandilipay)",
+      "username": "ds_jaffna_valikamam_south_west_sandilipay",
+      "password": "DSUser@123",
+      "email": "ds_jaffna_valikamam_south_west_sandilipay@prajashakthi.lk"
+    },
+    {
+      "district": "Jaffna",
+      "dsOffice": "Valikamam West (Chankanai)",
+      "username": "ds_jaffna_valikamam_west_chankanai",
+      "password": "DSUser@123",
+      "email": "ds_jaffna_valikamam_west_chankanai@prajashakthi.lk"
+    },
+    {
+      "district": "Ratnapura",
+      "dsOffice": "Kahawatta",
+      "username": "ds_ratnapura_kahawatta",
+      "password": "DSUser@123",
+      "email": "ds_ratnapura_kahawatta@prajashakthi.lk"
+    },
+    {
+      "district": "Ratnapura",
+      "dsOffice": "Ratnapura",
+      "username": "ds_ratnapura_ratnapura",
+      "password": "DSUser@123",
+      "email": "ds_ratnapura_ratnapura@prajashakthi.lk"
+    },
+    {
+      "district": "Ratnapura",
+      "dsOffice": "Ayagama",
+      "username": "ds_ratnapura_ayagama",
+      "password": "DSUser@123",
+      "email": "ds_ratnapura_ayagama@prajashakthi.lk"
+    },
+    {
+      "district": "Ratnapura",
+      "dsOffice": "Embilipitiya",
+      "username": "ds_ratnapura_embilipitiya",
+      "password": "DSUser@123",
+      "email": "ds_ratnapura_embilipitiya@prajashakthi.lk"
+    },
+    {
+      "district": "Ratnapura",
+      "dsOffice": "Elapatha",
+      "username": "ds_ratnapura_elapatha",
+      "password": "DSUser@123",
+      "email": "ds_ratnapura_elapatha@prajashakthi.lk"
+    },
+    {
+      "district": "Ratnapura",
+      "dsOffice": "Eheliyagoda",
+      "username": "ds_ratnapura_eheliyagoda",
+      "password": "DSUser@123",
+      "email": "ds_ratnapura_eheliyagoda@prajashakthi.lk"
+    },
+    {
+      "district": "Ratnapura",
+      "dsOffice": "Imbulpe",
+      "username": "ds_ratnapura_imbulpe",
+      "password": "DSUser@123",
+      "email": "ds_ratnapura_imbulpe@prajashakthi.lk"
+    },
+    {
+      "district": "Ratnapura",
+      "dsOffice": "Opanayaka",
+      "username": "ds_ratnapura_opanayaka",
+      "password": "DSUser@123",
+      "email": "ds_ratnapura_opanayaka@prajashakthi.lk"
+    },
+    {
+      "district": "Ratnapura",
+      "dsOffice": "Kalawana",
+      "username": "ds_ratnapura_kalawana",
+      "password": "DSUser@123",
+      "email": "ds_ratnapura_kalawana@prajashakthi.lk"
+    },
+    {
+      "district": "Ratnapura",
+      "dsOffice": "Kalthota",
+      "username": "ds_ratnapura_kalthota",
+      "password": "DSUser@123",
+      "email": "ds_ratnapura_kalthota@prajashakthi.lk"
+    },
+    {
+      "district": "Ratnapura",
+      "dsOffice": "Kiriella",
+      "username": "ds_ratnapura_kiriella",
+      "password": "DSUser@123",
+      "email": "ds_ratnapura_kiriella@prajashakthi.lk"
+    },
+    {
+      "district": "Ratnapura",
+      "dsOffice": "Kuruvita",
+      "username": "ds_ratnapura_kuruvita",
+      "password": "DSUser@123",
+      "email": "ds_ratnapura_kuruvita@prajashakthi.lk"
+    },
+    {
+      "district": "Ratnapura",
+      "dsOffice": "Kolonna",
+      "username": "ds_ratnapura_kolonna",
+      "password": "DSUser@123",
+      "email": "ds_ratnapura_kolonna@prajashakthi.lk"
+    },
+    {
+      "district": "Ratnapura",
+      "dsOffice": "Godakawela",
+      "username": "ds_ratnapura_godakawela",
+      "password": "DSUser@123",
+      "email": "ds_ratnapura_godakawela@prajashakthi.lk"
+    },
+    {
+      "district": "Ratnapura",
+      "dsOffice": "Nivithigala",
+      "username": "ds_ratnapura_nivithigala",
+      "password": "DSUser@123",
+      "email": "ds_ratnapura_nivithigala@prajashakthi.lk"
+    },
+    {
+      "district": "Ratnapura",
+      "dsOffice": "Pelmadulla",
+      "username": "ds_ratnapura_pelmadulla",
+      "password": "DSUser@123",
+      "email": "ds_ratnapura_pelmadulla@prajashakthi.lk"
+    },
+    {
+      "district": "Ratnapura",
+      "dsOffice": "Balangoda",
+      "username": "ds_ratnapura_balangoda",
+      "password": "DSUser@123",
+      "email": "ds_ratnapura_balangoda@prajashakthi.lk"
+    },
+    {
+      "district": "Ratnapura",
+      "dsOffice": "Weligepola",
+      "username": "ds_ratnapura_weligepola",
+      "password": "DSUser@123",
+      "email": "ds_ratnapura_weligepola@prajashakthi.lk"
+    },
+    {
+      "district": "Vavuniya",
+      "dsOffice": "Vavuniya North",
+      "username": "ds_vavuniya_vavuniya_north",
+      "password": "DSUser@123",
+      "email": "ds_vavuniya_vavuniya_north@prajashakthi.lk"
+    },
+    {
+      "district": "Vavuniya",
+      "dsOffice": "Vavuniya South",
+      "username": "ds_vavuniya_vavuniya_south",
+      "password": "DSUser@123",
+      "email": "ds_vavuniya_vavuniya_south@prajashakthi.lk"
+    },
+    {
+      "district": "Vavuniya",
+      "dsOffice": "Vavuniya",
+      "username": "ds_vavuniya_vavuniya",
+      "password": "DSUser@123",
+      "email": "ds_vavuniya_vavuniya@prajashakthi.lk"
+    },
+    {
+      "district": "Vavuniya",
+      "dsOffice": "Vengalacheddikulam",
+      "username": "ds_vavuniya_vengalacheddikulam",
+      "password": "DSUser@123",
+      "email": "ds_vavuniya_vengalacheddikulam@prajashakthi.lk"
+    }
+  ]
+}

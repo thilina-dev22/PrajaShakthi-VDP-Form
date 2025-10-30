@@ -19,6 +19,28 @@ const createUser = async (req, res) => {
             });
         }
 
+        // Validation: Maximum 25 district admin accounts (Sri Lanka has 25 districts)
+        if (role === 'district_admin') {
+            const districtAdminCount = await User.countDocuments({ role: 'district_admin' });
+            if (districtAdminCount >= 25) {
+                return res.status(400).json({ 
+                    message: 'Maximum limit of 25 District Admin accounts reached. Sri Lanka has only 25 districts.' 
+                });
+            }
+
+            // Validation: Only one district admin per district
+            const existingDistrictAdmin = await User.findOne({ 
+                role: 'district_admin', 
+                district: district 
+            });
+            if (existingDistrictAdmin) {
+                return res.status(400).json({ 
+                    message: `A District Admin already exists for ${district} district.`,
+                    existingUser: existingDistrictAdmin.username
+                });
+            }
+        }
+
         // Validation: District Admin can only create DS Users in their district
         if (creator.role === 'district_admin') {
             if (role !== 'ds_user') {
@@ -29,6 +51,21 @@ const createUser = async (req, res) => {
             if (district !== creator.district) {
                 return res.status(403).json({ 
                     message: 'You can only create users for your own district' 
+                });
+            }
+        }
+
+        // Validation: Only one DS user per DS office
+        if (role === 'ds_user') {
+            const existingDSUser = await User.findOne({ 
+                role: 'ds_user', 
+                district: district,
+                divisionalSecretariat: divisionalSecretariat 
+            });
+            if (existingDSUser) {
+                return res.status(400).json({ 
+                    message: `A DS User already exists for ${divisionalSecretariat} office in ${district} district.`,
+                    existingUser: existingDSUser.username
                 });
             }
         }

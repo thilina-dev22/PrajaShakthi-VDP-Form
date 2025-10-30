@@ -6,12 +6,29 @@ const {
   checkDuplicateNIC 
 } = require("../utils/notificationHelper");
 
-// @desc   Create a new form submission
-// @route  POST /api/submissions
+// @desc   Create a new form submission
+// @route  POST /api/submissions
 // @access Public (anonymous submissions allowed)
 const createSubmission = async (req, res) => {
   try {
     const user = req.user;
+    
+    // Validation: Only one CDC form submission per GN Division
+    if (req.body.formType === 'council_info') {
+      const existingSubmission = await Submission.findOne({
+        formType: 'council_info',
+        'location.district': req.body.location?.district,
+        'location.divisionalSec': req.body.location?.divisionalSec,
+        'location.gnDivision': req.body.location?.gnDivision
+      });
+
+      if (existingSubmission) {
+        return res.status(400).json({ 
+          message: `A CDC form has already been submitted for ${req.body.location?.gnDivision} GN Division. Only one submission per GN Division is allowed.`,
+          existingSubmissionId: existingSubmission._id
+        });
+      }
+    }
     
     // Automatically set createdBy from authenticated user
     const submissionData = {
@@ -295,6 +312,34 @@ const updateSubmission = async (req, res) => {
     // District admins can edit submissions from their district
     if (user.role === 'district_admin' && submission.location.district !== user.district) {
       return res.status(403).json({ message: "Not authorized to edit this submission" });
+    }
+
+    // Validation: If changing location for council_info, ensure no duplicate exists for new GN Division
+    if (submission.formType === 'council_info' && req.body.location) {
+      const isLocationChanging = 
+        (req.body.location.district && req.body.location.district !== submission.location.district) ||
+        (req.body.location.divisionalSec && req.body.location.divisionalSec !== submission.location.divisionalSec) ||
+        (req.body.location.gnDivision && req.body.location.gnDivision !== submission.location.gnDivision);
+
+      if (isLocationChanging) {
+        const newDistrict = req.body.location.district || submission.location.district;
+        const newDS = req.body.location.divisionalSec || submission.location.divisionalSec;
+        const newGN = req.body.location.gnDivision || submission.location.gnDivision;
+
+        const existingSubmission = await Submission.findOne({
+          _id: { $ne: submission._id }, // Exclude current submission
+          formType: 'council_info',
+          'location.district': newDistrict,
+          'location.divisionalSec': newDS,
+          'location.gnDivision': newGN
+        });
+
+        if (existingSubmission) {
+          return res.status(400).json({ 
+            message: `A Community Council form already exists for ${newGN} GN Division in ${newDS}, ${newDistrict}. Each GN Division can only have one Community Council form.` 
+          });
+        }
+      }
     }
 
     // Detect changes for detailed logging
