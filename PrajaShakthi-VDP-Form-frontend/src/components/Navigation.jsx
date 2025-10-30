@@ -101,24 +101,26 @@ const Navigation = ({ setCurrentRoute = () => {} }) => {
         </nav>
       )}
 
-      {/* Language Switcher */}
-      <div className="flex items-center gap-2 mb-4 sm:mb-0">
-        <div className="flex gap-1 bg-white/10 rounded-lg p-1">
-          {["si", "ta", "en"].map((lang) => (
-            <button
-              key={lang}
-              onClick={() => changeLanguage(lang)}
-              className={`px-3 py-1 rounded transition-colors ${
-                i18n.language === lang
-                  ? "bg-white text-[#680921] font-semibold"
-                  : "text-white hover:bg-white/20"
-              }`}
-            >
-              {getLanguageLabel(lang)}
-            </button>
-          ))}
+      {/* Language Switcher - Only show for non-authenticated users and DS Users */}
+      {(!isAuthenticated || isDSUser) && (
+        <div className="flex items-center gap-2 mb-4 sm:mb-0">
+          <div className="flex gap-1 bg-white/10 rounded-lg p-1">
+            {["si", "ta", "en"].map((lang) => (
+              <button
+                key={lang}
+                onClick={() => changeLanguage(lang)}
+                className={`px-3 py-1 rounded transition-colors ${
+                  i18n.language === lang
+                    ? "bg-white text-[#680921] font-semibold"
+                    : "text-white hover:bg-white/20"
+                }`}
+              >
+                {getLanguageLabel(lang)}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Right side: user info & actions */}
       {isAuthenticated ? (
