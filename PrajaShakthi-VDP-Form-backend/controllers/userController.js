@@ -402,10 +402,219 @@ const getActivityLogs = async (req, res) => {
     }
 };
 
+// @desc    Change own password
+// @route   PUT /api/users/change-password
+// @access  Private (All authenticated users)
+const changeOwnPassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const currentUser = req.user;
+
+        // Validate input
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({ message: 'Current password and new password are required' });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({ message: 'New password must be at least 6 characters long' });
+        }
+
+        // Get user with password
+        const user = await User.findById(currentUser._id).select('+password');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Verify current password
+        const isPasswordCorrect = await user.matchPassword(currentPassword);
+        if (!isPasswordCorrect) {
+            return res.status(401).json({ message: 'Current password is incorrect' });
+        }
+
+        // Update password
+        user.password = newPassword; // Will be hashed by pre-save hook
+        await user.save();
+
+        // Log activity
+        await logActivity({
+            userId: currentUser._id,
+            username: currentUser.username,
+            userRole: currentUser.role,
+            action: 'CHANGE_OWN_PASSWORD',
+            details: { 
+                message: 'User changed their own password'
+            },
+            ipAddress: req.ip,
+            userAgent: req.get('user-agent'),
+            district: currentUser.district,
+            divisionalSecretariat: currentUser.divisionalSecretariat
+        });
+
+        res.json({ message: 'Password changed successfully' });
+    } catch (error) {
+        console.error('Error changing password:', error);
+        res.status(500).json({ message: 'Error changing password', error: error.message });
+    }
+};
+
+// @desc    Get users under authority (for password management)
+// @route   GET /api/users/subordinates
+// @access  Private (SuperAdmin and DistrictAdmin only)
+const getUsersUnderAuthority = async (req, res) => {
+    try {
+        const currentUser = req.user;
+        let filter = {};
+
+        // SuperAdmin sees all District Admins
+        if (currentUser.role === 'superadmin') {
+            filter.role = 'district_admin';
+        }
+        // District Admin sees DS Users in their district
+        else if (currentUser.role === 'district_admin') {
+            filter.role = 'ds_user';
+            filter.district = currentUser.district;
+        }
+        // DS Users cannot manage other users
+        else {
+            return res.status(403).json({ message: 'Not authorized to view subordinate users' });
+        }
+
+        const users = await User.find(filter)
+            .select('username role district divisionalSecretariat fullName email isActive createdAt')
+            .sort({ district: 1, divisionalSecretariat: 1, username: 1 });
+
+        // Log activity
+        await logActivity({
+            userId: currentUser._id,
+            username: currentUser.username,
+            userRole: currentUser.role,
+            action: 'VIEW_SUBORDINATE_USERS',
+            details: { 
+                count: users.length,
+                purpose: 'password_management'
+            },
+            ipAddress: req.ip,
+            userAgent: req.get('user-agent'),
+            district: currentUser.district,
+            divisionalSecretariat: currentUser.divisionalSecretariat
+        });
+
+        res.json(users);
+    } catch (error) {
+        console.error('Error fetching subordinate users:', error);
+        res.status(500).json({ message: 'Error fetching subordinate users', error: error.message });
+    }
+};
+
+// @desc    Update subordinate user password (Admin to subordinate)
+// @route   PUT /api/users/:id/reset-password
+// @access  Private (SuperAdmin and DistrictAdmin only)
+const updateSubordinatePassword = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { newPassword } = req.body;
+        const currentUser = req.user;
+
+        // Validate input
+        if (!newPassword) {
+            return res.status(400).json({ message: 'New password is required' });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({ message: 'New password must be at least 6 characters long' });
+        }
+
+        // Cannot reset own password through this endpoint
+        if (id === currentUser._id.toString()) {
+            return res.status(400).json({ message: 'Use change-password endpoint to update your own password' });
+        }
+
+        // Get user to update
+        const userToUpdate = await User.findById(id);
+        if (!userToUpdate) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Permission check - SuperAdmin can reset district_admin passwords
+        if (currentUser.role === 'superadmin') {
+            if (userToUpdate.role !== 'district_admin') {
+                return res.status(403).json({ 
+                    message: 'Super Admin can only reset District Admin passwords' 
+                });
+            }
+        }
+        // District Admin can reset DS user passwords in their district
+        else if (currentUser.role === 'district_admin') {
+            if (userToUpdate.role !== 'ds_user' || userToUpdate.district !== currentUser.district) {
+                return res.status(403).json({ 
+                    message: 'District Admin can only reset DS User passwords in their district' 
+                });
+            }
+        }
+        // DS Users cannot reset any passwords
+        else {
+            return res.status(403).json({ message: 'Not authorized to reset passwords' });
+        }
+
+        // Update password
+        userToUpdate.password = newPassword; // Will be hashed by pre-save hook
+        await userToUpdate.save();
+
+        // Log activity
+        await logActivity({
+            userId: currentUser._id,
+            username: currentUser.username,
+            userRole: currentUser.role,
+            action: 'RESET_SUBORDINATE_PASSWORD',
+            targetType: 'User',
+            targetId: userToUpdate._id,
+            details: {
+                targetUsername: userToUpdate.username,
+                targetRole: userToUpdate.role,
+                targetDistrict: userToUpdate.district,
+                targetDS: userToUpdate.divisionalSecretariat
+            },
+            ipAddress: req.ip,
+            userAgent: req.get('user-agent'),
+            district: currentUser.district,
+            divisionalSecretariat: currentUser.divisionalSecretariat
+        });
+
+        // Notify super admins about password reset (Phase 1)
+        await notifySuperAdmins(
+            'RESET_USER_PASSWORD',
+            {
+                relatedUserId: userToUpdate._id,
+                details: {
+                    resetBy: currentUser.username,
+                    resetByRole: currentUser.role,
+                    targetUsername: userToUpdate.username,
+                    targetRole: userToUpdate.role,
+                    targetDistrict: userToUpdate.district
+                }
+            },
+            currentUser,
+            'medium',
+            'security'
+        );
+
+        res.json({ 
+            message: 'Password reset successfully',
+            username: userToUpdate.username
+        });
+    } catch (error) {
+        console.error('Error resetting subordinate password:', error);
+        res.status(500).json({ message: 'Error resetting password', error: error.message });
+    }
+};
+
 module.exports = {
     createUser,
     getUsers,
     updateUser,
     deleteUser,
-    getActivityLogs
+    getActivityLogs,
+    changeOwnPassword,
+    getUsersUnderAuthority,
+    updateSubordinatePassword
 };

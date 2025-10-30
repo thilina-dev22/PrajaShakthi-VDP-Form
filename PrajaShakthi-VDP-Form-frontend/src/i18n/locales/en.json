@@ -4,7 +4,8 @@
     "loginAdmin": "Log in as admin",
     "loggedInAs": "Logged in as",
     "logout": "Logout",
-    "mySubmissions": "My Submissions"
+    "mySubmissions": "My Submissions",
+    "passwordManagement": "Password Management"
   },
   "form": {
     "district": "District",
@@ -85,5 +86,41 @@
     "delete": "Delete",
     "noResults": "No submissions found",
     "loading": "Loading..."
+  },
+  "passwordManagement": {
+    "title": "Password Management",
+    "changeOwnPassword": "Change My Password",
+    "manageSubordinates": "Manage Subordinate Passwords",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "updatePassword": "Update Password",
+    "updating": "Updating...",
+    "resetPassword": "Reset Password",
+    "resetting": "Resetting...",
+    "selectUserToReset": "Select User to Reset Password",
+    "selectUser": "-- Select User --",
+    "selectedUser": "Selected User",
+    "username": "Username",
+    "role": "Role",
+    "district": "District",
+    "dsOffice": "DS Office",
+    "allFieldsRequired": "All fields are required",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "passwordMismatch": "Passwords do not match",
+    "ownPasswordSuccess": "Your password has been changed successfully",
+    "subordinatePasswordSuccess": "Password reset successfully for {{username}}",
+    "error": "An error occurred. Please try again.",
+    "passwordRequirement": "Minimum 6 characters required",
+    "securityTips": "Security Tips",
+    "tip1": "Use a strong password with a mix of letters, numbers, and symbols",
+    "tip2": "Change your password regularly for better security",
+    "tip3": "Never share your password with anyone",
+    "tip4": "When resetting subordinate passwords, inform them immediately"
+  },
+  "roles": {
+    "superadmin": "Super Admin",
+    "districtAdmin": "District Admin",
+    "dsUser": "DS User"
   }
 }
