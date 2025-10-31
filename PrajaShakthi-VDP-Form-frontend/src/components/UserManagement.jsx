@@ -5,7 +5,8 @@ import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import provincialData from '../data/provincial_data.json';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+// Normalize API base URL to avoid double slashes when joining paths
+const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/+$/, '');
 
 const UserManagement = () => {
     const { user } = useAuth();
