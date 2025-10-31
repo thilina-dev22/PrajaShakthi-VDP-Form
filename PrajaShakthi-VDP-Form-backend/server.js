@@ -32,18 +32,32 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
-  // Add your production frontend domain(s) below without trailing slash
+  // Production frontend URLs - add all your Vercel deployment URLs
   "https://praja-shakthi-vdp-form-5aaz-git-main-thilinas-projects-98fabc7e.vercel.app",
-  "https://praja-shakthi-vdp-form-5aaz.vercel.app", // New production URL
-  process.env.CORS_ORIGIN, // optional single origin via env
-].filter(Boolean);
+  "https://praja-shakthi-vdp-form-5aaz.vercel.app",
+];
+
+// Add origins from environment variable (comma-separated)
+if (process.env.CORS_ORIGIN) {
+  const envOrigins = process.env.CORS_ORIGIN.split(',').map(origin => origin.trim()).filter(Boolean);
+  allowedOrigins.push(...envOrigins);
+}
+
+// Remove duplicates
+const uniqueOrigins = [...new Set(allowedOrigins)];
+
+// Log allowed origins for debugging
+console.log('🔐 CORS Allowed Origins:', uniqueOrigins);
 
 app.use(
   cors({
     origin: function (origin, callback) {
       // Allow requests with no origin like mobile apps or curl
       if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
+      if (uniqueOrigins.includes(origin)) return callback(null, true);
+      
+      // Log rejected origins for debugging
+      console.warn('⚠️ CORS rejected origin:', origin);
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
