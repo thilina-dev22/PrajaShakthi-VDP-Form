@@ -404,23 +404,23 @@ const NotificationsPage = () => {
     const unreadCount = notifications.filter(n => !n.isRead).length;
 
     return (
-        <div className="max-w-6xl mx-auto p-6">
+        <div className="max-w-6xl mx-auto p-4 sm:p-6">
             {/* Header */}
-            <div className="mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Notifications</h1>
-                <p className="text-gray-600">
+            <div className="mb-4 sm:mb-6">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Notifications</h1>
+                <p className="text-sm sm:text-base text-gray-600">
                     {unreadCount > 0 ? `${unreadCount} unread notification${unreadCount !== 1 ? 's' : ''}` : 'All caught up!'}
                 </p>
             </div>
 
             {/* Filters and Actions */}
-            <div className="bg-white rounded-lg shadow-md p-4 mb-6">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="bg-white rounded-lg shadow-md p-3 sm:p-4 mb-4 sm:mb-6">
+                <div className="flex flex-col gap-3 sm:gap-4">
                     {/* Filter Tabs */}
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0">
                         <button
                             onClick={() => setFilter('all')}
-                            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                            className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap text-sm sm:text-base ${
                                 filter === 'all' 
                                     ? 'bg-blue-600 text-white' 
                                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -430,7 +430,7 @@ const NotificationsPage = () => {
                         </button>
                         <button
                             onClick={() => setFilter('unread')}
-                            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                            className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap text-sm sm:text-base ${
                                 filter === 'unread' 
                                     ? 'bg-blue-600 text-white' 
                                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -440,7 +440,7 @@ const NotificationsPage = () => {
                         </button>
                         <button
                             onClick={() => setFilter('read')}
-                            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                            className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap text-sm sm:text-base ${
                                 filter === 'read' 
                                     ? 'bg-blue-600 text-white' 
                                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -450,77 +450,80 @@ const NotificationsPage = () => {
                         </button>
                     </div>
 
-                    {/* Category Filter */}
-                    <select
-                        value={categoryFilter}
-                        onChange={(e) => setCategoryFilter(e.target.value)}
-                        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                        <option value="all">All Categories</option>
-                        <option value="submission">📝 Submissions</option>
-                        <option value="user">👤 Users</option>
-                        <option value="security">🔒 Security</option>
-                        <option value="system">⚙️ System</option>
-                        <option value="summary">📈 Summaries</option>
-                    </select>
+                    {/* Dropdown Filters */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {/* Category Filter */}
+                        <select
+                            value={categoryFilter}
+                            onChange={(e) => setCategoryFilter(e.target.value)}
+                            className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+                        >
+                            <option value="all">All Categories</option>
+                            <option value="submission">📝 Submissions</option>
+                            <option value="user">👤 Users</option>
+                            <option value="security">🔒 Security</option>
+                            <option value="system">⚙️ System</option>
+                            <option value="summary">📈 Summaries</option>
+                        </select>
 
-                    {/* Priority Filter */}
-                    <select
-                        value={priorityFilter}
-                        onChange={(e) => setPriorityFilter(e.target.value)}
-                        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                        <option value="all">All Priorities</option>
-                        <option value="critical">🔴 Critical</option>
-                        <option value="high">🟠 High</option>
-                        <option value="medium">🟡 Medium</option>
-                        <option value="low">🔵 Low</option>
-                    </select>
+                        {/* Priority Filter */}
+                        <select
+                            value={priorityFilter}
+                            onChange={(e) => setPriorityFilter(e.target.value)}
+                            className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+                        >
+                            <option value="all">All Priorities</option>
+                            <option value="critical">🔴 Critical</option>
+                            <option value="high">🟠 High</option>
+                            <option value="medium">🟡 Medium</option>
+                            <option value="low">🔵 Low</option>
+                        </select>
 
-                    {/* Action Filter */}
-                    <select
-                        value={actionFilter}
-                        onChange={(e) => setActionFilter(e.target.value)}
-                        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                        <option value="all">All Actions</option>
-                        <optgroup label="Submissions">
-                            <option value="CREATE_SUBMISSION">Created</option>
-                            <option value="UPDATE_SUBMISSION">Updated</option>
-                            <option value="DELETE_SUBMISSION">Deleted</option>
-                        </optgroup>
-                        <optgroup label="Users">
-                            <option value="CREATE_USER">User Created</option>
-                            <option value="UPDATE_USER">User Updated</option>
-                            <option value="DELETE_USER">User Deleted</option>
-                            <option value="ACTIVATE_USER">User Activated</option>
-                            <option value="DEACTIVATE_USER">User Deactivated</option>
-                        </optgroup>
-                        <optgroup label="Security">
-                            <option value="FAILED_LOGIN">Failed Login</option>
-                            <option value="MULTIPLE_EDITS">Multiple Edits</option>
-                            <option value="CRITICAL_FIELD_CHANGE">Critical Change</option>
-                            <option value="DUPLICATE_NIC">Duplicate NIC</option>
-                        </optgroup>
-                        <optgroup label="Summaries">
-                            <option value="DAILY_SUMMARY">Daily Summary</option>
-                            <option value="WEEKLY_SUMMARY">Weekly Summary</option>
-                            <option value="MONTHLY_SUMMARY">Monthly Summary</option>
-                        </optgroup>
-                        <optgroup label="System">
-                            <option value="INACTIVE_USER_ALERT">Inactive User</option>
-                            <option value="MILESTONE_REACHED">Milestone</option>
-                            <option value="LOG_DELETION_REMINDER">Log Cleanup Warning</option>
-                            <option value="SYSTEM_CLEANUP">System Cleanup</option>
-                        </optgroup>
-                    </select>
+                        {/* Action Filter */}
+                        <select
+                            value={actionFilter}
+                            onChange={(e) => setActionFilter(e.target.value)}
+                            className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base sm:col-span-2 lg:col-span-1"
+                        >
+                            <option value="all">All Actions</option>
+                            <optgroup label="Submissions">
+                                <option value="CREATE_SUBMISSION">Created</option>
+                                <option value="UPDATE_SUBMISSION">Updated</option>
+                                <option value="DELETE_SUBMISSION">Deleted</option>
+                            </optgroup>
+                            <optgroup label="Users">
+                                <option value="CREATE_USER">User Created</option>
+                                <option value="UPDATE_USER">User Updated</option>
+                                <option value="DELETE_USER">User Deleted</option>
+                                <option value="ACTIVATE_USER">User Activated</option>
+                                <option value="DEACTIVATE_USER">User Deactivated</option>
+                            </optgroup>
+                            <optgroup label="Security">
+                                <option value="FAILED_LOGIN">Failed Login</option>
+                                <option value="MULTIPLE_EDITS">Multiple Edits</option>
+                                <option value="CRITICAL_FIELD_CHANGE">Critical Change</option>
+                                <option value="DUPLICATE_NIC">Duplicate NIC</option>
+                            </optgroup>
+                            <optgroup label="Summaries">
+                                <option value="DAILY_SUMMARY">Daily Summary</option>
+                                <option value="WEEKLY_SUMMARY">Weekly Summary</option>
+                                <option value="MONTHLY_SUMMARY">Monthly Summary</option>
+                            </optgroup>
+                            <optgroup label="System">
+                                <option value="INACTIVE_USER_ALERT">Inactive User</option>
+                                <option value="MILESTONE_REACHED">Milestone</option>
+                                <option value="LOG_DELETION_REMINDER">Log Cleanup Warning</option>
+                                <option value="SYSTEM_CLEANUP">System Cleanup</option>
+                            </optgroup>
+                        </select>
+                    </div>
 
                     {/* Bulk Actions */}
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2">
                         {unreadCount > 0 && (
                             <button
                                 onClick={markAllAsRead}
-                                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                                className="px-3 sm:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base"
                             >
                                 Mark All Read
                             </button>
@@ -528,7 +531,7 @@ const NotificationsPage = () => {
                         {notifications.some(n => n.isRead) && (
                             <button
                                 onClick={clearReadNotifications}
-                                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                                className="px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm sm:text-base"
                             >
                                 Clear Read
                             </button>

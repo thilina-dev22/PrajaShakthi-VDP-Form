@@ -2,12 +2,13 @@
 
 const express = require('express');
 const router = express.Router();
-const { registerUser, loginUser, logoutUser, checkAuthStatus  } = require('../controllers/authController');
+const { registerUser, loginUser, logoutUser, checkAuthStatus, resetOwnPassword  } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 
 router.post('/register', registerUser); 
 router.post('/login', loginUser);
 router.post('/logout', protect, logoutUser); // Now requires authentication to log activity
 router.get('/status', protect, checkAuthStatus);
+router.put('/reset-password', protect, resetOwnPassword); // Reset own password
 
 module.exports = router;

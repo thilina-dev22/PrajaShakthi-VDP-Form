@@ -190,6 +190,56 @@ const checkAuthStatus = async () => {
   return response.json(); // Returns { _id, username, role }
 };
 
+// Reset own password
+const resetOwnPassword = async (currentPassword, newPassword) => {
+  const response = await fetch(`${API_URL}/reset-password`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      ...getAuthHeaders(),
+    },
+    body: JSON.stringify({ currentPassword, newPassword }),
+    credentials: "include",
+  });
+
+  if (response.status === 401) {
+    const error = await response.json();
+    throw new Error(error.message || "Current password is incorrect");
+  }
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to reset password");
+  }
+
+  return response.json();
+};
+
+// Reset user password (admin function)
+const resetUserPassword = async (userId, newPassword) => {
+  const response = await fetch(`${API_BASE}/api/users/${userId}/reset-password`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      ...getAuthHeaders(),
+    },
+    body: JSON.stringify({ newPassword }),
+    credentials: "include",
+  });
+
+  if (response.status === 403) {
+    const error = await response.json();
+    throw new Error(error.message || "Not authorized to reset this password");
+  }
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to reset password");
+  }
+
+  return response.json();
+};
+
 export {
   login,
   logout,
@@ -198,4 +248,6 @@ export {
   deleteSubmission,
   updateSubmission,
   checkAuthStatus,
+  resetOwnPassword,
+  resetUserPassword,
 };

@@ -175,12 +175,12 @@ const ActivityLogs = () => {
     };
 
     return (
-        <div className="container mx-auto p-6">
-            <h2 className="text-3xl font-bold text-[#A8234A] mb-6">Activity Logs</h2>
+        <div className="container mx-auto p-4 sm:p-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#A8234A] mb-4 sm:mb-6">Activity Logs</h2>
 
             {/* Filters */}
-            <div className="bg-white shadow-md rounded px-6 py-4 mb-6">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="bg-white shadow-md rounded px-4 sm:px-6 py-4 mb-4 sm:mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                     <div>
                         <label className="block text-gray-700 text-sm font-bold mb-2">
                             Action Type
@@ -189,7 +189,7 @@ const ActivityLogs = () => {
                             name="action"
                             value={filters.action}
                             onChange={handleFilterChange}
-                            className="shadow border rounded w-full py-2 px-3 text-gray-700"
+                            className="shadow border rounded w-full py-2 px-3 text-gray-700 text-sm sm:text-base"
                         >
                             <option value="">All Actions</option>
                             <option value="LOGIN">Login</option>
@@ -212,7 +212,7 @@ const ActivityLogs = () => {
                             name="startDate"
                             value={filters.startDate}
                             onChange={handleFilterChange}
-                            className="shadow border rounded w-full py-2 px-3 text-gray-700"
+                            className="shadow border rounded w-full py-2 px-3 text-gray-700 text-sm sm:text-base"
                         />
                     </div>
                     <div>
@@ -224,7 +224,7 @@ const ActivityLogs = () => {
                             name="endDate"
                             value={filters.endDate}
                             onChange={handleFilterChange}
-                            className="shadow border rounded w-full py-2 px-3 text-gray-700"
+                            className="shadow border rounded w-full py-2 px-3 text-gray-700 text-sm sm:text-base"
                         />
                     </div>
                     <div className="flex items-end">
@@ -233,7 +233,7 @@ const ActivityLogs = () => {
                                 setFilters({ action: '', startDate: '', endDate: '' });
                                 setPage(1);
                             }}
-                            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition w-full"
+                            className="bg-gray-500 text-white px-3 sm:px-4 py-2 rounded hover:bg-gray-600 transition w-full text-sm sm:text-base"
                         >
                             Clear Filters
                         </button>
@@ -245,13 +245,14 @@ const ActivityLogs = () => {
                     <div className="mt-4 pt-4 border-t border-gray-200">
                         <button
                             onClick={() => downloadActivityLogs(false)}
-                            className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition flex items-center gap-2"
+                            className="bg-purple-600 text-white px-3 sm:px-4 py-2 rounded hover:bg-purple-700 transition flex items-center gap-2 text-sm sm:text-base"
                             title="Download activity logs with current filters applied"
                         >
                             <span>📥</span>
-                            <span>Download Logs</span>
+                            <span className="hidden sm:inline">Download Logs</span>
+                            <span className="sm:hidden">Download</span>
                         </button>
-                        <p className="text-sm text-gray-600 mt-2">
+                        <p className="text-xs sm:text-sm text-gray-600 mt-2">
                             💡 Download logs in JSON format with current filters. Logs older than 1 month are automatically deleted.
                         </p>
                     </div>
@@ -270,17 +271,17 @@ const ActivityLogs = () => {
                     <table className="min-w-full">
                         <thead className="bg-[#680921] text-white">
                             <tr>
-                                <th className="py-3 px-4 text-left">Date/Time</th>
-                                <th className="py-3 px-4 text-left">User</th>
-                                <th className="py-3 px-4 text-left">Role</th>
-                                <th className="py-3 px-4 text-left">Action</th>
+                                <th className="py-3 px-4 text-left whitespace-nowrap">Date/Time</th>
+                                <th className="py-3 px-4 text-left whitespace-nowrap">User</th>
+                                <th className="py-3 px-4 text-left whitespace-nowrap">Role</th>
+                                <th className="py-3 px-4 text-left whitespace-nowrap">Action</th>
                                 {user.role === 'superadmin' && (
                                     <>
-                                        <th className="py-3 px-4 text-left">District</th>
-                                        <th className="py-3 px-4 text-left">DS Division</th>
+                                        <th className="py-3 px-4 text-left whitespace-nowrap">District</th>
+                                        <th className="py-3 px-4 text-left whitespace-nowrap">DS Division</th>
                                     </>
                                 )}
-                                <th className="py-3 px-4 text-left">Details</th>
+                                <th className="py-3 px-4 text-left whitespace-nowrap">Details</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -295,22 +296,22 @@ const ActivityLogs = () => {
                             ) : (
                                 logs.map(log => (
                                     <tr key={log._id} className="border-b hover:bg-gray-50">
-                                        <td className="py-3 px-4 text-sm">{formatDate(log.createdAt)}</td>
-                                        <td className="py-3 px-4">{log.username}</td>
-                                        <td className="py-3 px-4">
+                                        <td className="py-3 px-4 text-sm whitespace-nowrap">{formatDate(log.createdAt)}</td>
+                                        <td className="py-3 px-4 whitespace-nowrap">{log.username}</td>
+                                        <td className="py-3 px-4 whitespace-nowrap">
                                             <span className="text-xs px-2 py-1 bg-gray-200 rounded">
                                                 {log.userRole}
                                             </span>
                                         </td>
-                                        <td className="py-3 px-4">
+                                        <td className="py-3 px-4 whitespace-nowrap">
                                             <span className={`text-xs px-2 py-1 rounded ${getActionColor(log.action)}`}>
                                                 {log.action}
                                             </span>
                                         </td>
                                         {user.role === 'superadmin' && (
                                             <>
-                                                <td className="py-3 px-4 text-sm">{log.district || '-'}</td>
-                                                <td className="py-3 px-4 text-sm">{log.divisionalSecretariat || '-'}</td>
+                                                <td className="py-3 px-4 text-sm whitespace-nowrap">{log.district || '-'}</td>
+                                                <td className="py-3 px-4 text-sm whitespace-nowrap">{log.divisionalSecretariat || '-'}</td>
                                             </>
                                         )}
                                         <td className="py-3 px-4 text-sm">

@@ -7,7 +7,8 @@ const {
     getUsers,
     updateUser,
     deleteUser,
-    getActivityLogs
+    getActivityLogs,
+    resetUserPassword
 } = require('../controllers/userController');
 const { protect, superAdminOnly, adminOnly } = require('../middleware/authMiddleware');
 
@@ -16,6 +17,7 @@ router.post('/', protect, adminOnly, createUser); // SuperAdmin and DistrictAdmi
 router.get('/', protect, adminOnly, getUsers); // SuperAdmin and DistrictAdmin can view users
 router.put('/:id', protect, adminOnly, updateUser); // Update user
 router.delete('/:id', protect, adminOnly, deleteUser); // Delete user
+router.put('/:id/reset-password', protect, adminOnly, resetUserPassword); // Reset user password
 
 // Activity logs routes
 router.get('/logs', protect, getActivityLogs); // All users can see logs (filtered by role)

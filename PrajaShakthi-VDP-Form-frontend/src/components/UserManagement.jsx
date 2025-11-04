@@ -13,6 +13,7 @@ const UserManagement = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [formData, setFormData] = useState({
         username: '',
@@ -144,15 +145,37 @@ const UserManagement = () => {
         }
     };
 
+    const handleResetUserPassword = async (userId, username) => {
+        const password = prompt(`Enter new password for ${username}:`);
+        if (!password) return;
+
+        if (password.length < 6) {
+            setError('Password must be at least 6 characters long');
+            return;
+        }
+
+        try {
+            await axios.put(`${API_URL}/api/users/${userId}/reset-password`, {
+                newPassword: password
+            }, {
+                withCredentials: true
+            });
+            setSuccess(`Password reset successfully for ${username}`);
+            setTimeout(() => setSuccess(null), 5000);
+        } catch (err) {
+            setError(err.response?.data?.message || 'Error resetting password');
+        }
+    };
+
     return (
-        <div className="container mx-auto p-6">
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-3xl font-bold text-[#A8234A]">
+        <div className="container mx-auto p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <h2 className="text-2xl sm:text-3xl font-bold text-[#A8234A]">
                     {user.role === 'superadmin' ? 'District Admin Management' : 'DS User Management'}
                 </h2>
                 <button
                     onClick={() => setShowCreateForm(!showCreateForm)}
-                    className="bg-[#F37021] text-white px-6 py-2 rounded hover:bg-[#d96520] transition"
+                    className="bg-[#F37021] text-white px-4 sm:px-6 py-2 rounded hover:bg-[#d96520] transition text-sm sm:text-base whitespace-nowrap w-full sm:w-auto"
                 >
                     {showCreateForm ? 'Cancel' : `Create ${user.role === 'superadmin' ? 'District Admin' : 'DS User'}`}
                 </button>
@@ -161,6 +184,12 @@ const UserManagement = () => {
             {error && (
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                     {error}
+                </div>
+            )}
+
+            {success && (
+                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                    {success}
                 </div>
             )}
 
@@ -274,61 +303,70 @@ const UserManagement = () => {
             )}
 
             <div className="bg-white shadow-md rounded overflow-hidden">
-                <table className="min-w-full">
-                    <thead className="bg-[#680921] text-white">
-                        <tr>
-                            <th className="py-3 px-4 text-left">Username</th>
-                            <th className="py-3 px-4 text-left">Full Name</th>
-                            <th className="py-3 px-4 text-left">District</th>
-                            {user.role === 'district_admin' && (
-                                <th className="py-3 px-4 text-left">DS Division</th>
-                            )}
-                            <th className="py-3 px-4 text-left">Status</th>
-                            <th className="py-3 px-4 text-left">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {loading ? (
+                {/* Horizontal scroll wrapper for mobile */}
+                <div className="overflow-x-auto">
+                    <table className="min-w-full">
+                        <thead className="bg-[#680921] text-white">
                             <tr>
-                                <td colSpan="6" className="text-center py-4">Loading...</td>
+                                <th className="py-3 px-4 text-left whitespace-nowrap">Username</th>
+                                <th className="py-3 px-4 text-left whitespace-nowrap">Full Name</th>
+                                <th className="py-3 px-4 text-left whitespace-nowrap">District</th>
+                                {user.role === 'district_admin' && (
+                                    <th className="py-3 px-4 text-left whitespace-nowrap">DS Division</th>
+                                )}
+                                <th className="py-3 px-4 text-left whitespace-nowrap">Status</th>
+                                <th className="py-3 px-4 text-left whitespace-nowrap">Actions</th>
                             </tr>
-                        ) : users.length === 0 ? (
-                            <tr>
-                                <td colSpan="6" className="text-center py-4">No users found</td>
-                            </tr>
-                        ) : (
-                            users.map(u => (
-                                <tr key={u._id} className="border-b hover:bg-gray-50">
-                                    <td className="py-3 px-4">{u.username}</td>
-                                    <td className="py-3 px-4">{u.fullName || '-'}</td>
-                                    <td className="py-3 px-4">{u.district}</td>
-                                    {user.role === 'district_admin' && (
-                                        <td className="py-3 px-4">{u.divisionalSecretariat || '-'}</td>
-                                    )}
-                                    <td className="py-3 px-4">
-                                        <span className={`px-2 py-1 rounded text-xs ${u.isActive ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>
-                                            {u.isActive ? 'Active' : 'Inactive'}
-                                        </span>
-                                    </td>
-                                    <td className="py-3 px-4">
-                                        <button
-                                            onClick={() => handleToggleActive(u._id, u.isActive)}
-                                            className="text-blue-600 hover:underline mr-3"
-                                        >
-                                            {u.isActive ? 'Deactivate' : 'Activate'}
-                                        </button>
-                                        <button
-                                            onClick={() => handleDeleteUser(u._id)}
-                                            className="text-red-600 hover:underline"
-                                        >
-                                            Delete
-                                        </button>
-                                    </td>
+                        </thead>
+                        <tbody>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="6" className="text-center py-4">Loading...</td>
                                 </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+                            ) : users.length === 0 ? (
+                                <tr>
+                                    <td colSpan="6" className="text-center py-4">No users found</td>
+                                </tr>
+                            ) : (
+                                users.map(u => (
+                                    <tr key={u._id} className="border-b hover:bg-gray-50">
+                                        <td className="py-3 px-4 whitespace-nowrap">{u.username}</td>
+                                        <td className="py-3 px-4 whitespace-nowrap">{u.fullName || '-'}</td>
+                                        <td className="py-3 px-4 whitespace-nowrap">{u.district}</td>
+                                        {user.role === 'district_admin' && (
+                                            <td className="py-3 px-4 whitespace-nowrap">{u.divisionalSecretariat || '-'}</td>
+                                        )}
+                                        <td className="py-3 px-4 whitespace-nowrap">
+                                            <span className={`px-2 py-1 rounded text-xs ${u.isActive ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>
+                                                {u.isActive ? 'Active' : 'Inactive'}
+                                            </span>
+                                        </td>
+                                        <td className="py-3 px-4 whitespace-nowrap">
+                                            <button
+                                                onClick={() => handleToggleActive(u._id, u.isActive)}
+                                                className="text-blue-600 hover:underline mr-3"
+                                            >
+                                                {u.isActive ? 'Deactivate' : 'Activate'}
+                                            </button>
+                                            <button
+                                                onClick={() => handleResetUserPassword(u._id, u.username)}
+                                                className="text-[#F37021] hover:underline mr-3"
+                                            >
+                                                Reset Password
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteUser(u._id)}
+                                                className="text-red-600 hover:underline"
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );
