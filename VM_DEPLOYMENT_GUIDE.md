@@ -1,53 +1,119 @@
-# 🚀 Quick Deployment Guide - Private Cloud VM
+# VM Deployment Guide - PrajaShakthi VDP Application
 
-## Step-by-Step Deployment to Company Private Cloud/VM
-
-### Prerequisites
-- Backend server deployed and accessible
-- Frontend build tools installed (Node.js, npm)
-- Web server (Nginx, Apache, or similar) configured
+## 📋 Table of Contents
+1. [Prerequisites](#prerequisites)
+2. [Connecting to VM via PuTTY](#connecting-to-vm-via-putty)
+3. [Initial VM Setup](#initial-vm-setup)
+4. [Installing Required Software](#installing-required-software)
+5. [Deploying the Application](#deploying-the-application)
+6. [Setting Up the Database](#setting-up-the-database)
+7. [Configuring Environment Variables](#configuring-environment-variables)
+8. [Running the Application](#running-the-application)
+9. [Setting Up as a Service (PM2)](#setting-up-as-a-service-pm2)
+10. [Setting Up Nginx Reverse Proxy](#setting-up-nginx-reverse-proxy)
+11. [Troubleshooting](#troubleshooting)
 
 ---
 
-## 1️⃣ Backend Deployment
+## 📦 Prerequisites
 
-### Deploy Backend to VM
+### What You Need:
+- ✅ VM IP Address (e.g., `192.168.1.100`)
+- ✅ VM Username (e.g., `ubuntu` or `root`)
+- ✅ VM Password
+- ✅ PuTTY installed on your Windows computer
+- ✅ Your application code (this repository)
+- ✅ MongoDB connection string (MongoDB Atlas or local)
+
+### Download PuTTY:
+If you don't have PuTTY:
+1. Visit: https://www.putty.org/
+2. Download the installer
+3. Install PuTTY on your computer
+
+---
+
+## 🔌 Connecting to VM via PuTTY
+
+### Step 1: Open PuTTY
+
+1. Launch **PuTTY** from Start Menu
+2. You'll see the PuTTY Configuration window
+
+### Step 2: Configure Connection
+
+1. **In the "Host Name (or IP address)" field**:
+   - Enter your VM's IP address
+   - Example: `192.168.1.100`
+
+2. **Port**:
+   - Keep it as `22` (default SSH port)
+   - Unless your admin specified a different port
+
+3. **Connection type**:
+   - Select **SSH** (should be selected by default)
+
+4. **Save your session** (optional but recommended):
+   - In "Saved Sessions" field, type a name
+   - Example: `PrajaShakthi-VM`
+   - Click **Save** button
+   - Next time, just double-click the saved session!
+
+### Step 3: Connect
+
+1. Click the **Open** button at the bottom
+
+2. **First time connecting?**
+   - You'll see a security alert about the host key
+   - This is normal for first connection
+   - Click **Yes** or **Accept** to continue
+
+### Step 4: Login
+
+1. **Terminal window opens**, you'll see:
+   ```
+   login as:
+   ```
+
+2. **Type your username** and press Enter
+   - Example: `ubuntu` or `root` or whatever username provided
+
+3. **Enter password**:
+   - Type your password (you won't see it as you type - this is normal!)
+   - Press Enter
+
+4. **You're in!** You should see a command prompt like:
+   ```bash
+   ubuntu@server:~$
+   ```
+
+---
+
+## 🛠️ Initial VM Setup
+
+### Step 1: Update System
 
 ```bash
-# SSH into your VM
-ssh user@your-vm-ip
+# Update package lists
+sudo apt update
 
-# Clone or copy backend code
-cd /path/to/deployment
-git clone <repo-url> or scp -r PrajaShakthi-VDP-Form-backend
-
-# Navigate to backend
-cd PrajaShakthi-VDP-Form-backend
-
-# Install dependencies
-npm install
-
-# Create .env file
-nano .env
+# Upgrade installed packages
+sudo apt upgrade -y
 ```
 
-### Backend .env Configuration
+**Note**: This may take 5-10 minutes depending on VM.
 
-```env
-# MongoDB connection
-MONGO_URI=mongodb://localhost:27017/prajashakthi
-# Or MongoDB Atlas: mongodb+srv://user:pass@cluster.mongodb.net/prajashakthi
+### Step 2: Check System Information
 
-# Security
-JWT_SECRET=your-super-secret-key-min-32-characters-long
+```bash
+# Check Ubuntu version
+lsb_release -a
 
-# Environment
-NODE_ENV=production
+# Check available disk space
+df -h
 
-# Port
-PORT=5000
-
-# CORS - Your frontend URL(s)
+# Check memory
+free -h
 CORS_ORIGIN=http://your-vm-ip:3000,https://your-domain.com
 ```
 
