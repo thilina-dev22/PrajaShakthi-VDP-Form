@@ -3,9 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
-
-// Normalize API base URL to avoid double slashes when joining paths
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/+$/, '');
+import { API_ENDPOINTS } from '../config/api';
 
 const NotificationsPage = () => {
     const { isSuperAdmin, isDistrictAdmin } = useAuth();
@@ -47,7 +45,7 @@ const NotificationsPage = () => {
             if (priorityFilter !== 'all') params.append('priority', priorityFilter);
             if (actionFilter !== 'all') params.append('action', actionFilter);
             
-            const response = await axios.get(`${API_URL}/api/notifications?${params.toString()}`, {
+            const response = await axios.get(`${API_ENDPOINTS.NOTIFICATIONS.BASE}?${params.toString()}`, {
                 withCredentials: true
             });
             setNotifications(response.data.notifications);
@@ -77,7 +75,7 @@ const NotificationsPage = () => {
     // Mark as read
     const markAsRead = async (notificationId) => {
         try {
-            await axios.put(`${API_URL}/api/notifications/${notificationId}/read`, {}, {
+            await axios.put(API_ENDPOINTS.NOTIFICATIONS.READ(notificationId), {}, {
                 withCredentials: true
             });
             
@@ -92,7 +90,7 @@ const NotificationsPage = () => {
     // Mark all as read
     const markAllAsRead = async () => {
         try {
-            await axios.put(`${API_URL}/api/notifications/mark-all-read`, {}, {
+            await axios.put(API_ENDPOINTS.NOTIFICATIONS.MARK_ALL_READ, {}, {
                 withCredentials: true
             });
             
@@ -107,7 +105,7 @@ const NotificationsPage = () => {
         if (!confirm('Are you sure you want to delete this notification?')) return;
         
         try {
-            await axios.delete(`${API_URL}/api/notifications/${notificationId}`, {
+            await axios.delete(API_ENDPOINTS.NOTIFICATIONS.BY_ID(notificationId), {
                 withCredentials: true
             });
             
@@ -124,7 +122,7 @@ const NotificationsPage = () => {
                 includeOldLogs: includeOldLogs.toString()
             });
             
-            const response = await axios.get(`${API_URL}/api/activity-logs/export?${params.toString()}`, {
+            const response = await axios.get(`${API_ENDPOINTS.ACTIVITY_LOGS.EXPORT}?${params.toString()}`, {
                 withCredentials: true,
                 responseType: 'blob' // Important for file download
             });
@@ -157,7 +155,7 @@ const NotificationsPage = () => {
         
         try {
             console.log('Attempting to clear read notifications...');
-            const response = await axios.delete(`${API_URL}/api/notifications/clear-read`, {
+            const response = await axios.delete(API_ENDPOINTS.NOTIFICATIONS.CLEAR_READ, {
                 withCredentials: true
             });
             

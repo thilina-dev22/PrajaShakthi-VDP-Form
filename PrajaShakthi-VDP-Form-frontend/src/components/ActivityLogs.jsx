@@ -3,9 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
-
-// Normalize API base URL to avoid double slashes when joining paths
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/+$/, '');
+import { API_ENDPOINTS } from '../config/api';
 
 const ActivityLogs = () => {
     const { user } = useAuth();
@@ -41,7 +39,7 @@ const ActivityLogs = () => {
             if (filters.startDate) params.append('startDate', filters.startDate);
             if (filters.endDate) params.append('endDate', filters.endDate);
 
-            const response = await axios.get(`${API_URL}/api/users/logs?${params.toString()}`, {
+            const response = await axios.get(`${API_ENDPOINTS.USERS.LOGS}?${params.toString()}`, {
                 withCredentials: true
             });
 
@@ -74,7 +72,7 @@ const ActivityLogs = () => {
                 if (filters.endDate) params.append('endDate', filters.endDate);
             }
             
-            const response = await axios.get(`${API_URL}/api/activity-logs/export?${params.toString()}`, {
+            const response = await axios.get(`${API_ENDPOINTS.ACTIVITY_LOGS.EXPORT}?${params.toString()}`, {
                 withCredentials: true,
                 responseType: 'blob' // Important for file download
             });

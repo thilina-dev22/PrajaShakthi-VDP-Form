@@ -1,10 +1,9 @@
-// Base API URL: in production set VITE_API_URL to your backend URL; in dev falls back to relative paths (Vite proxy)
-const API_BASE = (import.meta.env && import.meta.env.VITE_API_URL
-  ? String(import.meta.env.VITE_API_URL)
-  : "").replace(/\/$/, "");
+// Import centralized API configuration
+import API_BASE_URL, { API_ENDPOINTS } from '../config/api';
 
-const API_URL = `${API_BASE}/api/auth`;
-const API_SUBMISSION_URL = `${API_BASE}/api/submissions`;
+// Backward compatibility - use centralized endpoints
+const API_URL = API_ENDPOINTS.AUTH.LOGIN.replace('/login', ''); // Get base auth URL
+const API_SUBMISSION_URL = API_ENDPOINTS.SUBMISSIONS.BASE;
 
 // LocalStorage key for Bearer token (used by Safari/iOS where cookies are blocked cross-domain)
 const TOKEN_KEY = "ps_token";
@@ -217,7 +216,7 @@ const resetOwnPassword = async (currentPassword, newPassword) => {
 
 // Reset user password (admin function)
 const resetUserPassword = async (userId, newPassword) => {
-  const response = await fetch(`${API_BASE}/api/users/${userId}/reset-password`, {
+  const response = await fetch(API_ENDPOINTS.USERS.RESET_PASSWORD(userId), {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
