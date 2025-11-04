@@ -402,10 +402,110 @@ const getActivityLogs = async (req, res) => {
     }
 };
 
+// @desc    Reset user password by admin
+// @route   PUT /api/users/:id/reset-password
+// @access  Private (SuperAdmin can reset District Admin, District Admin can reset DS User)
+const resetUserPassword = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { newPassword } = req.body;
+        const currentUser = req.user;
+
+        // Validation
+        if (!newPassword) {
+            return res.status(400).json({ message: 'Please provide a new password' });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({ message: 'Password must be at least 6 characters long' });
+        }
+
+        const userToReset = await User.findById(id);
+        if (!userToReset) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Permission checks
+        // SuperAdmin can only reset District Admin passwords
+        if (currentUser.role === 'superadmin') {
+            if (userToReset.role !== 'district_admin') {
+                return res.status(403).json({ 
+                    message: 'Super Admin can only reset District Admin passwords' 
+                });
+            }
+        }
+        // District Admin can only reset DS User passwords in their district
+        else if (currentUser.role === 'district_admin') {
+            if (userToReset.role !== 'ds_user') {
+                return res.status(403).json({ 
+                    message: 'District Admin can only reset DS User passwords' 
+                });
+            }
+            if (userToReset.district !== currentUser.district) {
+                return res.status(403).json({ 
+                    message: 'You can only reset passwords for users in your district' 
+                });
+            }
+        }
+        // DS Users cannot reset other users' passwords
+        else {
+            return res.status(403).json({ 
+                message: 'Not authorized to reset user passwords' 
+            });
+        }
+
+        // Update password
+        userToReset.password = newPassword;
+        await userToReset.save();
+
+        // Log activity
+        await logActivity({
+            userId: currentUser._id,
+            username: currentUser.username,
+            userRole: currentUser.role,
+            action: 'RESET_USER_PASSWORD',
+            targetType: 'User',
+            targetId: userToReset._id,
+            details: {
+                resetUsername: userToReset.username,
+                resetRole: userToReset.role,
+                message: `${currentUser.role} reset password for ${userToReset.username}`
+            },
+            ipAddress: req.ip,
+            userAgent: req.get('user-agent'),
+            district: currentUser.district,
+            divisionalSecretariat: currentUser.divisionalSecretariat
+        });
+
+        // Notify super admins when password is reset
+        await notifySuperAdmins(
+            'RESET_USER_PASSWORD',
+            {
+                relatedUserId: userToReset._id,
+                details: {
+                    username: userToReset.username,
+                    role: userToReset.role,
+                    district: userToReset.district,
+                    resetBy: currentUser.username
+                }
+            },
+            currentUser,
+            'high',
+            'user'
+        );
+
+        res.json({ message: 'Password reset successfully' });
+    } catch (error) {
+        console.error('Error resetting user password:', error);
+        res.status(500).json({ message: 'Error resetting password', error: error.message });
+    }
+};
+
 module.exports = {
     createUser,
     getUsers,
     updateUser,
     deleteUser,
-    getActivityLogs
+    getActivityLogs,
+    resetUserPassword
 };

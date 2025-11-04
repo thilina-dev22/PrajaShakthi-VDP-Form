@@ -128,6 +128,14 @@ const Navigation = ({ setCurrentRoute = () => {} }) => {
           {/* Notification Bell for Super Admin */}
           <NotificationBell setCurrentRoute={setCurrentRoute} />
           
+          {/* Profile Button */}
+          <button
+            onClick={() => setCurrentRoute("profile")}
+            className="bg-[#A8234A] hover:bg-[#8B1C3D] text-white font-semibold py-2 px-4 rounded transition-colors"
+          >
+            Profile
+          </button>
+          
           <div className="text-right">
             <div className="text-sm">{user?.fullName || user?.username}</div>
             <div className="text-xs opacity-75">
