@@ -202,11 +202,11 @@ const NotificationBell = ({ setCurrentRoute }) => {
             {/* Bell Icon */}
             <button
                 onClick={() => setShowDropdown(!showDropdown)}
-                className="relative p-2 text-gray-600 hover:text-gray-900 focus:outline-none"
+                className="relative p-2 text-white hover:bg-white/10 rounded-lg focus:outline-none transition-colors"
                 aria-label="Notifications"
             >
                 <svg 
-                    className="w-6 h-6" 
+                    className="w-5 h-5 sm:w-6 sm:h-6" 
                     fill="none" 
                     stroke="currentColor" 
                     viewBox="0 0 24 24"
@@ -221,7 +221,7 @@ const NotificationBell = ({ setCurrentRoute }) => {
                 
                 {/* Badge */}
                 {unreadCount > 0 && (
-                    <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                    <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full min-w-[18px]">
                         {unreadCount > 99 ? '99+' : unreadCount}
                     </span>
                 )}
@@ -229,14 +229,14 @@ const NotificationBell = ({ setCurrentRoute }) => {
 
             {/* Dropdown */}
             {showDropdown && (
-                <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-[80vh] flex flex-col">
                     {/* Header */}
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-                        <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 shrink-0">
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-900">Notifications</h3>
                         {unreadCount > 0 && (
                             <button
                                 onClick={markAllAsRead}
-                                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                                className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 font-medium"
                             >
                                 Mark all read
                             </button>
@@ -244,17 +244,17 @@ const NotificationBell = ({ setCurrentRoute }) => {
                     </div>
 
                     {/* Notifications List */}
-                    <div className="max-h-96 overflow-y-auto">
+                    <div className="flex-1 overflow-y-auto">
                         {loading ? (
                             <div className="p-4 text-center text-gray-500">
                                 Loading...
                             </div>
                         ) : notifications.length === 0 ? (
                             <div className="p-8 text-center text-gray-500">
-                                <svg className="w-16 h-16 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                                 </svg>
-                                <p>No notifications yet</p>
+                                <p className="text-sm">No notifications yet</p>
                             </div>
                         ) : (
                             notifications.map((notification) => (
@@ -265,17 +265,17 @@ const NotificationBell = ({ setCurrentRoute }) => {
                                         !notification.isRead ? 'bg-blue-50' : ''
                                     }`}
                                 >
-                                    <div className="flex items-start">
+                                    <div className="flex items-start gap-2 sm:gap-3">
                                         {/* Icon and Priority Indicator */}
-                                        <div className="flex flex-col items-center mr-3">
-                                            <span className="text-2xl">{getActionIcon(notification.action, notification.category)}</span>
+                                        <div className="flex flex-col items-center shrink-0">
+                                            <span className="text-xl sm:text-2xl">{getActionIcon(notification.action, notification.category)}</span>
                                             {notification.priority === 'critical' && <span className="text-xs">🔴</span>}
                                             {notification.priority === 'high' && <span className="text-xs">🟠</span>}
                                         </div>
                                         
                                         <div className="flex-1 min-w-0">
                                             {/* Category Badge */}
-                                            <div className="flex items-center gap-2 mb-1">
+                                            <div className="flex items-center gap-2 mb-1 flex-wrap">
                                                 <span className="text-xs font-semibold text-gray-500 uppercase">
                                                     {getCategoryBadge(notification.category)} {notification.category || 'system'}
                                                 </span>
@@ -287,7 +287,7 @@ const NotificationBell = ({ setCurrentRoute }) => {
                                             </div>
                                             
                                             {/* Message */}
-                                            <p className={`text-sm ${!notification.isRead ? 'font-semibold text-gray-900' : 'text-gray-700'}`}>
+                                            <p className={`text-xs sm:text-sm ${!notification.isRead ? 'font-semibold text-gray-900' : 'text-gray-700'}`}>
                                                 {notification.message}
                                             </p>
                                             
@@ -315,7 +315,7 @@ const NotificationBell = ({ setCurrentRoute }) => {
                                             </p>
                                         </div>
                                         {!notification.isRead && (
-                                            <span className="w-2 h-2 bg-blue-600 rounded-full mt-1.5"></span>
+                                            <span className="w-2 h-2 bg-blue-600 rounded-full mt-1.5 shrink-0"></span>
                                         )}
                                     </div>
                                 </div>
@@ -325,7 +325,7 @@ const NotificationBell = ({ setCurrentRoute }) => {
 
                     {/* Footer */}
                     {notifications.length > 0 && (
-                        <div className="px-4 py-3 border-t border-gray-200 text-center">
+                        <div className="px-4 py-3 border-t border-gray-200 text-center shrink-0">
                             <button
                                 onClick={() => {
                                     setShowDropdown(false);
@@ -333,7 +333,7 @@ const NotificationBell = ({ setCurrentRoute }) => {
                                         setCurrentRoute('notifications');
                                     }
                                 }}
-                                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                                className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 font-medium"
                             >
                                 View all notifications
                             </button>
