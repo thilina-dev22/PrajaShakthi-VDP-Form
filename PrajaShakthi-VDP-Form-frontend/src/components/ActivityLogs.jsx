@@ -270,17 +270,17 @@ const ActivityLogs = () => {
                     <table className="min-w-full">
                         <thead className="bg-[#680921] text-white">
                             <tr>
-                                <th className="py-3 px-4 text-left">Date/Time</th>
-                                <th className="py-3 px-4 text-left">User</th>
-                                <th className="py-3 px-4 text-left">Role</th>
-                                <th className="py-3 px-4 text-left">Action</th>
+                                <th className="py-3 px-4 text-left whitespace-nowrap">Date/Time</th>
+                                <th className="py-3 px-4 text-left whitespace-nowrap">User</th>
+                                <th className="py-3 px-4 text-left whitespace-nowrap">Role</th>
+                                <th className="py-3 px-4 text-left whitespace-nowrap">Action</th>
                                 {user.role === 'superadmin' && (
                                     <>
-                                        <th className="py-3 px-4 text-left">District</th>
-                                        <th className="py-3 px-4 text-left">DS Division</th>
+                                        <th className="py-3 px-4 text-left whitespace-nowrap">District</th>
+                                        <th className="py-3 px-4 text-left whitespace-nowrap">DS Division</th>
                                     </>
                                 )}
-                                <th className="py-3 px-4 text-left">Details</th>
+                                <th className="py-3 px-4 text-left whitespace-nowrap">Details</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -295,22 +295,22 @@ const ActivityLogs = () => {
                             ) : (
                                 logs.map(log => (
                                     <tr key={log._id} className="border-b hover:bg-gray-50">
-                                        <td className="py-3 px-4 text-sm">{formatDate(log.createdAt)}</td>
-                                        <td className="py-3 px-4">{log.username}</td>
-                                        <td className="py-3 px-4">
+                                        <td className="py-3 px-4 text-sm whitespace-nowrap">{formatDate(log.createdAt)}</td>
+                                        <td className="py-3 px-4 whitespace-nowrap">{log.username}</td>
+                                        <td className="py-3 px-4 whitespace-nowrap">
                                             <span className="text-xs px-2 py-1 bg-gray-200 rounded">
                                                 {log.userRole}
                                             </span>
                                         </td>
-                                        <td className="py-3 px-4">
+                                        <td className="py-3 px-4 whitespace-nowrap">
                                             <span className={`text-xs px-2 py-1 rounded ${getActionColor(log.action)}`}>
                                                 {log.action}
                                             </span>
                                         </td>
                                         {user.role === 'superadmin' && (
                                             <>
-                                                <td className="py-3 px-4 text-sm">{log.district || '-'}</td>
-                                                <td className="py-3 px-4 text-sm">{log.divisionalSecretariat || '-'}</td>
+                                                <td className="py-3 px-4 text-sm whitespace-nowrap">{log.district || '-'}</td>
+                                                <td className="py-3 px-4 text-sm whitespace-nowrap">{log.divisionalSecretariat || '-'}</td>
                                             </>
                                         )}
                                         <td className="py-3 px-4 text-sm">
