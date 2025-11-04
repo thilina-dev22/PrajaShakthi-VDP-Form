@@ -8,6 +8,7 @@ import UserManagement from './UserManagement';
 import ActivityLogs from './ActivityLogs';
 import NotificationsPage from './NotificationsPage';
 import Navigation from './Navigation';
+import Profile from './Profile';
 
 const AppRoutes = () => {
   const { isAuthenticated, isSuperAdmin, isDistrictAdmin, isDSUser } = useAuth();
@@ -49,6 +50,8 @@ const renderRoute = (route, isSuperAdmin, isDistrictAdmin, isDSUser, setCurrentR
         return <DevelopmentForm setCurrentRoute={setCurrentRoute} />;
       case 'submissions':
         return <SubmissionList />;
+      case 'profile':
+        return <Profile />;
       default:
         return <CommunityCouncilForm setCurrentRoute={setCurrentRoute} />;
     }
@@ -65,6 +68,8 @@ const renderRoute = (route, isSuperAdmin, isDistrictAdmin, isDSUser, setCurrentR
         return <ActivityLogs />;
       case 'notifications':
         return <NotificationsPage />;
+      case 'profile':
+        return <Profile />;
       default:
         return <SubmissionList />;
     }

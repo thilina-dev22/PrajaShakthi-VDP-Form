@@ -151,9 +151,67 @@ const checkAuthStatus = (req, res) => {
   });
 };
 
+// @desc    Reset own password (for all users)
+// @route   PUT /api/auth/reset-password
+// @access  Private
+const resetOwnPassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.user._id;
+
+    // Validation
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: 'Please provide both current and new password' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ message: 'New password must be at least 6 characters long' });
+    }
+
+    // Get user with password
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Verify current password
+    const isMatch = await user.matchPassword(currentPassword);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Current password is incorrect' });
+    }
+
+    // Update password
+    user.password = newPassword;
+    await user.save();
+
+    // Log activity
+    await logActivity({
+      userId: user._id,
+      username: user.username,
+      userRole: user.role,
+      action: 'RESET_OWN_PASSWORD',
+      targetType: 'User',
+      targetId: user._id,
+      details: {
+        message: 'User reset their own password'
+      },
+      ipAddress: req.ip,
+      userAgent: req.get('user-agent'),
+      district: user.district,
+      divisionalSecretariat: user.divisionalSecretariat
+    });
+
+    res.json({ message: 'Password reset successfully' });
+  } catch (error) {
+    console.error('Error resetting password:', error);
+    res.status(500).json({ message: 'Error resetting password', error: error.message });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   logoutUser,
   checkAuthStatus,
+  resetOwnPassword,
 };

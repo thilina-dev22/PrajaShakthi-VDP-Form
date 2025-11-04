@@ -13,6 +13,7 @@ const UserManagement = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
     const [showCreateForm, setShowCreateForm] = useState(false);
     const [formData, setFormData] = useState({
         username: '',
@@ -144,6 +145,28 @@ const UserManagement = () => {
         }
     };
 
+    const handleResetUserPassword = async (userId, username) => {
+        const password = prompt(`Enter new password for ${username}:`);
+        if (!password) return;
+
+        if (password.length < 6) {
+            setError('Password must be at least 6 characters long');
+            return;
+        }
+
+        try {
+            await axios.put(`${API_URL}/api/users/${userId}/reset-password`, {
+                newPassword: password
+            }, {
+                withCredentials: true
+            });
+            setSuccess(`Password reset successfully for ${username}`);
+            setTimeout(() => setSuccess(null), 5000);
+        } catch (err) {
+            setError(err.response?.data?.message || 'Error resetting password');
+        }
+    };
+
     return (
         <div className="container mx-auto p-6">
             <div className="flex justify-between items-center mb-6">
@@ -161,6 +184,12 @@ const UserManagement = () => {
             {error && (
                 <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                     {error}
+                </div>
+            )}
+
+            {success && (
+                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                    {success}
                 </div>
             )}
 
@@ -316,6 +345,12 @@ const UserManagement = () => {
                                             className="text-blue-600 hover:underline mr-3"
                                         >
                                             {u.isActive ? 'Deactivate' : 'Activate'}
+                                        </button>
+                                        <button
+                                            onClick={() => handleResetUserPassword(u._id, u.username)}
+                                            className="text-[#F37021] hover:underline mr-3"
+                                        >
+                                            Reset Password
                                         </button>
                                         <button
                                             onClick={() => handleDeleteUser(u._id)}
