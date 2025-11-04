@@ -4,9 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import provincialData from '../data/provincial_data.json';
-
-// Normalize API base URL to avoid double slashes when joining paths
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/+$/, '');
+import API_BASE_URL, { API_ENDPOINTS } from '../config/api';
 
 const UserManagement = () => {
     const { user } = useAuth();
@@ -61,7 +59,7 @@ const UserManagement = () => {
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`${API_URL}/api/users`, {
+            const response = await axios.get(API_ENDPOINTS.USERS.BASE, {
                 withCredentials: true
             });
             setUsers(response.data);
@@ -98,7 +96,7 @@ const UserManagement = () => {
                 divisionalSecretariat: user.role === 'district_admin' ? formData.divisionalSecretariat : undefined
             };
 
-            await axios.post(`${API_URL}/api/users`, userData, {
+            await axios.post(API_ENDPOINTS.USERS.BASE, userData, {
                 withCredentials: true
             });
 
@@ -121,7 +119,7 @@ const UserManagement = () => {
 
     const handleToggleActive = async (userId, currentStatus) => {
         try {
-            await axios.put(`${API_URL}/api/users/${userId}`, {
+            await axios.put(API_ENDPOINTS.USERS.BY_ID(userId), {
                 isActive: !currentStatus
             }, {
                 withCredentials: true
@@ -136,7 +134,7 @@ const UserManagement = () => {
         if (!window.confirm('Are you sure you want to delete this user?')) return;
 
         try {
-            await axios.delete(`${API_URL}/api/users/${userId}`, {
+            await axios.delete(API_ENDPOINTS.USERS.BY_ID(userId), {
                 withCredentials: true
             });
             fetchUsers();
@@ -155,15 +153,27 @@ const UserManagement = () => {
         }
 
         try {
-            await axios.put(`${API_URL}/api/users/${userId}/reset-password`, {
+            // Log the API endpoint for debugging (only in development)
+            if (import.meta.env.DEV) {
+                console.log('Reset password API endpoint:', API_ENDPOINTS.USERS.RESET_PASSWORD(userId));
+            }
+            
+            await axios.put(API_ENDPOINTS.USERS.RESET_PASSWORD(userId), {
                 newPassword: password
             }, {
-                withCredentials: true
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
+            
             setSuccess(`Password reset successfully for ${username}`);
             setTimeout(() => setSuccess(null), 5000);
         } catch (err) {
-            setError(err.response?.data?.message || 'Error resetting password');
+            console.error('Password reset error:', err);
+            const errorMessage = err.response?.data?.message || err.message || 'Error resetting password';
+            setError(errorMessage);
+            setTimeout(() => setError(null), 5000);
         }
     };
 

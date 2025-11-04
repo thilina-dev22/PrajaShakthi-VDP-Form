@@ -3,9 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
-
-// Normalize API base URL to avoid double slashes when joining paths
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/+$/, '');
+import { API_ENDPOINTS } from '../config/api';
 
 const NotificationBell = ({ setCurrentRoute }) => {
     const { isSuperAdmin, isDistrictAdmin } = useAuth();
@@ -20,7 +18,7 @@ const NotificationBell = ({ setCurrentRoute }) => {
     // Fetch unread count
     const fetchUnreadCount = async () => {
         try {
-            const response = await axios.get(`${API_URL}/api/notifications/unread-count`, {
+            const response = await axios.get(API_ENDPOINTS.NOTIFICATIONS.UNREAD_COUNT, {
                 withCredentials: true
             });
             setUnreadCount(response.data.unreadCount);
@@ -33,7 +31,7 @@ const NotificationBell = ({ setCurrentRoute }) => {
     const fetchNotifications = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`${API_URL}/api/notifications?limit=10`, {
+            const response = await axios.get(`${API_ENDPOINTS.NOTIFICATIONS.BASE}?limit=10`, {
                 withCredentials: true
             });
             setNotifications(response.data.notifications);
@@ -48,7 +46,7 @@ const NotificationBell = ({ setCurrentRoute }) => {
     // Mark as read
     const markAsRead = async (notificationId) => {
         try {
-            await axios.put(`${API_URL}/api/notifications/${notificationId}/read`, {}, {
+            await axios.put(API_ENDPOINTS.NOTIFICATIONS.READ(notificationId), {}, {
                 withCredentials: true
             });
             
@@ -65,7 +63,7 @@ const NotificationBell = ({ setCurrentRoute }) => {
     // Mark all as read
     const markAllAsRead = async () => {
         try {
-            await axios.put(`${API_URL}/api/notifications/mark-all-read`, {}, {
+            await axios.put(API_ENDPOINTS.NOTIFICATIONS.MARK_ALL_READ, {}, {
                 withCredentials: true
             });
             

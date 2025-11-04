@@ -3,9 +3,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
-
-// Normalize API base URL to avoid double slashes when joining paths
-const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/+$/, '');
+import { API_ENDPOINTS } from '../config/api';
 
 const Profile = () => {
     const { user } = useAuth();
@@ -46,7 +44,7 @@ const Profile = () => {
         }
 
         try {
-            await axios.put(`${API_URL}/api/auth/reset-password`, {
+            await axios.put(API_ENDPOINTS.AUTH.RESET_PASSWORD, {
                 currentPassword: passwordData.currentPassword,
                 newPassword: passwordData.newPassword
             }, {
