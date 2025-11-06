@@ -47,8 +47,33 @@ const Login = () => {
                         <h1 className="text-xl sm:text-2xl font-bold">CDC Data Collection Portal</h1>
                     </div>
 
-                    {/* Language Switcher */}
-                    <div className="flex items-center gap-2">
+                    {/* Language Switcher and Help Resources */}
+                    <div className="flex items-center gap-3">
+                        {/* Video Tutorial Link */}
+                        <a
+                            href="https://drive.google.com/file/d/1znW9uDP4iYYUbDvJFDHex7PAXBbUsE9q/view?usp=sharing"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-colors"
+                            title="Watch Video Tutorial"
+                        >
+                            <span className="text-xl">🎥</span>
+                            <span className="font-semibold hidden sm:inline">Video Tutorial</span>
+                        </a>
+
+                        {/* User Guide Link */}
+                        <a
+                            href="/PrajaShakthi CDC Data Collection Portal User Manual.pdf"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-colors"
+                            title="Download User Guide"
+                        >
+                            <span className="text-xl">📄</span>
+                            <span className="font-semibold hidden sm:inline">User Guide</span>
+                        </a>
+
+                        {/* Language Switcher */}
                         <div className="flex gap-1 bg-white/10 rounded-lg p-1">
                             {["si", "ta", "en"].map((lang) => (
                                 <button
