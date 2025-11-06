@@ -1,12 +1,9 @@
-// Import centralized API configuration
 import API_BASE_URL, { API_ENDPOINTS } from '../config/api';
+import { authFetch } from '../utils/fetch';
 
-// Backward compatibility - use centralized endpoints
-const API_URL = API_ENDPOINTS.AUTH.LOGIN.replace('/login', ''); // Get base auth URL
+const API_URL = API_ENDPOINTS.AUTH.LOGIN.replace('/login', '');
 const API_SUBMISSION_URL = API_ENDPOINTS.SUBMISSIONS.BASE;
-
-// LocalStorage key for Bearer token (used by Safari/iOS where cookies are blocked cross-domain)
-const TOKEN_KEY = "ps_token";
+const TOKEN_KEY = "token";
 
 const getAuthHeaders = () => {
   try {
@@ -24,7 +21,7 @@ const login = async (username, password) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ username, password }),
-    credentials: "include", // Sends the HttpOnly cookie
+    credentials: "include",
   });
 
   if (response.status === 401) {
@@ -36,47 +33,40 @@ const login = async (username, password) => {
     throw new Error("Login failed due to a server error.");
   }
 
-  const data = await response.json(); // { _id, username, role, token? }
-  // Store token for Safari/iOS or any cross-domain scenario
+  const data = await response.json();
+  
+  // Store token AND user data
   if (data && data.token) {
     try {
       localStorage.setItem(TOKEN_KEY, data.token);
+      localStorage.setItem('user', JSON.stringify(data));
+      console.log('✅ Token saved:', data.token.substring(0, 20) + '...');
     } catch (e) {
-      void e; // ignore storage errors (e.g., private mode)
+      console.error('❌ Failed to save token:', e);
     }
   }
   return data;
 };
 
 const logout = async () => {
-  const response = await fetch(`${API_URL}/logout`, {
+  const response = await authFetch(`${API_URL}/logout`, {
     method: "POST",
-    credentials: "include",
   });
 
   if (!response.ok) {
     throw new Error("Logout failed.");
   }
-  // Clear stored token
-  try {
-    localStorage.removeItem(TOKEN_KEY);
-  } catch (e) {
-    void e; // ignore storage errors
-  }
+  
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem('user');
 };
 
-// Modified: Adds filtering parameters including formType
 const getSubmissions = async (filters = {}) => {
-  // Build query string from filters { district: 'X', divisionalSec: 'Y', formType: 'council_info' }
   const queryString = new URLSearchParams(filters).toString();
   const url = `${API_SUBMISSION_URL}?${queryString}`;
 
-  const response = await fetch(url, {
+  const response = await authFetch(url, {
     method: "GET",
-    headers: {
-      ...getAuthHeaders(),
-    },
-    credentials: "include",
   });
 
   if (response.status === 401) {
@@ -95,13 +85,9 @@ const getSubmissions = async (filters = {}) => {
 };
 
 const submitForm = async (formData) => {
-  const response = await fetch(API_SUBMISSION_URL, {
+  const response = await authFetch(API_SUBMISSION_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(formData),
-    credentials: "include",
   });
 
   if (response.status === 401) {
@@ -110,46 +96,31 @@ const submitForm = async (formData) => {
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(
-      error.message || "Form submission failed due to a server error."
-    );
+    throw new Error(error.message || "Form submission failed due to a server error.");
   }
 
   return response.json();
 };
 
-//DELETE FUNCTION ⭐
 const deleteSubmission = async (id) => {
-  const response = await fetch(`${API_SUBMISSION_URL}/${id}`, {
+  const response = await authFetch(`${API_SUBMISSION_URL}/${id}`, {
     method: "DELETE",
-    headers: {
-      ...getAuthHeaders(),
-    },
-    credentials: "include", // Send cookies if available as well
   });
-  // If the response is NOT OK (e.g., 404, 500)
+
   if (!response.ok) {
-    // Try to parse error JSON, with a fallback
     const errorData = await response.json().catch(() => {
       return { message: "An unknown error occurred during deletion." };
     });
     throw new Error(errorData.message);
   }
 
-  // For a successful 204 No Content response, we don't need to parse JSON
   return;
 };
 
-//UPDATE FUNCTION ⭐
 const updateSubmission = async (id, formData) => {
-  const response = await fetch(`${API_SUBMISSION_URL}/${id}`, {
+  const response = await authFetch(`${API_SUBMISSION_URL}/${id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      ...getAuthHeaders(),
-    },
     body: JSON.stringify(formData),
-    credentials: "include",
   });
 
   if (response.status === 401) {
@@ -170,35 +141,22 @@ const updateSubmission = async (id, formData) => {
   return response.json();
 };
 
-//ADD THE NEW STATUS CHECK FUNCTION
 const checkAuthStatus = async () => {
-  const response = await fetch(`${API_URL}/status`, {
+  const response = await authFetch(`${API_URL}/status`, {
     method: "GET",
-    headers: {
-      ...getAuthHeaders(),
-    },
-    credentials: "include", // Send cookie if present
   });
 
   if (!response.ok) {
-    // This is expected if the user is not logged in, so we don't throw an error,
-    // we just signal that the check failed by returning null.
     return null;
   }
 
-  return response.json(); // Returns { _id, username, role }
+  return response.json();
 };
 
-// Reset own password
 const resetOwnPassword = async (currentPassword, newPassword) => {
-  const response = await fetch(`${API_URL}/reset-password`, {
+  const response = await authFetch(`${API_URL}/reset-password`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      ...getAuthHeaders(),
-    },
     body: JSON.stringify({ currentPassword, newPassword }),
-    credentials: "include",
   });
 
   if (response.status === 401) {
@@ -214,16 +172,10 @@ const resetOwnPassword = async (currentPassword, newPassword) => {
   return response.json();
 };
 
-// Reset user password (admin function)
 const resetUserPassword = async (userId, newPassword) => {
-  const response = await fetch(API_ENDPOINTS.USERS.RESET_PASSWORD(userId), {
+  const response = await authFetch(API_ENDPOINTS.USERS.RESET_PASSWORD(userId), {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      ...getAuthHeaders(),
-    },
     body: JSON.stringify({ newPassword }),
-    credentials: "include",
   });
 
   if (response.status === 403) {

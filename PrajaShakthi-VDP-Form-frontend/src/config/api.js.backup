@@ -4,11 +4,26 @@
 /**
  * API Base URL Configuration
  * 
- * For VM Deployment: Uses http://192.168.4.7 (your VM IP)
+ * This is the single source of truth for all API endpoints.
+ * 
+ * For Development:
+ * - Defaults to http://localhost:5000
+ * 
+ * For Production (Vercel/Cloud Server):
+ * - Set VITE_API_URL environment variable to your backend URL
+ * - Example: https://your-backend-server.com
+ * - NO trailing slash!
+ * 
+ * For Private Cloud/VM Deployment:
+ * - Set VITE_API_URL to your VM's backend URL
+ * - Example: http://192.168.1.100:5000
+ * - Or: https://yourcompany.internal/api
  */
 
-// HARDCODED FOR VM DEPLOYMENT
-export const API_BASE_URL = "http://192.168.4.7";
+// Normalize API base URL to avoid double slashes
+export const API_BASE_URL = (import.meta.env && import.meta.env.VITE_API_URL
+    ? String(import.meta.env.VITE_API_URL)
+    : "http://localhost:5000").replace(/\/+$/, '');
 
 // API endpoint paths
 export const API_ENDPOINTS = {
@@ -55,9 +70,12 @@ export const API_ENDPOINTS = {
     HEALTH: `${API_BASE_URL}/api/health`,
 };
 
-// Debug logging
-console.log('🔧 API Configuration:');
-console.log('  Base URL:', API_BASE_URL);
+// Debug logging in development
+if (import.meta.env.DEV) {
+    console.log('🔧 API Configuration:');
+    console.log('  Base URL:', API_BASE_URL);
+    console.log('  Environment:', import.meta.env.MODE);
+}
 
 // Export the base URL for backward compatibility
 export default API_BASE_URL;
