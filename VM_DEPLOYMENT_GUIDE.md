@@ -27,12 +27,24 @@
 
 ### What You Need:
 - ✅ **Ubuntu VM** (Ubuntu 20.04 or 22.04)
-- ✅ **VM IP Address** (Example: `192.168.4.7`)
-- ✅ **Username** (typically `ubuntu` for Ubuntu VMs)
+- ✅ **VM IP Address**: `192.168.4.7`
+- ✅ **Username**: `pjs` (your actual username)
 - ✅ **Password** (provided by your IT admin)
 - ✅ **PuTTY** installed on Windows
 - ✅ **Internet access** on VM (for installing packages)
 - ✅ **At least 2GB RAM** and **20GB disk space**
+
+### Your VM Details:
+```
+Username: pjs
+VM IP: 192.168.4.7
+Ubuntu Version: 22.04.5 LTS (Jammy)
+Available Disk: 6.6GB free
+RAM: 7.8GB
+CPU: Intel Xeon Silver 4309Y @ 2.80GHz
+```
+
+**Important Note**: Throughout this guide, replace `ubuntu` with `pjs` in commands where username is referenced!
 
 ### Download PuTTY:
 If you don't have PuTTY installed:
@@ -81,14 +93,14 @@ If you don't have PuTTY installed:
    login as:
    ```
 
-2. Type `ubuntu` (or your username) and press Enter
+2. Type `pjs` and press Enter
 
 3. Type your password and press Enter
    - **Note**: You won't see the password as you type (security feature)
 
 4. **Success!** You'll see:
    ```bash
-   ubuntu@server:~$
+   pjs@pjs:~$
    ```
 
 You're now connected to your Ubuntu VM! 🎉
@@ -141,7 +153,17 @@ lscpu | grep "Model name"
 
 ## 💾 Installing MongoDB Locally
 
-### Step 1: Import MongoDB GPG Key
+### Step 1: Install curl (Required)
+
+```bash
+# Install curl first
+sudo apt install curl -y
+
+# Verify curl is installed
+curl --version
+```
+
+### Step 2: Import MongoDB GPG Key
 
 ```bash
 # Import MongoDB public key
@@ -150,19 +172,19 @@ curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | \
    --dearmor
 ```
 
-### Step 2: Add MongoDB Repository
+### Step 3: Add MongoDB Repository
 
-**For Ubuntu 22.04**:
+**For Ubuntu 22.04 (Jammy)** - Use this one:
 ```bash
 echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
 ```
 
-**For Ubuntu 20.04**:
+**For Ubuntu 20.04 (Focal)** - Skip this if you're on 22.04:
 ```bash
 echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
 ```
 
-### Step 3: Install MongoDB
+### Step 4: Install MongoDB
 
 ```bash
 # Update package lists
@@ -177,7 +199,7 @@ mongod --version
 
 Should show MongoDB version 7.0.x.
 
-### Step 4: Start MongoDB Service
+### Step 5: Start MongoDB Service
 
 ```bash
 # Start MongoDB
@@ -192,7 +214,7 @@ sudo systemctl status mongod
 
 Should show **"active (running)"** in green. Press `q` to exit.
 
-### Step 5: Verify MongoDB is Running
+### Step 6: Verify MongoDB is Running
 
 ```bash
 # Connect to MongoDB shell
@@ -211,6 +233,11 @@ Type `exit` to leave MongoDB shell.
 ## 💿 Installing Node.js and Required Software
 
 ### Step 1: Install Node.js 22
+
+**Note**: If you haven't installed `curl` yet, do it first:
+```bash
+sudo apt install curl -y
+```
 
 ```bash
 # Add NodeSource repository
@@ -284,8 +311,8 @@ gcc --version
 # Create directory
 sudo mkdir -p /var/www
 
-# Give ownership to ubuntu user
-sudo chown -R ubuntu:ubuntu /var/www
+# Give ownership to pjs user
+sudo chown -R pjs:pjs /var/www
 
 # Navigate there
 cd /var/www
@@ -350,7 +377,7 @@ use prajashakthi
 // Create admin user for the database
 db.createUser({
   user: "prajashakthi_admin",
-  pwd: "SecurePassword123!",  // Change this to a strong password!
+  pwd: "dbAdmin@prajashakthi.gov.lk",  // Changed this to a strong password!
   roles: [
     { role: "readWrite", db: "prajashakthi" },
     { role: "dbAdmin", db: "prajashakthi" }
@@ -408,10 +435,11 @@ Type or paste this (update password and secret):
 
 ```env
 # MongoDB Local Connection
-MONGO_URI=mongodb://prajashakthi_admin:SecurePassword123!@localhost:27017/prajashakthi
+# Password is URL-encoded: @ becomes %40
+MONGO_URI=mongodb://prajashakthi_admin:dbAdmin%40prajashakthi.gov.lk@localhost:27017/prajashakthi
 
-# JWT Secret (generate a random string)
-JWT_SECRET=your_super_secret_random_string_min_32_characters_change_this_now
+# JWT Secret
+JWT_SECRET=c5d4b8e3a2f7109d6e4c8f3a5b2e7d1c9a8f4e2d6c0b5a1f8e3c7d6b9a2f4e8c
 
 # Server Configuration
 PORT=5000
@@ -520,8 +548,10 @@ pm2 startup
 
 **Copy and run the command shown**. It looks like:
 ```bash
-sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u ubuntu --hp /home/ubuntu
+sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u pjs --hp /home/pjs
 ```
+
+**Important**: Use the exact command shown by PM2, which will include your username `pjs`.
 
 This ensures PM2 starts automatically on server reboot.
 
@@ -1024,7 +1054,7 @@ crontab -e
 Add this line (runs daily at 2 AM):
 
 ```
-0 2 * * * /home/ubuntu/backup.sh >> /home/ubuntu/backup.log 2>&1
+0 2 * * * /home/pjs/backup.sh >> /home/pjs/backup.log 2>&1
 ```
 
 ---
@@ -1140,8 +1170,8 @@ hostname -I
 ### Problem: Permission Denied Errors
 
 ```bash
-# Fix ownership
-sudo chown -R ubuntu:ubuntu /var/www/PrajaShakthi-VDP-Form
+# Fix ownership (use your username)
+sudo chown -R pjs:pjs /var/www/PrajaShakthi-VDP-Form
 
 # Or use sudo for system operations
 sudo your-command-here
@@ -1221,7 +1251,7 @@ mongosh "mongodb://prajashakthi_admin:YourPassword@localhost:27017/prajashakthi"
 ```
 VM IP: 192.168.4.7
 SSH Port: 22
-Username: ubuntu
+Username: pjs
 ```
 
 ### Service Ports
