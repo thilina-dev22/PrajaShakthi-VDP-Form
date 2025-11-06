@@ -1747,3 +1747,49 @@ Your application should now be accessible at:
 **Default Super Admin:**
 - Username: `superadmin`
 - Password: (set during initial setup with `npm run create-superadmin`)
+- 
+
+
+------changes---------
+
+
+db.createUser({
+  user: "prajashakthi_admin",
+  pwd: "dbAdmin@prajashakthi.gov.lk",  
+  roles: [
+    { role: "readWrite", db: "prajashakthi" },
+    { role: "dbAdmin", db: "prajashakthi" }
+  ]
+})
+
+mongosh "mongodb://prajashakthi_admin:dbAdmin@prajashakthi.gov.lk@localhost:27017/prajashakthi"
+
+
+# MongoDB Local Connection
+MONGO_URI=mongodb://prajashakthi_admin:dbAdmin.prajashakthi.gov.lk@localhost:27017/prajashakthi
+
+# JWT Secret (generate a random string)
+JWT_SECRET=c5d4b8e3a2f7109d6e4c8f3a5b2e7d1c9a8f4e2d6c0b5a1f8e3c7d6b9a2f4e8c
+
+# Server Configuration
+PORT=5000
+NODE_ENV=production
+
+# CORS Configuration (your VM IP)
+CORS_ORIGIN=http://192.168.4.7
+
+
+
+
+# MongoDB Local Connection
+MONGO_URI=mongodb://prajashakthi_admin:dbAdmin@prajashakthi.gov.lk@localhost:27017/prajashakthi
+
+# JWT Secret (generate a random string)
+JWT_SECRET=your_super_secret_random_string_min_32_characters_change_this_now
+
+# Server Configuration
+PORT=5000
+NODE_ENV=production
+
+# CORS Configuration (your VM IP)
+CORS_ORIGIN=http://localhost:5173,http://localhost:5174,http://192.168.4.7
