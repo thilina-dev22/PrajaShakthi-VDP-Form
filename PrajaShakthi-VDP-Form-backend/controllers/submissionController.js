@@ -294,7 +294,7 @@ const deleteSubmission = async (req, res) => {
 
 // @desc   Update a submission
 // @route  PUT /api/submissions/:id
-// @access Private (DS Users can edit their own)
+// @access Private (Only DS Users can edit their own submissions)
 const updateSubmission = async (req, res) => {
   try {
     const user = req.user;
@@ -304,13 +304,12 @@ const updateSubmission = async (req, res) => {
       return res.status(404).json({ message: "Submission not found" });
     }
 
-    // Permission check: DS users can only edit their own submissions
-    if (user.role === 'ds_user' && submission.createdBy.toString() !== user._id.toString()) {
-      return res.status(403).json({ message: "Not authorized to edit this submission" });
+    // Permission check: ONLY DS users can edit, and only their own submissions
+    if (user.role !== 'ds_user') {
+      return res.status(403).json({ message: "Only DS users can edit submissions" });
     }
 
-    // District admins can edit submissions from their district
-    if (user.role === 'district_admin' && submission.location.district !== user.district) {
+    if (submission.createdBy.toString() !== user._id.toString()) {
       return res.status(403).json({ message: "Not authorized to edit this submission" });
     }
 
