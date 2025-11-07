@@ -55,9 +55,5 @@ export const API_ENDPOINTS = {
     HEALTH: `${API_BASE_URL}/api/health`,
 };
 
-// Debug logging
-console.log('🔧 API Configuration:');
-console.log('  Base URL:', API_BASE_URL);
-
 // Export the base URL for backward compatibility
 export default API_BASE_URL;

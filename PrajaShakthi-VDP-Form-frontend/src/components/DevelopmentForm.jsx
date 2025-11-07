@@ -124,8 +124,8 @@ const DevelopmentForm = () => {
       if (!subSubSubCategory) return null;
       const level4 = level3[subSubSubCategory];
       return level4 || null;
+    // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      console.log(error);
       return null;
     }
   };
@@ -327,7 +327,6 @@ const DevelopmentForm = () => {
     };
 
     try {
-      console.log("Form Submitted Data:", JSON.stringify(formData, null, 2));
       await submitForm(formData);
       alert("Form submitted successfully!");
     } catch (error) {

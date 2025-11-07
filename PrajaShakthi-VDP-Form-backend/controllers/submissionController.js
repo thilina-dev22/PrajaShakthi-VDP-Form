@@ -234,15 +234,17 @@ const deleteSubmission = async (req, res) => {
       return res.status(404).json({ message: "Submission not found" });
     }
 
+    // Permission check: District Admin cannot delete submissions
+    if (user.role === 'district_admin') {
+      return res.status(403).json({ message: "District Admins cannot delete submissions" });
+    }
+
     // Permission check: DS users can only delete their own submissions
     if (user.role === 'ds_user' && submission.createdBy.toString() !== user._id.toString()) {
       return res.status(403).json({ message: "Not authorized to delete this submission" });
     }
 
-    // District admins can only delete submissions from their district
-    if (user.role === 'district_admin' && submission.location.district !== user.district) {
-      return res.status(403).json({ message: "Not authorized to delete this submission" });
-    }
+    // SuperAdmin can delete all submissions (no additional check needed)
 
     await submission.deleteOne();
 
@@ -294,7 +296,7 @@ const deleteSubmission = async (req, res) => {
 
 // @desc   Update a submission
 // @route  PUT /api/submissions/:id
-// @access Private (Only DS Users can edit their own submissions)
+// @access Private (SuperAdmin can edit all, DS Users can edit their own)
 const updateSubmission = async (req, res) => {
   try {
     const user = req.user;
@@ -304,14 +306,17 @@ const updateSubmission = async (req, res) => {
       return res.status(404).json({ message: "Submission not found" });
     }
 
-    // Permission check: ONLY DS users can edit, and only their own submissions
-    if (user.role !== 'ds_user') {
-      return res.status(403).json({ message: "Only DS users can edit submissions" });
+    // Permission check: District Admin cannot edit submissions
+    if (user.role === 'district_admin') {
+      return res.status(403).json({ message: "District Admins cannot edit submissions" });
     }
 
-    if (submission.createdBy.toString() !== user._id.toString()) {
+    // DS users can only edit their own submissions
+    if (user.role === 'ds_user' && submission.createdBy.toString() !== user._id.toString()) {
       return res.status(403).json({ message: "Not authorized to edit this submission" });
     }
+
+    // SuperAdmin can edit all submissions (no additional check needed)
 
     // Validation: If changing location for council_info, ensure no duplicate exists for new GN Division
     if (submission.formType === 'council_info' && req.body.location) {

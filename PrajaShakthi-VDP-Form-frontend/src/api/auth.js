@@ -5,15 +5,6 @@ const API_URL = API_ENDPOINTS.AUTH.LOGIN.replace('/login', '');
 const API_SUBMISSION_URL = API_ENDPOINTS.SUBMISSIONS.BASE;
 const TOKEN_KEY = "token";
 
-const getAuthHeaders = () => {
-  try {
-    const token = localStorage.getItem(TOKEN_KEY);
-    return token ? { Authorization: `Bearer ${token}` } : {};
-  } catch {
-    return {};
-  }
-};
-
 const login = async (username, password) => {
   const response = await fetch(`${API_URL}/login`, {
     method: "POST",
@@ -40,7 +31,6 @@ const login = async (username, password) => {
     try {
       localStorage.setItem(TOKEN_KEY, data.token);
       localStorage.setItem('user', JSON.stringify(data));
-      console.log('✅ Token saved:', data.token.substring(0, 20) + '...');
     } catch (e) {
       console.error('❌ Failed to save token:', e);
     }

@@ -18,9 +18,6 @@ axiosInstance.interceptors.request.use(
         
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
-            console.log('🔑 Token added to request:', config.url);
-        } else {
-            console.log('⚠️ No token found for request:', config.url);
         }
         
         return config;
@@ -33,12 +30,10 @@ axiosInstance.interceptors.request.use(
 // Response interceptor to handle 401 errors
 axiosInstance.interceptors.response.use(
     (response) => {
-        console.log('✅ Response received:', response.config.url);
         return response;
     },
     (error) => {
         if (error.response && error.response.status === 401) {
-            console.log('❌ 401 Unauthorized - Clearing token and redirecting to login');
             // Clear token and redirect to login
             localStorage.removeItem('token');
             localStorage.removeItem('user');

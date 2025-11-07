@@ -23,7 +23,6 @@ export const AuthProvider = ({ children }) => {
             // eslint-disable-next-line no-unused-vars
             } catch (error) {
                 // This is not a critical error, just means the user isn't logged in
-                console.log("Not authenticated.");
                 setUser(null);
             } finally {
                 // The check is complete, so we are no longer loading

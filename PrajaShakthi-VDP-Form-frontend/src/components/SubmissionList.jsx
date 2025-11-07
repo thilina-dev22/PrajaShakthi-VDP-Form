@@ -1558,15 +1558,6 @@ const SubmissionList = () => {
             )}
 
             <div className="p-2 text-right flex gap-2 justify-end">
-              {/* Debug logging */}
-              {console.log('🔍 Edit Button Check:', {
-                isDSUser,
-                submissionCreatedBy: submission.createdBy,
-                submissionCreatedById: submission.createdBy?._id,
-                userId: user?._id,
-                match: String(submission.createdBy?._id || submission.createdBy) === String(user?._id)
-              })}
-              
               {activeTab === "council_info" && (
                 <button
                   onClick={(e) => exportSubmissionToPDF(submission, e)}
@@ -1589,9 +1580,11 @@ const SubmissionList = () => {
                   History ({submission.editHistory.length})
                 </button>
               )}
-              {/* Only DS users can edit their own submissions */}
-              {isDSUser && (submission.createdBy?._id || submission.createdBy) && user?._id && 
-               String(submission.createdBy?._id || submission.createdBy) === String(user._id) && (
+              {/* SuperAdmin and DS users can edit submissions */}
+              {/* SuperAdmin can edit all submissions, DS users can only edit their own */}
+              {((isSuperAdmin) || 
+                (isDSUser && (submission.createdBy?._id || submission.createdBy) && user?._id && 
+                 String(submission.createdBy?._id || submission.createdBy) === String(user._id))) && (
                 <button
                   onClick={() => handleEdit(submission)}
                   className="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md px-3 py-1 text-sm transition duration-150 ease-in-out"
@@ -1599,12 +1592,15 @@ const SubmissionList = () => {
                   Edit
                 </button>
               )}
-              <button
-                onClick={() => handleDelete(submission._id)}
-                className="bg-red-600 hover:bg-red-700 text-white font-medium rounded-md px-3 py-1 text-sm transition duration-150 ease-in-out"
-              >
-                Delete
-              </button>
+              {/* Only SuperAdmin and DS users can delete, District Admin cannot */}
+              {(isSuperAdmin || isDSUser) && (
+                <button
+                  onClick={() => handleDelete(submission._id)}
+                  className="bg-red-600 hover:bg-red-700 text-white font-medium rounded-md px-3 py-1 text-sm transition duration-150 ease-in-out"
+                >
+                  Delete
+                </button>
+              )}
             </div>
 
             {activeTab === "council_info" &&
