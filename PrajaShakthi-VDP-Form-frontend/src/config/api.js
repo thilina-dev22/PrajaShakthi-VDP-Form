@@ -7,8 +7,8 @@
  * For VM Deployment: Uses http://192.168.4.7 (your VM IP)
  */
 
-// HARDCODED FOR VM DEPLOYMENT
-export const API_BASE_URL = "http://192.168.4.7";
+// Use window.location.origin so it works with both IP and domain
+export const API_BASE_URL = window.location.origin;
 
 // API endpoint paths
 export const API_ENDPOINTS = {
