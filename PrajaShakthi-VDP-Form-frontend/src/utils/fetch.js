@@ -13,9 +13,6 @@ export const authFetch = async (url, options = {}) => {
 
   if (token) {
     headers.Authorization = `Bearer ${token}`;
-    console.log('🔑 Token added to request:', url);
-  } else {
-    console.warn('⚠️ No token found for request:', url);
   }
 
   const response = await fetch(url, {

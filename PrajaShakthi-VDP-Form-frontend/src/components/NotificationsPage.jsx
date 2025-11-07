@@ -154,12 +154,10 @@ const NotificationsPage = () => {
         if (!confirm('Are you sure you want to clear all read notifications?')) return;
         
         try {
-            console.log('Attempting to clear read notifications...');
-            const response = await axios.delete(API_ENDPOINTS.NOTIFICATIONS.CLEAR_READ, {
+            await axios.delete(API_ENDPOINTS.NOTIFICATIONS.CLEAR_READ, {
                 withCredentials: true
             });
             
-            console.log('Clear read response:', response.data);
             setNotifications(prev => prev.filter(n => !n.isRead));
             
             // Refresh notifications from server
