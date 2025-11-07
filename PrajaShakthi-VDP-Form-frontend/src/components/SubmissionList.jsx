@@ -1580,12 +1580,15 @@ const SubmissionList = () => {
                   History ({submission.editHistory.length})
                 </button>
               )}
-              <button
-                onClick={() => handleEdit(submission)}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md px-3 py-1 text-sm transition duration-150 ease-in-out"
-              >
-                Edit
-              </button>
+              {/* Only DS users can edit their own submissions */}
+              {isDSUser && submission.createdBy === user._id && (
+                <button
+                  onClick={() => handleEdit(submission)}
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md px-3 py-1 text-sm transition duration-150 ease-in-out"
+                >
+                  Edit
+                </button>
+              )}
               <button
                 onClick={() => handleDelete(submission._id)}
                 className="bg-red-600 hover:bg-red-700 text-white font-medium rounded-md px-3 py-1 text-sm transition duration-150 ease-in-out"
