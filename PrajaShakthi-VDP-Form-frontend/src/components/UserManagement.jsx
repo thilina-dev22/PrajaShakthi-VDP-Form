@@ -153,11 +153,6 @@ const UserManagement = () => {
         }
 
         try {
-            // Log the API endpoint for debugging (only in development)
-            if (import.meta.env.DEV) {
-                console.log('Reset password API endpoint:', API_ENDPOINTS.USERS.RESET_PASSWORD(userId));
-            }
-            
             await axios.put(API_ENDPOINTS.USERS.RESET_PASSWORD(userId), {
                 newPassword: password
             }, {
