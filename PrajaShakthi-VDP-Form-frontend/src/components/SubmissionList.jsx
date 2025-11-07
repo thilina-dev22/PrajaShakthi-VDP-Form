@@ -1558,6 +1558,14 @@ const SubmissionList = () => {
             )}
 
             <div className="p-2 text-right flex gap-2 justify-end">
+              {/* Debug logging */}
+              {console.log('🔍 Edit Button Check:', {
+                isDSUser,
+                submissionCreatedBy: submission.createdBy,
+                userId: user?._id,
+                match: String(submission.createdBy) === String(user?._id)
+              })}
+              
               {activeTab === "council_info" && (
                 <button
                   onClick={(e) => exportSubmissionToPDF(submission, e)}
@@ -1581,7 +1589,8 @@ const SubmissionList = () => {
                 </button>
               )}
               {/* Only DS users can edit their own submissions */}
-              {isDSUser && submission.createdBy === user._id && (
+              {isDSUser && submission.createdBy && user?._id && 
+               String(submission.createdBy) === String(user._id) && (
                 <button
                   onClick={() => handleEdit(submission)}
                   className="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md px-3 py-1 text-sm transition duration-150 ease-in-out"
