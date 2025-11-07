@@ -1793,3 +1793,21 @@ NODE_ENV=production
 
 # CORS Configuration (your VM IP)
 CORS_ORIGIN=http://localhost:5173,http://localhost:5174,http://192.168.4.7
+
+
+-----changes deploy-------
+cd /var/www/PrajaShakthi-VDP-Form
+
+# Pull latest changes
+git pull origin main
+
+# Rebuild frontend
+cd PrajaShakthi-VDP-Form-frontend
+rm -rf dist
+npm run build
+
+# Restart services
+sudo systemctl restart nginx
+pm2 restart prajashakthi-backend
+
+echo "✅ Deployment complete! Edit permissions updated."
