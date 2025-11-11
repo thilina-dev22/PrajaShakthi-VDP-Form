@@ -51,7 +51,7 @@ const Login = () => {
                     <div className="flex items-center gap-3">
                         {/* Video Tutorial Link */}
                         <a
-                            href="https://drive.google.com/file/d/1znW9uDP4iYYUbDvJFDHex7PAXBbUsE9q/view?usp=sharing"
+                            href="https://drive.google.com/file/d/14YLOf5gZCSd4jjRuIMk4Qd1z_hXNp9RS/view?usp=sharing"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg transition-colors"
